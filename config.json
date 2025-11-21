@@ -1,0 +1,29 @@
+{
+  "token": "",
+  "clientId": "",
+  "guildId": "",
+  "colors": {
+    "primary": "#00FF99",
+    "secondary": "#9D4EDD",
+    "gradient": "green→purple"
+  },
+  "roles": {
+    "admin": "Admin",
+    "alchemist": "Alchemist",
+    "chosenSeeker": "Chosen Seeker",
+    "primeGecko": "Prime Gecko"
+  },
+  "channels": {
+    "announcements": "announcements",
+    "roadmap": "roadmap",
+    "whitelist": "whitelist"
+  },
+  "links": {
+    "website": "https://geckura.com",
+    "twitter": "https://twitter.com/geckura",
+    "discord": "https://discord.gg/geckura",
+    "mintSite": "https://mint.geckura.com",
+    "banner": "https://i.imgur.com/GeckuraBanner.png"
+  },
+  "footer": "GeckAura — Where Innovation Meets Utility!"
+}

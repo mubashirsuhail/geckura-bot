@@ -1,0 +1,22 @@
+
+{
+  "general": {
+    "minMessageLength": 5,
+    "cooldownMinutes": 0,
+    "maxTokensPerMinute": 100,
+    "blacklistedUsers": [],
+    "whitelistedChannels": [],
+    "blacklistedChannels": []
+  },
+  "levels": {
+    "baseTokens": 2,
+    "levelMultiplier": 1.1,
+    "baseExperience": 500
+  },
+  "rewards": {
+    "levelUpBonus": 20,
+    "dailyBonus": 10,
+    "weeklyBonus": 50,
+    "monthlyBonus": 200
+  }
+}

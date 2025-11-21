@@ -1,0 +1,24 @@
+{
+  "1040680172472516729": {
+    "userId": "1040680172472516729",
+    "tokens": 82,
+    "level": 2,
+    "experience": 100,
+    "messagesCount": 1,
+    "lastMessageTime": 1763669316532,
+    "totalTokensEarned": 82,
+    "achievements": [
+      "first_message"
+    ],
+    "lastTweetTime": 1763668588969,
+    "tweetsCount": 1,
+    "dailyStreak": 1,
+    "lastDailyClaim": 1763666354728,
+    "recentTokens": [
+      {
+        "time": 1763669316532,
+        "amount": 2
+      }
+    ]
+  }
+}

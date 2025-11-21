@@ -1,0 +1,36 @@
+{
+  "roles": [
+    {
+      "id": "premium",
+      "name": "Premium Role",
+      "description": "Get a special Premium role with exclusive perks",
+      "price": 1000,
+      "roleId": null,
+      "active": true
+    },
+    {
+      "id": "vip",
+      "name": "VIP Role",
+      "description": "Get a VIP role with special privileges",
+      "price": 2500,
+      "roleId": null,
+      "active": true
+    }
+  ],
+  "items": [
+    {
+      "id": "custom_color",
+      "name": "Custom Role Color",
+      "description": "Get a custom color for your role",
+      "price": 500,
+      "active": true
+    },
+    {
+      "id": "custom_emoji",
+      "name": "Custom Emoji",
+      "description": "Add your custom emoji to the server",
+      "price": 750,
+      "active": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "welcomeChannelId": "1436402053865017506",
+  "welcomeMessage": "⚙️ “Your aura is now part of the network",
+  "showChannels": true,
+  "announcementChannelId": "1436402679919284386",
+  "utilityChannelId": "1438456629535183041",
+  "roadmapChannelId": "1438186476994039819",
+  "linksChannelId": "1436402797846200380"
+}

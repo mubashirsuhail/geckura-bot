@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1763657510346",
+    "userId": "1040680172472516729",
+    "username": "mubi.sol",
+    "tweetId": "1991516265010327673",
+    "tweetUrl": "https://x.com/solana/status/1991516265010327673?s=20",
+    "submittedAt": 1763657510343,
+    "status": "pending"
+  },
+  {
+    "id": "1763668588970",
+    "userId": "1040680172472516729",
+    "username": "mubi.sol",
+    "tweetId": "1991567472546218159",
+    "tweetUrl": "https://x.com/binance/status/1991567472546218159?s=20",
+    "roleId": "1438228652579094679",
+    "roleName": "🪶Prime Gecko",
+    "isRaid": true,
+    "submittedAt": 1763668588969,
+    "status": "pending"
+  }
+]

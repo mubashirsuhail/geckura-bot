@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "criteria": {
+    "level5": true,
+    "level10": true,
+    "invites5": true,
+    "invites10": true,
+    "games": true
+  }
+}

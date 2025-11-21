@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "tokensPerTweet": 50,
+  "cooldownHours": 0,
+  "requiredHashtags": [
+    "#Geckura",
+    "#NFT"
+  ],
+  "requiredMentions": [
+    "@geckura"
+  ],
+  "minRetweets": 0,
+  "minLikes": 0,
+  "minFollowers": 0
+}

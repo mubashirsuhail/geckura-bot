@@ -1,0 +1,24 @@
+{
+  "name": "geckura-discord-bot",
+  "version": "1.0.0",
+  "description": "Geckura Discord Bot for NFT Project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "nft",
+    "solana"
+  ],
+  "author": "Geckura Team",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.3.1",
+    "mongoose": "^7.5.0",
+    "node-fetch": "^2.7.0"
+  }
+}
