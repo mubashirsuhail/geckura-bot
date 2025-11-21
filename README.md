@@ -25,8 +25,8 @@ A professional Discord bot for the Geckura NFT project on Solana, featuring embe
 
 1. Clone this repository:
    ```
-   git clone https://github.com/yourusername/geckura-discord-bot.git
-   cd geckura-discord-bot
+   git clone https://github.com/gh00sty123/geckura.git
+   cd geckura
    ```
 
 2. Install dependencies:
