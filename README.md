@@ -10,7 +10,7 @@ A professional Discord bot for the Geckura NFT project on Solana, featuring embe
 - **Roadmap Command** (`/roadmap`) - Display the project roadmap in a stylized embed
 - **Utility Embed Command** (`/utility`) - Show information about Geckura utilities
 - **Link Hub Command** (`/links`) - Display social links in an embed
-- **Mint Info Command** (`/mintinfo`) - Display mint information and whitelist status
+- **Mint Info Command** (`/mintinfo`) - Display mint information
 - **Announcement Command** (`/announce`) - Create styled announcement embeds with pings
 - **Wallet Verification** (`/verify`) - Allow users to verify their wallet addresses
 
@@ -82,7 +82,7 @@ The `config.json` file contains various settings for the bot:
 - `/roadmap` - Display the project roadmap
 - `/utility` - Show information about Geckura utilities
 - `/links` - Display social links
-- `/mintinfo` - Display mint information and whitelist status
+- `/mintinfo` - Display mint information
 - `/verify` - Verify your wallet address
 
 ## 🔐 Security

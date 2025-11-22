@@ -7,8 +7,8 @@ module.exports = {
 
     async execute(interaction, client, config, whitelistData) {
         const embed = new EmbedBuilder()
-            .setTitle('🦎 GeckAura – The Ultimate Utility Hub')
-            .setDescription('⚡ Welcome to GeckAura – Where Innovation Meets Utility!\n\nStep into the future of Solana-powered utility! GeckAura is not just a project — it\'s an ecosystem built for action, rewards, and growth.')
+            .setTitle('🦎 GeckAura – The Ultimate Utility Hub on Solana')
+            .setDescription('Welcome to GeckAura — an expanding ecosystem designed for power, rewards, and real utility.')
             .setColor(parseInt(config.colors.primary.replace('#', ''), 16))
             .setThumbnail(client.user.displayAvatarURL())
             .setFooter({ text: config.footer })
@@ -17,42 +17,43 @@ module.exports = {
         // Add utility information
         embed.addFields(
             {
+                name: '⚡ What GeckAura Delivers',
+                value: '',
+                inline: false
+            },
+            {
                 name: '🤖 AI Assistant Buddy',
-                value: 'Your personal AI companion analyzes the market, guides trades, and helps you make smarter moves in real-time.',
+                value: 'Your own AI co-pilot. Predictive insights, market analysis, trade guidance — all in real-time.',
                 inline: false
             },
             {
-                name: '💰 40% Royalty RevShare',
-                value: 'Earn from the official GeckAura collection — community rewards like you\'ve never seen before.',
+                name: '💰 40% Royalty Revenue Share',
+                value: 'Holders earn from the official GeckAura collection. A community-driven reward system like no other.',
                 inline: false
             },
             {
-                name: '🪙 Staking',
-                value: 'Stake your assets and watch your influence and rewards grow while supporting the ecosystem.',
+                name: '🪙 $GEKURA Staking',
+                value: 'Stake your $GEKURA to unlock:\n• Passive earnings\n• Daily reward boosts\n• Higher TraitShop tier access\n• DAO voting weight\n• Hidden perks for top stakers\n\nYour stake = your aura level.',
+                inline: false
+            },
+            {
+                name: '🧬 TraitShop (Aura Mods)',
+                value: 'Customize and evolve your Geckura experience:\n• Upgrade traits\n• Unlock seasonal skins\n• Buy boosters with staking rewards\n• Aura rarity enhancements\n• Limited-time cosmetic drops\n\nA dynamic system built for creativity + utility.',
+                inline: false
+            },
+            {
+                name: '🧠 Alpha DAO Access',
+                value: 'Elite community for serious builders & traders:\n• Private alpha calls\n• Early project access\n• Market breakdowns\n• Tools, bots, and exclusive dashboards\n\nAccess is based on staked Gekura + Aura level.',
                 inline: false
             },
             {
                 name: '🎮 Games & Challenges',
-                value: 'Compete, win, and climb leaderboards. Your activity = rewards.',
+                value: 'Earn while having fun:\n• Daily & weekly challenges\n• XP leaderboards\n• Mystery box rewards\n• Mini-games with on-chain prizes\n\nYour activity = your rewards.',
                 inline: false
             },
             {
-                name: '🤝 Collabs & Raids',
-                value: 'Participate in collaborations, community raids, and special events — earn while you play.',
-                inline: false
-            },
-            {
-                name: '🎁 Special Surprises',
-                value: 'Big announcements are coming… and some surprises will change the game forever.',
-                inline: false
-            }
-        );
-
-        // Add a call to action
-        embed.addFields(
-            {
-                name: '✨ The GeckAura Experience',
-                value: 'The GeckAura experience is live — explore utilities, engage in events, and prepare for the unexpected. Your aura is just beginning to glow.',
+                name: '🤝 Collabs, Raids & Community Events',
+                value: 'Partner raids, seasonal missions, cross-project utilities, whitelist rewards — always live, always rewarding.',
                 inline: false
             }
         );

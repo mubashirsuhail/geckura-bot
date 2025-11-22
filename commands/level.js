@@ -32,8 +32,8 @@ module.exports = {
 
     // Calculate experience needed for next level
     experienceForNextLevel(level) {
-        // Reverse of the level formula: experience = ((level - 1) * 10)²
-        return Math.pow((level - 1) * 10, 2);
+        // Using the config baseExperience value (2000) multiplied by level
+        return level * 2000;
     },
 
     // Calculate tokens earned per message based on level

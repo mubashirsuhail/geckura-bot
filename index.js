@@ -41,6 +41,9 @@ try {
 // Load whitelist monitoring system
 const { startMonitoring } = require('./utils/wl-monitor');
 
+// Load OG monitoring system
+const { startMonitoring: startOGMonitoring } = require('./utils/og-monitor');
+
 // Load welcome handler
 const { sendWelcomeMessage } = require('./utils/welcome-handler');
 
@@ -55,6 +58,10 @@ client.once('ready', () => {
     // Start whitelist monitoring
     startMonitoring(client, config);
     console.log('Whitelist monitoring system started.');
+
+    // Start OG monitoring
+    startOGMonitoring(client, config);
+    console.log('OG monitoring system started.');
 });
 
 // Event: Guild member add (for welcome messages)
@@ -222,17 +229,22 @@ client.on('interactionCreate', async interaction => {
         }
         // Check if this is a whitelist-related button
         else if (interaction.customId === 'submit_whitelist_wallet' || interaction.customId === 'submit_og_wallet') {
-            const command = client.commands.get('whitelist');
-            if (command && command.handleButton) {
-                try {
+            try {
+                const command = client.commands.get('whitelist');
+                if (command && command.handleButton) {
                     await command.handleButton(interaction);
-                } catch (error) {
-                    console.error(error);
+                } else {
                     await interaction.reply({
-                        content: 'There was an error handling this button!',
+                        content: '⚠️ **Error:** Could not find the wallet submission handler. Please try again later.',
                         ephemeral: true
                     });
                 }
+            } catch (error) {
+                console.error('Error handling wallet submission button:', error);
+                await interaction.reply({
+                    content: `⚠️ **Error:** ${error.message || 'There was an error processing your wallet submission. Please try again later.'}`,
+                    ephemeral: true
+                });
             }
         }
     }
@@ -240,17 +252,22 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.isModalSubmit()) {
         // Check if this is a whitelist-related modal
         if (interaction.customId.includes('wallet_modal_')) {
-            const command = client.commands.get('whitelist');
-            if (command && command.handleModal) {
-                try {
+            try {
+                const command = client.commands.get('whitelist');
+                if (command && command.handleModal) {
                     await command.handleModal(interaction);
-                } catch (error) {
-                    console.error(error);
+                } else {
                     await interaction.reply({
-                        content: 'There was an error submitting your wallet!',
+                        content: '⚠️ **Error:** Could not find the wallet submission handler. Please try again later.',
                         ephemeral: true
                     });
                 }
+            } catch (error) {
+                console.error('Error handling wallet submission modal:', error);
+                await interaction.reply({
+                    content: '⚠️ **Error:** There was an error submitting your wallet. Please try again later.',
+                    ephemeral: true
+                });
             }
         }
     }

@@ -57,7 +57,8 @@ async function monitorAndAssignWL(client, config) {
     }
 
     // Get the whitelist role
-    const whitelistRole = guild.roles.cache.find(role => role.name === 'Whitelist');
+    const whitelistRoleId = '1438228532546240614';
+    const whitelistRole = guild.roles.cache.get(whitelistRoleId);
     if (!whitelistRole) {
         console.error('Whitelist role not found');
         return;
@@ -74,21 +75,25 @@ async function monitorAndAssignWL(client, config) {
     // Placeholder implementation - replace with actual logic
     // This is where you would integrate with your leveling system, invite tracking, and game management
 
-    // Example for level checking (replace with actual implementation)
+    // Level 5 checking
     if (settings.criteria.level5) {
-        // Get users who have reached level 5
-        const level5Users = []; // Replace with actual logic to get level 5 users
+        // Get all members with level 5 role
+        const level5RoleId = '1438228652579094679'; // Replace with actual Level 5 role ID
+        const level5Role = guild.roles.cache.get(level5RoleId);
+        if (level5Role) {
+            const level5Members = guild.members.cache.filter(member => 
+                member.roles.cache.has(level5Role.id) && 
+                !member.roles.cache.has(whitelistRole.id)
+            );
 
-        for (const userId of level5Users) {
-            if (!hasWhitelistAssignment(assignments, userId, 'level', 5)) {
-                try {
-                    const member = await guild.members.fetch(userId);
-                    if (!member.roles.cache.has(whitelistRole.id)) {
+            for (const [_, member] of level5Members) {
+                if (!hasWhitelistAssignment(assignments, member.id, 'level', 5)) {
+                    try {
                         await member.roles.add(whitelistRole);
 
                         // Add to assignments log
                         assignments.assignments.push({
-                            userId: userId,
+                            userId: member.id,
                             userTag: member.user.tag,
                             type: 'level',
                             value: 5,
@@ -96,29 +101,51 @@ async function monitorAndAssignWL(client, config) {
                         });
 
                         console.log(`Assigned whitelist to ${member.user.tag} for reaching level 5`);
+
+                        // Notify user
+                        try {
+                            await member.send({
+                                embeds: [{
+                                    title: '🔑 Congratulations! You\'ve earned Whitelist status!',
+                                    description: 'You\'ve been awarded Whitelist status for reaching Level 5 in the Geckura community. You can now submit your wallet address using the `/whitelist` command.',
+                                    color: 0x00FF99,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: 'Geckura — Turning Chaos into Flow',
+                                        icon_url: client.user.displayAvatarURL()
+                                    }
+                                }]
+                            });
+                        } catch (dmError) {
+                            console.error(`Could not send DM to ${member.user.tag}:`, dmError);
+                        }
+                    } catch (error) {
+                        console.error(`Error assigning whitelist to user ${member.id}:`, error);
                     }
-                } catch (error) {
-                    console.error(`Error assigning whitelist to user ${userId}:`, error);
                 }
             }
         }
     }
 
-    // Example for level 10 checking (replace with actual implementation)
+    // Level 10 checking
     if (settings.criteria.level10) {
-        // Get users who have reached level 10
-        const level10Users = []; // Replace with actual logic to get level 10 users
+        // Get all members with level 10 role
+        const level10RoleId = '1438228652579094679'; // Replace with actual Level 10 role ID
+        const level10Role = guild.roles.cache.get(level10RoleId);
+        if (level10Role) {
+            const level10Members = guild.members.cache.filter(member => 
+                member.roles.cache.has(level10Role.id) && 
+                !member.roles.cache.has(whitelistRole.id)
+            );
 
-        for (const userId of level10Users) {
-            if (!hasWhitelistAssignment(assignments, userId, 'level', 10)) {
-                try {
-                    const member = await guild.members.fetch(userId);
-                    if (!member.roles.cache.has(whitelistRole.id)) {
+            for (const [_, member] of level10Members) {
+                if (!hasWhitelistAssignment(assignments, member.id, 'level', 10)) {
+                    try {
                         await member.roles.add(whitelistRole);
 
                         // Add to assignments log
                         assignments.assignments.push({
-                            userId: userId,
+                            userId: member.id,
                             userTag: member.user.tag,
                             type: 'level',
                             value: 10,
@@ -126,29 +153,51 @@ async function monitorAndAssignWL(client, config) {
                         });
 
                         console.log(`Assigned whitelist to ${member.user.tag} for reaching level 10`);
+
+                        // Notify user
+                        try {
+                            await member.send({
+                                embeds: [{
+                                    title: '🔑 Congratulations! You\'ve earned Whitelist status!',
+                                    description: 'You\'ve been awarded Whitelist status for reaching Level 10 in the Geckura community. You can now submit your wallet address using the `/whitelist` command.',
+                                    color: 0x00FF99,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: 'Geckura — Turning Chaos into Flow',
+                                        icon_url: client.user.displayAvatarURL()
+                                    }
+                                }]
+                            });
+                        } catch (dmError) {
+                            console.error(`Could not send DM to ${member.user.tag}:`, dmError);
+                        }
+                    } catch (error) {
+                        console.error(`Error assigning whitelist to user ${member.id}:`, error);
                     }
-                } catch (error) {
-                    console.error(`Error assigning whitelist to user ${userId}:`, error);
                 }
             }
         }
     }
 
-    // Example for invite checking (replace with actual implementation)
+    // Invite 5 checking
     if (settings.criteria.invites5) {
-        // Get users who have invited 5 members
-        const invite5Users = []; // Replace with actual logic to get users with 5 invites
+        // Get all members with inviter role
+        const inviter5RoleId = '1438228652579094679'; // Replace with actual Inviter 5 role ID
+        const inviter5Role = guild.roles.cache.get(inviter5RoleId);
+        if (inviter5Role) {
+            const inviter5Members = guild.members.cache.filter(member => 
+                member.roles.cache.has(inviter5Role.id) && 
+                !member.roles.cache.has(whitelistRole.id)
+            );
 
-        for (const userId of invite5Users) {
-            if (!hasWhitelistAssignment(assignments, userId, 'invites', 5)) {
-                try {
-                    const member = await guild.members.fetch(userId);
-                    if (!member.roles.cache.has(whitelistRole.id)) {
+            for (const [_, member] of inviter5Members) {
+                if (!hasWhitelistAssignment(assignments, member.id, 'invites', 5)) {
+                    try {
                         await member.roles.add(whitelistRole);
 
                         // Add to assignments log
                         assignments.assignments.push({
-                            userId: userId,
+                            userId: member.id,
                             userTag: member.user.tag,
                             type: 'invites',
                             value: 5,
@@ -156,29 +205,51 @@ async function monitorAndAssignWL(client, config) {
                         });
 
                         console.log(`Assigned whitelist to ${member.user.tag} for inviting 5 members`);
+
+                        // Notify user
+                        try {
+                            await member.send({
+                                embeds: [{
+                                    title: '🔑 Congratulations! You\'ve earned Whitelist status!',
+                                    description: 'You\'ve been awarded Whitelist status for inviting 5 members to the Geckura community. You can now submit your wallet address using the `/whitelist` command.',
+                                    color: 0x00FF99,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: 'Geckura — Turning Chaos into Flow',
+                                        icon_url: client.user.displayAvatarURL()
+                                    }
+                                }]
+                            });
+                        } catch (dmError) {
+                            console.error(`Could not send DM to ${member.user.tag}:`, dmError);
+                        }
+                    } catch (error) {
+                        console.error(`Error assigning whitelist to user ${member.id}:`, error);
                     }
-                } catch (error) {
-                    console.error(`Error assigning whitelist to user ${userId}:`, error);
                 }
             }
         }
     }
 
-    // Example for invite checking (replace with actual implementation)
+    // Invite 10 checking
     if (settings.criteria.invites10) {
-        // Get users who have invited 10 members
-        const invite10Users = []; // Replace with actual logic to get users with 10 invites
+        // Get all members with inviter role
+        const inviter10RoleId = '1438228652579094679'; // Replace with actual Inviter 10 role ID
+        const inviter10Role = guild.roles.cache.get(inviter10RoleId);
+        if (inviter10Role) {
+            const inviter10Members = guild.members.cache.filter(member => 
+                member.roles.cache.has(inviter10Role.id) && 
+                !member.roles.cache.has(whitelistRole.id)
+            );
 
-        for (const userId of invite10Users) {
-            if (!hasWhitelistAssignment(assignments, userId, 'invites', 10)) {
-                try {
-                    const member = await guild.members.fetch(userId);
-                    if (!member.roles.cache.has(whitelistRole.id)) {
+            for (const [_, member] of inviter10Members) {
+                if (!hasWhitelistAssignment(assignments, member.id, 'invites', 10)) {
+                    try {
                         await member.roles.add(whitelistRole);
 
                         // Add to assignments log
                         assignments.assignments.push({
-                            userId: userId,
+                            userId: member.id,
                             userTag: member.user.tag,
                             type: 'invites',
                             value: 10,
@@ -186,29 +257,50 @@ async function monitorAndAssignWL(client, config) {
                         });
 
                         console.log(`Assigned whitelist to ${member.user.tag} for inviting 10 members`);
+
+                        // Notify user
+                        try {
+                            await member.send({
+                                embeds: [{
+                                    title: '🔑 Congratulations! You\'ve earned Whitelist status!',
+                                    description: 'You\'ve been awarded Whitelist status for inviting 10 members to the Geckura community. You can now submit your wallet address using the `/whitelist` command.',
+                                    color: 0x00FF99,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: 'Geckura — Turning Chaos into Flow',
+                                        icon_url: client.user.displayAvatarURL()
+                                    }
+                                }]
+                            });
+                        } catch (dmError) {
+                            console.error(`Could not send DM to ${member.user.tag}:`, dmError);
+                        }
+                    } catch (error) {
+                        console.error(`Error assigning whitelist to user ${member.id}:`, error);
                     }
-                } catch (error) {
-                    console.error(`Error assigning whitelist to user ${userId}:`, error);
                 }
             }
         }
     }
 
-    // Example for game winners (replace with actual implementation)
+    // Game winners checking
     if (settings.criteria.games) {
-        // Get recent game winners
-        const gameWinners = []; // Replace with actual logic to get game winners
+        // Get all members with game winner role
+        const gameWinnerRole = guild.roles.cache.find(role => role.name === 'Game Winner');
+        if (gameWinnerRole) {
+            const gameWinnerMembers = guild.members.cache.filter(member => 
+                member.roles.cache.has(gameWinnerRole.id) && 
+                !member.roles.cache.has(whitelistRole.id)
+            );
 
-        for (const winner of gameWinners) {
-            if (!hasWhitelistAssignment(assignments, winner.userId, 'game', 'winner')) {
-                try {
-                    const member = await guild.members.fetch(winner.userId);
-                    if (!member.roles.cache.has(whitelistRole.id)) {
+            for (const [_, member] of gameWinnerMembers) {
+                if (!hasWhitelistAssignment(assignments, member.id, 'game', 'winner')) {
+                    try {
                         await member.roles.add(whitelistRole);
 
                         // Add to assignments log
                         assignments.assignments.push({
-                            userId: winner.userId,
+                            userId: member.id,
                             userTag: member.user.tag,
                             type: 'game',
                             value: 'winner',
@@ -216,20 +308,55 @@ async function monitorAndAssignWL(client, config) {
                         });
 
                         // Add to games log
-                        assignments.games.push({
-                            gameId: winner.gameId,
-                            winners: [{
-                                userId: winner.userId,
-                                userTag: member.user.tag,
+                        const gameIndex = assignments.games.findIndex(g => g.gameId === 'default');
+                        if (gameIndex >= 0) {
+                            // Check if user is already in winners list
+                            const alreadyWinner = assignments.games[gameIndex].winners.some(
+                                w => w.userId === member.id
+                            );
+
+                            if (!alreadyWinner) {
+                                assignments.games[gameIndex].winners.push({
+                                    userId: member.id,
+                                    userTag: member.user.tag,
+                                    timestamp: new Date().toISOString()
+                                });
+                            }
+                        } else {
+                            // Create new game entry
+                            assignments.games.push({
+                                gameId: 'default',
+                                winners: [{
+                                    userId: member.id,
+                                    userTag: member.user.tag,
+                                    timestamp: new Date().toISOString()
+                                }],
                                 timestamp: new Date().toISOString()
-                            }],
-                            timestamp: new Date().toISOString()
-                        });
+                            });
+                        }
 
                         console.log(`Assigned whitelist to ${member.user.tag} for winning a game`);
+
+                        // Notify user
+                        try {
+                            await member.send({
+                                embeds: [{
+                                    title: '🔑 Congratulations! You\'ve earned Whitelist status!',
+                                    description: 'You\'ve been awarded Whitelist status for winning a game in the Geckura community. You can now submit your wallet address using the `/whitelist` command.',
+                                    color: 0x00FF99,
+                                    timestamp: new Date().toISOString(),
+                                    footer: {
+                                        text: 'Geckura — Turning Chaos into Flow',
+                                        icon_url: client.user.displayAvatarURL()
+                                    }
+                                }]
+                            });
+                        } catch (dmError) {
+                            console.error(`Could not send DM to ${member.user.tag}:`, dmError);
+                        }
+                    } catch (error) {
+                        console.error(`Error assigning whitelist to user ${member.id}:`, error);
                     }
-                } catch (error) {
-                    console.error(`Error assigning whitelist to user ${winner.userId}:`, error);
                 }
             }
         }

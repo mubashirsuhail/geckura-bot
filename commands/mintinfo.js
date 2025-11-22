@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('mintinfo')
-        .setDescription('Display mint information and whitelist status'),
+        .setDescription('Display mint information'),
 
     async execute(interaction, client, config, whitelistData) {
         const user = interaction.user;
@@ -12,111 +12,111 @@ module.exports = {
         const isWhitelisted = whitelistData.whitelisted.some(entry => entry.discordId === user.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('🧪 Gekura Elixir — The Essence of Innovation')
+            .setTitle('🦎 GeckAura Ecosystem — Collection Utilities Overview')
             .setColor(parseInt(config.colors.primary.replace('#', ''), 16))
             .setThumbnail(client.user.displayAvatarURL())
             .setFooter({ text: config.footer })
             .setTimestamp();
 
-        // Add mint details
+        // Add collection I info
         embed.addFields(
             {
-                name: 'Blockchain',
-                value: 'Solana',
-                inline: true
-            },
-            {
-                name: 'Total Supply',
-                value: '444',
-                inline: true
-            },
-            {
-                name: 'Mint Price',
-                value: 'Free',
-                inline: true
-            },
-            {
-                name: 'Launch Platform',
-                value: 'TBA',
-                inline: true
-            }
-        );
-
-        // Add collection description
-        embed.addFields(
-            {
-                name: 'The Elixir Collection',
-                value: 'The Elixir Collection embodies the core energy of the Gekura universe — three elemental tiers, each unlocking unique paths of utility and power.',
+                name: 'COLLECTION I — Geckura Elixir (Genesis Utility Item)',
+                value: 'A limited Genesis artifact that powers your PFP and unlocks exclusive ecosystem features.',
                 inline: false
             }
         );
 
-        // Add elixir tiers
+        // Add elixir utilities
         embed.addFields(
             {
-                name: '🌿 Forest Elixir — Mythic Tier (44)',
-                value: 'Pure, forest-born energy that grants early AI Agent access and priority ecosystem benefits.',
+                name: 'Elixir Utilities',
+                value: '',
                 inline: false
             },
             {
-                name: '☀️ Sun Elixir — Solar Tier',
-                value: 'Forged from heat, light, and solar fire — providing early whitelist access, collab perks, and staking advantages.',
+                name: '🤖 AI Agent Enhancement',
+                value: 'Access advanced AI tools that provide:\n• Unlocks advanced AI features\n• Deeper analytics\n• Faster recommendations\n• Automated guidance',
                 inline: false
             },
             {
-                name: '🌌 Space Elixir — Cosmic Tier',
-                value: 'Cosmic, deep-space energy — unlocking staking access, exclusive rewards, and surprise drops.',
+                name: '💰 Staking Multiplier',
+                value: 'Increase $GEKURA staking rewards and Aura Level progression.',
+                inline: false
+            },
+            {
+                name: '🧠 Alpha DAO Priority Access',
+                value: 'Early entry with enhanced Voting influence.',
+                inline: false
+            },
+            {
+                name: '💎 Exclusive 40% Royalty Rev-Share',
+                value: 'Distributed every 10 days from the Geckura PFP collection — reserved for Elixir holders.',
+                inline: false
+            },
+            {
+                name: '🎁 Seasonal Airdrops & Bonuses',
+                value: 'Gain priority access to limited drops and premium ecosystem rewards.',
                 inline: false
             }
         );
 
-        // Add main collection info
+        // Add collection II info
         embed.addFields(
             {
-                name: '🐸 Gekura Official Collection',
-                value: 'Supply: 1111 Gekura\nA universe of collectibles, each crafted with lore, utility, and long-term value.',
+                name: 'COLLECTION II — Geckura PFP (1111 Supply)',
+                value: 'Your identity NFT within GeckAura, unlocking staking, progression, and AI-powered utilities.',
                 inline: false
             }
         );
 
-        // Add whitelist status
-        if (isWhitelisted) {
-            const userEntry = whitelistData.whitelisted.find(entry => entry.discordId === user.id);
-            embed.addFields(
-                {
-                    name: '✅ Your Whitelist Status',
-                    value: 'You are whitelisted for the mint!',
-                    inline: false
-                },
-                {
-                    name: '💳 Registered Wallet',
-                    value: `\`${userEntry.wallet.substring(0, 10)}...${userEntry.wallet.substring(userEntry.wallet.length - 10)}\``,
-                    inline: false
-                }
-            );
-        } else {
-            embed.addFields(
-                {
-                    name: '❌ Your Whitelist Status',
-                    value: 'You are not currently whitelisted for the mint.',
-                    inline: false
-                },
-                {
-                    name: '🎯 How to Get Whitelisted',
-                    value: 'Participate in community events, contests, and giveaways to secure your whitelist spot!',
-                    inline: false
-                }
-            );
-        }
-
-        // Add mint site link
+        // Add PFP utilities
         embed.addFields(
             {
-                name: '🔗 Mint Site',
-                value: `[Mint Site](${config.links.mintSite})`,
+                name: 'PFP Utilities',
+                value: '',
+                inline: false
+            },
+            {
+                name: '🤖 AI Agent Integration',
+                value: 'Each PFP interacts with the AI Buddy for actionable insights.',
+                inline: false
+            },
+            {
+                name: '🪙 $GEKURA Staking',
+                value: 'Earn daily Passive Income and Aura Points.',
+                inline: false
+            },
+            {
+                name: '⭐ Aura Level Progression',
+                value: 'Level up through staking, missions, and Elixir boosts.',
+                inline: false
+            },
+            {
+                name: '🧬 TraitShop Compatibility',
+                value: 'Apply upgrades, mutations, and seasonal traits.',
+                inline: false
+            },
+            {
+                name: '🧠 Alpha DAO Access',
+                value: 'Standard entry with voting rights.',
+                inline: false
+            },
+            {
+                name: '🎮 Games & Missions',
+                value: 'Participate in quests, challenges, and leaderboards.',
+                inline: false
+            },
+            {
+                name: '🤝 Raids & Events',
+                value: 'Access collabs, whitelist perks, and seasonal ecosystem events.',
                 inline: false
             }
         );
+
+        // Whitelist status removed
+
+        // Mint site link removed
 
         await interaction.reply({ embeds: [embed] });
     }

@@ -47,9 +47,7 @@ function generateWelcomeEmbed(member, welcomeConfig, client) {
             channels.push(`📢 **Announcements**: <#${welcomeConfig.announcementChannelId}>`);
         }
 
-        if (welcomeConfig.utilityChannelId) {
-            channels.push(`🛠️ **Utilities**: <#${welcomeConfig.utilityChannelId}>`);
-        }
+        // Removed utilities channel from welcome message
 
         if (welcomeConfig.roadmapChannelId) {
             channels.push(`🗺️ **Roadmap**: <#${welcomeConfig.roadmapChannelId}>`);
@@ -66,6 +64,13 @@ function generateWelcomeEmbed(member, welcomeConfig, client) {
                 inline: false
             });
         }
+        
+        // Add sneak peek with channel information
+        embed.addFields({
+            name: '🔍 Sneak Peek',
+            value: `Check out our <#${welcomeConfig.announcementChannelId}> for the latest updates!`,
+            inline: false
+        });
     }
 
     return embed;
@@ -114,10 +119,14 @@ async function sendWelcomeMessage(member, client) {
         // Generate welcome embed
         const welcomeEmbed = generateWelcomeEmbed(member, welcomeConfig, client);
 
-        // Send welcome message
+        // Send welcome message with ping
         await welcomeChannel.send({
-            content: `Hey ${member.user}, welcome to the server!`,
-            embeds: [welcomeEmbed]
+            content: `Welcome to the server, <@!${member.id}>!`,
+            embeds: [welcomeEmbed],
+            allowedMentions: {
+                users: [member.id],
+                parse: []
+            }
         });
 
         console.log(`Sent welcome message to ${member.user.tag}`);

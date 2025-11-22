@@ -58,14 +58,14 @@ function saveUserData(userId, data) {
 
 // Calculate level based on experience
 function calculateLevel(experience) {
-    // Formula: level = floor(0.1 * sqrt(experience)) + 1
-    return Math.floor(0.1 * Math.sqrt(experience)) + 1;
+    // Formula: level = floor(experience / baseExperience)
+    return Math.floor(experience / config.levels.baseExperience) + 1;
 }
 
 // Calculate experience needed for next level
 function experienceForNextLevel(level) {
-    // Reverse of the level formula: experience = ((level - 1) * 10)²
-    return Math.pow((level - 1) * 10, 2);
+    // Using the config baseExperience value (2000) multiplied by level
+    return level * config.levels.baseExperience;
 }
 
 // Calculate tokens earned per message based on level
@@ -134,11 +134,11 @@ async function handleMessage(message, client) {
         userData.tokens += config.rewards.levelUpBonus;
         userData.totalTokensEarned += config.rewards.levelUpBonus;
 
-        // Send level up message
+        // Send level up message to user only
         try {
             const levelUpEmbed = {
                 title: '🎉 Level Up!',
-                description: `Congratulations ${message.author.username}! You've reached **Level ${newLevel}**!`,
+                description: `Congratulations! You've reached **Level ${newLevel}**!`,
                 color: 0x00FF99,
                 fields: [
                     {
@@ -159,7 +159,7 @@ async function handleMessage(message, client) {
                 }
             };
 
-            await message.channel.send({ embeds: [levelUpEmbed] });
+            await message.author.send({ embeds: [levelUpEmbed] });
         } catch (error) {
             console.error('Error sending level up message:', error);
         }
@@ -168,8 +168,8 @@ async function handleMessage(message, client) {
     // Save updated user data
     saveUserData(userId, userData);
 
-    // Check for achievements (simplified)
-    checkAchievements(message, userData, client);
+    // Check for achievements (simplified) - DISABLED
+    // checkAchievements(message, userData, client);
 }
 
 // Check and award achievements
