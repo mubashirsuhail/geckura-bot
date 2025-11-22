@@ -11,7 +11,7 @@
   "levels": {
     "baseTokens": 2,
     "levelMultiplier": 1.1,
-    "baseExperience": 2000
+    "baseExperience": 25
   },
   "rewards": {
     "levelUpBonus": 20,

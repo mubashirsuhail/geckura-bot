@@ -1,12 +1,12 @@
 {
   "1040680172472516729": {
     "userId": "1040680172472516729",
-    "tokens": 82,
-    "level": 2,
-    "experience": 100,
-    "messagesCount": 1,
-    "lastMessageTime": 1763669316532,
-    "totalTokensEarned": 82,
+    "tokens": 106,
+    "level": 6,
+    "experience": 140,
+    "messagesCount": 3,
+    "lastMessageTime": 1763823548235,
+    "totalTokensEarned": 106,
     "achievements": [
       "first_message"
     ],
@@ -16,7 +16,55 @@
     "lastDailyClaim": 1763666354728,
     "recentTokens": [
       {
-        "time": 1763669316532,
+        "time": 1763823548235,
+        "amount": 2
+      }
+    ]
+  },
+  "1193804513556058142": {
+    "userId": "1193804513556058142",
+    "tokens": 4,
+    "level": 1,
+    "experience": 40,
+    "messagesCount": 2,
+    "lastMessageTime": 1763823388962,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1763823388962,
+        "amount": 2
+      }
+    ]
+  },
+  "477550366108680193": {
+    "userId": "477550366108680193",
+    "tokens": 4,
+    "level": 1,
+    "experience": 40,
+    "messagesCount": 2,
+    "lastMessageTime": 1763823382702,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1763823374143,
+        "amount": 2
+      },
+      {
+        "time": 1763823382702,
         "amount": 2
       }
     ]

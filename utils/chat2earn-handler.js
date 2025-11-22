@@ -118,7 +118,7 @@ async function handleMessage(message, client) {
     // Update user data
     userData.lastMessageTime = now;
     userData.messagesCount++;
-    userData.experience += config.levels.baseExperience;
+    userData.experience += 20;
     userData.tokens += tokensEarned;
     userData.totalTokensEarned += tokensEarned;
 

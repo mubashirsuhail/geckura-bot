@@ -80,7 +80,7 @@ module.exports = {
 
             if (!hasRole) {
                 await interaction.reply({
-                    content: `⚠️ **Access Denied:** You need the ${requiredRole} role to submit a wallet for this status type.\n\nIf you believe you should have this role, please contact a server administrator.`,
+                    content: `⚠️ **Access Denied:** You need the ${walletType === 'whitelist' ? 'Whitelist' : 'OG'} role to submit a wallet for this status type.\n\nIf you believe you should have this role, please contact a server administrator.`,
                     ephemeral: true
                 });
                 return;
