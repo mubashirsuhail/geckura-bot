@@ -2,10 +2,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits, PermissionFlagsBits } = require('discord.js');
 require('dotenv').config();
+console.log("Discord token loaded:", process.env.DISCORD_TOKEN ? "Yes" : "No");
 const config = require('./config.json');
 
 // Load chat2earn handler
 const { handleMessage } = require('./utils/chat2earn-handler');
+
+// Load link filter
+const { execute: handleLinkFilter } = require('./utils/link-filter');
 
 // Create a new client instance
 const client = new Client({
@@ -103,6 +107,11 @@ client.on('messageCreate', async message => {
         // If message contains a URL, delete it
         if (containsUrl) {
             try {
+                // Check if bot has permission to delete messages
+                if (!message.channel.permissionsFor(client.user).has('MANAGE_MESSAGES')) {
+                    console.error(`Bot doesn't have permission to delete messages in channel ${message.channel.name}`);
+                    return;
+                }
                 await message.delete();
                 
                 // Create an alert embed
@@ -133,7 +142,13 @@ client.on('messageCreate', async message => {
                 await message.channel.send({ embeds: [alertEmbed] });
                 
                 // Timeout the user for 48 hours (48 * 60 * 60 * 1000 milliseconds)
-                await message.member.timeout(48 * 60 * 60 * 1000, 'Posting links without admin permission');
+                // Check if bot has permission to timeout members
+                if (!message.guild.members.me.permissions.has('MODERATE_MEMBERS')) {
+                    console.error(`Bot doesn't have permission to timeout members in server ${message.guild.name}`);
+                    // Still try to send the alert even if we can't timeout
+                } else {
+                    await message.member.timeout(48 * 60 * 60 * 1000, 'Posting links without admin permission');
+                }
                 
                 // Send a DM to the user explaining the timeout
                 try {
@@ -184,7 +199,76 @@ client.on('interactionCreate', async interaction => {
         if (!command) return;
 
         try {
-            await command.execute(interaction, client, config, whitelistData);
+            // Special handling for the airdrop command
+            if (interaction.commandName === 'airdrop') {
+                const { EmbedBuilder } = require('discord.js');
+                const embed = new EmbedBuilder()
+                    .setTitle('🪂 GECKURA AIRDROP — ELIGIBILITY & MAXIMIZATION GUIDE 🦎')
+                    .setColor('#9D4EDD')
+                    .setThumbnail(client.user.displayAvatarURL())
+                    .setFooter({ text: 'Geckura — Built for movers, rewarded by the system', iconURL: client.user.displayAvatarURL() })
+                    .setTimestamp();
+
+                // Core Eligibility
+                embed.addFields({
+                    name: '🔑 Core Eligibility',
+                    value: 'Hold Geckura Elixir → Required for airdrop eligibility → Grants RevShare, bonus rewards, and more → Geckura Elixir holders receive a FREE mint in the Geckura PFP collection\n\nSecondary Market (Elixir): 🔗https://magiceden.io/marketplace/geckura_elixir',
+                    inline: false
+                });
+
+                // PFP Minting
+                embed.addFields({
+                    name: '🖼 Geckura PFP Minting Soon',
+                    value: 'Mint & Hold a Geckura PFP NFT → Significantly increases airdrop allocation → Snapshot-based rewards',
+                    inline: false
+                });
+
+                // Level System
+                embed.addFields({
+                    name: '⬆️ Level System',
+                    value: 'Level up to Level 20 → Higher levels = higher airdrop weight → Earn XP through activity and engagement',
+                    inline: false
+                });
+
+                // Community Tasks
+                embed.addFields({
+                    name: '📣 Community Tasks',
+                    value: '• Raid all official Geckura tweets\n• Engage consistently (likes, reposts, replies)\n• Be active in Discord discussions\n• Participate in community games & events',
+                    inline: false
+                });
+
+                // Collabs & Partnerships
+                embed.addFields({
+                    name: '🤝 Collabs & Partnerships',
+                    value: '• Bonus rewards from Solana project collaborations\n• Partner campaign participation increases eligibility',
+                    inline: false
+                });
+
+                // Twitter Selection
+                embed.addFields({
+                    name: '🐦 Twitter Selection',
+                    value: '• Random and merit-based picks from Twitter raids & posts\n• Quality engagement matters — spam does not',
+                    inline: false
+                });
+
+                // Important Notes
+                embed.addFields({
+                    name: '⚠️ Important Notes',
+                    value: '• Snapshots will be taken periodically\n• Sybil & low-effort farming will be filtered\n• Final airdrop weights are not disclosed',
+                    inline: false
+                });
+
+                // Summary
+                embed.addFields({
+                    name: '✅ Summary',
+                    value: 'Hold. Mint. Level up. Engage. Raid. Those who contribute to the ecosystem are rewarded.',
+                    inline: false
+                });
+
+                await interaction.reply({ embeds: [embed] });
+            } else {
+                await command.execute(interaction, client, config, whitelistData);
+            }
 
             // Save whitelist data if modified
             if (command.modifiesWhitelist) {
@@ -230,7 +314,7 @@ client.on('interactionCreate', async interaction => {
         // Check if this is a whitelist-related button
         else if (interaction.customId === 'submit_whitelist_wallet' || interaction.customId === 'submit_og_wallet') {
             try {
-                const command = client.commands.get('whitelist');
+                const command = client.commands.get('wallet');
                 if (command && command.handleButton) {
                     await command.handleButton(interaction);
                 } else {
@@ -250,10 +334,10 @@ client.on('interactionCreate', async interaction => {
     }
     // Handle modal submissions
     else if (interaction.isModalSubmit()) {
-        // Check if this is a whitelist-related modal
-        if (interaction.customId.includes('wallet_modal_')) {
+        // Check if this is a wallet-related modal
+        if (interaction.customId.includes('wallet-submit-')) {
             try {
-                const command = client.commands.get('whitelist');
+                const command = client.commands.get('wallet');
                 if (command && command.handleModal) {
                     await command.handleModal(interaction);
                 } else {
@@ -274,4 +358,12 @@ client.on('interactionCreate', async interaction => {
 });
 
 // Log in to Discord with your client's token
-client.login(process.env.DISCORD_TOKEN);
+console.log("Attempting to log in to Discord with token...");
+console.log("Token (first 10 chars):", process.env.DISCORD_TOKEN ? process.env.DISCORD_TOKEN.substring(0, 10) + "..." : "undefined");
+console.log("Token length:", process.env.DISCORD_TOKEN ? process.env.DISCORD_TOKEN.length : "undefined");
+
+try {
+    client.login(process.env.DISCORD_TOKEN);
+} catch (error) {
+    console.error("Error during login:", error.message);
+}

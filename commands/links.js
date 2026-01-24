@@ -23,12 +23,17 @@ module.exports = {
             },
             {
                 name: '🌐 Sacred Web Portal',
-                value: 'Forging in the shadows…',
+                value: 'https://www.geckura.app/',
                 inline: false
             },
             {
                 name: '🌀 X Transmission Hub',
                 value: '[@Geckura](https://x.com/Geckura)',
+                inline: false
+            },
+            {
+                name: '🧪 Geckura Elixir',
+                value: 'https://magiceden.io/marketplace/geckura_elixir',
                 inline: false
             }
         );

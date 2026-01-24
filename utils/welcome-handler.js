@@ -71,6 +71,13 @@ function generateWelcomeEmbed(member, welcomeConfig, client) {
             value: `Check out our <#${welcomeConfig.announcementChannelId}> for the latest updates!`,
             inline: false
         });
+        
+        // Add airdrop information
+        embed.addFields({
+            name: '🪂 Geckura Airdrop',
+            value: `Don\'t miss out on our upcoming airdrop! Check <#${welcomeConfig.announcementChannelId}> for eligibility requirements and sneak peeks!`,
+            inline: false
+        });
     }
 
     return embed;

@@ -56,16 +56,29 @@ function saveUserData(userId, data) {
     fs.writeFileSync(userDataPath, JSON.stringify(userData, null, 2));
 }
 
+// Calculate level based on total messages
+function getLevel(totalMessages) {
+    // Level 1: 25 messages
+    // Level 2: 50 messages
+    // Level 3: 75 messages
+    // Level 4+: 100, 125, 150, etc. (adding 25 each level)
+    if (totalMessages < 25) return 0;
+    if (totalMessages < 50) return 1;
+    if (totalMessages < 75) return 2;
+    
+    // For level 3 and above, calculate based on 25 messages per level
+    return Math.floor(totalMessages / 25);
+}
+
 // Calculate level based on experience
 function calculateLevel(experience) {
-    // Formula: level = floor(experience / baseExperience)
-    return Math.floor(experience / config.levels.baseExperience) + 1;
+    return getLevel(experience);
 }
 
 // Calculate experience needed for next level
 function experienceForNextLevel(level) {
-    // Using the config baseExperience value (2000) multiplied by level
-    return level * config.levels.baseExperience;
+    // Each level requires 25 messages
+    return (level + 1) * 25;
 }
 
 // Calculate tokens earned per message based on level
@@ -118,7 +131,7 @@ async function handleMessage(message, client) {
     // Update user data
     userData.lastMessageTime = now;
     userData.messagesCount++;
-    userData.experience += 20;
+    userData.experience += 1;
     userData.tokens += tokensEarned;
     userData.totalTokensEarned += tokensEarned;
 

@@ -57,7 +57,7 @@ async function monitorAndAssignWL(client, config) {
     }
 
     // Get the whitelist role
-    const whitelistRoleId = '1438228532546240614';
+    const whitelistRoleId = '1438228652579094679';
     const whitelistRole = guild.roles.cache.get(whitelistRoleId);
     if (!whitelistRole) {
         console.error('Whitelist role not found');

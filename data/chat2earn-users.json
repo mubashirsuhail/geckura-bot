@@ -1,12 +1,12 @@
 {
   "1040680172472516729": {
     "userId": "1040680172472516729",
-    "tokens": 106,
+    "tokens": 596,
     "level": 6,
-    "experience": 140,
-    "messagesCount": 3,
-    "lastMessageTime": 1763823548235,
-    "totalTokensEarned": 106,
+    "experience": 165,
+    "messagesCount": 183,
+    "lastMessageTime": 1768409141399,
+    "totalTokensEarned": 596,
     "achievements": [
       "first_message"
     ],
@@ -16,8 +16,16 @@
     "lastDailyClaim": 1763666354728,
     "recentTokens": [
       {
-        "time": 1763823548235,
-        "amount": 2
+        "time": 1768409081723,
+        "amount": 3
+      },
+      {
+        "time": 1768409108922,
+        "amount": 3
+      },
+      {
+        "time": 1768409141399,
+        "amount": 3
       }
     ]
   },
@@ -65,6 +73,1238 @@
       },
       {
         "time": 1763823382702,
+        "amount": 2
+      }
+    ]
+  },
+  "1364061845266370581": {
+    "userId": "1364061845266370581",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1767115684304,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767115684304,
+        "amount": 2
+      }
+    ]
+  },
+  "1129698628987006977": {
+    "userId": "1129698628987006977",
+    "tokens": 94,
+    "level": 1,
+    "experience": 47,
+    "messagesCount": 47,
+    "lastMessageTime": 1768320795616,
+    "totalTokensEarned": 94,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768320795616,
+        "amount": 2
+      }
+    ]
+  },
+  "1318809344988549181": {
+    "userId": "1318809344988549181",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1767532619458,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767532617580,
+        "amount": 2
+      },
+      {
+        "time": 1767532619458,
+        "amount": 2
+      }
+    ]
+  },
+  "999476263561478255": {
+    "userId": "999476263561478255",
+    "tokens": 56,
+    "level": 1,
+    "experience": 28,
+    "messagesCount": 28,
+    "lastMessageTime": 1768408072885,
+    "totalTokensEarned": 56,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768408072885,
+        "amount": 2
+      }
+    ]
+  },
+  "1163034320957603940": {
+    "userId": "1163034320957603940",
+    "tokens": 141,
+    "level": 1,
+    "experience": 49,
+    "messagesCount": 49,
+    "lastMessageTime": 1768409070299,
+    "totalTokensEarned": 141,
+    "achievements": [],
+    "dailyStreak": 3,
+    "lastDailyClaim": 1768408646428,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768409070299,
+        "amount": 2
+      }
+    ]
+  },
+  "744169183155060768": {
+    "userId": "744169183155060768",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1767533580179,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767533580179,
+        "amount": 2
+      }
+    ]
+  },
+  "1156550102341652563": {
+    "userId": "1156550102341652563",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1767533681251,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767533645993,
+        "amount": 2
+      },
+      {
+        "time": 1767533681251,
+        "amount": 2
+      }
+    ]
+  },
+  "887346640053215252": {
+    "userId": "887346640053215252",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1768408573679,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768408573679,
+        "amount": 2
+      }
+    ]
+  },
+  "1371923285939458158": {
+    "userId": "1371923285939458158",
+    "tokens": 6,
+    "level": 1,
+    "experience": 3,
+    "messagesCount": 3,
+    "lastMessageTime": 1767541689457,
+    "totalTokensEarned": 6,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767541689457,
+        "amount": 2
+      }
+    ]
+  },
+  "929375072471363615": {
+    "userId": "929375072471363615",
+    "tokens": 28,
+    "level": 1,
+    "experience": 14,
+    "messagesCount": 14,
+    "lastMessageTime": 1767808008245,
+    "totalTokensEarned": 28,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767807973348,
+        "amount": 2
+      },
+      {
+        "time": 1767808008245,
+        "amount": 2
+      }
+    ]
+  },
+  "894692911474675753": {
+    "userId": "894692911474675753",
+    "tokens": 12,
+    "level": 1,
+    "experience": 6,
+    "messagesCount": 6,
+    "lastMessageTime": 1767893413158,
+    "totalTokensEarned": 12,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767893374921,
+        "amount": 2
+      },
+      {
+        "time": 1767893376975,
+        "amount": 2
+      },
+      {
+        "time": 1767893413158,
+        "amount": 2
+      }
+    ]
+  },
+  "1442114426386907168": {
+    "userId": "1442114426386907168",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1767722576737,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767722523530,
+        "amount": 2
+      },
+      {
+        "time": 1767722576737,
+        "amount": 2
+      }
+    ]
+  },
+  "1415009318821957706": {
+    "userId": "1415009318821957706",
+    "tokens": 68,
+    "level": 1,
+    "experience": 34,
+    "messagesCount": 34,
+    "lastMessageTime": 1768407966850,
+    "totalTokensEarned": 68,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768407966850,
+        "amount": 2
+      }
+    ]
+  },
+  "977203200232919051": {
+    "userId": "977203200232919051",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1767808184547,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767808184547,
+        "amount": 2
+      }
+    ]
+  },
+  "1030490498877632522": {
+    "userId": "1030490498877632522",
+    "tokens": 10,
+    "level": 1,
+    "experience": 5,
+    "messagesCount": 5,
+    "lastMessageTime": 1767809592123,
+    "totalTokensEarned": 10,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767809592123,
+        "amount": 2
+      }
+    ]
+  },
+  "1001530286590402681": {
+    "userId": "1001530286590402681",
+    "tokens": 76,
+    "level": 1,
+    "experience": 38,
+    "messagesCount": 38,
+    "lastMessageTime": 1767893349679,
+    "totalTokensEarned": 76,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767893315111,
+        "amount": 2
+      },
+      {
+        "time": 1767893320152,
+        "amount": 2
+      },
+      {
+        "time": 1767893334465,
+        "amount": 2
+      },
+      {
+        "time": 1767893349679,
+        "amount": 2
+      }
+    ]
+  },
+  "392065134480195585": {
+    "userId": "392065134480195585",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1767890671727,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767890671727,
+        "amount": 2
+      }
+    ]
+  },
+  "457206555008303104": {
+    "userId": "457206555008303104",
+    "tokens": 8,
+    "level": 1,
+    "experience": 4,
+    "messagesCount": 4,
+    "lastMessageTime": 1768324801312,
+    "totalTokensEarned": 8,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768324801312,
+        "amount": 2
+      }
+    ]
+  },
+  "892673988843675658": {
+    "userId": "892673988843675658",
+    "tokens": 66,
+    "level": 1,
+    "experience": 33,
+    "messagesCount": 33,
+    "lastMessageTime": 1767967894498,
+    "totalTokensEarned": 66,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767967867219,
+        "amount": 2
+      },
+      {
+        "time": 1767967894498,
+        "amount": 2
+      }
+    ]
+  },
+  "1432482985935896577": {
+    "userId": "1432482985935896577",
+    "tokens": 44,
+    "level": 1,
+    "experience": 22,
+    "messagesCount": 22,
+    "lastMessageTime": 1767968748749,
+    "totalTokensEarned": 44,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767968692479,
+        "amount": 2
+      },
+      {
+        "time": 1767968711430,
+        "amount": 2
+      },
+      {
+        "time": 1767968717712,
+        "amount": 2
+      },
+      {
+        "time": 1767968739322,
+        "amount": 2
+      },
+      {
+        "time": 1767968748749,
+        "amount": 2
+      }
+    ]
+  },
+  "864159562172596254": {
+    "userId": "864159562172596254",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1767968956953,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767968956953,
+        "amount": 2
+      }
+    ]
+  },
+  "749689167650357399": {
+    "userId": "749689167650357399",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1767966327932,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767966327932,
+        "amount": 2
+      }
+    ]
+  },
+  "1005848764277329981": {
+    "userId": "1005848764277329981",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1767966600008,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767966600008,
+        "amount": 2
+      }
+    ]
+  },
+  "1056991185383731341": {
+    "userId": "1056991185383731341",
+    "tokens": 8,
+    "level": 1,
+    "experience": 4,
+    "messagesCount": 4,
+    "lastMessageTime": 1767969296156,
+    "totalTokensEarned": 8,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767969270507,
+        "amount": 2
+      },
+      {
+        "time": 1767969296156,
+        "amount": 2
+      }
+    ]
+  },
+  "940609428909092866": {
+    "userId": "940609428909092866",
+    "tokens": 22,
+    "level": 1,
+    "experience": 11,
+    "messagesCount": 11,
+    "lastMessageTime": 1768321072908,
+    "totalTokensEarned": 22,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768321021151,
+        "amount": 2
+      },
+      {
+        "time": 1768321072908,
+        "amount": 2
+      }
+    ]
+  },
+  "702230269939155176": {
+    "userId": "702230269939155176",
+    "tokens": 10,
+    "level": 1,
+    "experience": 5,
+    "messagesCount": 5,
+    "lastMessageTime": 1768234285134,
+    "totalTokensEarned": 10,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768234285134,
+        "amount": 2
+      }
+    ]
+  },
+  "1209804317717172264": {
+    "userId": "1209804317717172264",
+    "tokens": 6,
+    "level": 1,
+    "experience": 3,
+    "messagesCount": 3,
+    "lastMessageTime": 1767969320452,
+    "totalTokensEarned": 6,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1767969320452,
+        "amount": 2
+      }
+    ]
+  },
+  "799627825937645648": {
+    "userId": "799627825937645648",
+    "tokens": 6,
+    "level": 1,
+    "experience": 3,
+    "messagesCount": 3,
+    "lastMessageTime": 1768063164834,
+    "totalTokensEarned": 6,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768063133852,
+        "amount": 2
+      },
+      {
+        "time": 1768063164834,
+        "amount": 2
+      }
+    ]
+  },
+  "1075659168851185714": {
+    "userId": "1075659168851185714",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768063315629,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768063315629,
+        "amount": 2
+      }
+    ]
+  },
+  "602804571567554590": {
+    "userId": "602804571567554590",
+    "tokens": 8,
+    "level": 1,
+    "experience": 4,
+    "messagesCount": 4,
+    "lastMessageTime": 1768234629985,
+    "totalTokensEarned": 8,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768234629985,
+        "amount": 2
+      }
+    ]
+  },
+  "912658404642807809": {
+    "userId": "912658404642807809",
+    "tokens": 10,
+    "level": 1,
+    "experience": 5,
+    "messagesCount": 5,
+    "lastMessageTime": 1768234779614,
+    "totalTokensEarned": 10,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768234779614,
+        "amount": 2
+      }
+    ]
+  },
+  "825994417286152192": {
+    "userId": "825994417286152192",
+    "tokens": 6,
+    "level": 1,
+    "experience": 3,
+    "messagesCount": 3,
+    "lastMessageTime": 1768234793126,
+    "totalTokensEarned": 6,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768234793126,
+        "amount": 2
+      }
+    ]
+  },
+  "1339801212761149470": {
+    "userId": "1339801212761149470",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768234612871,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768234612871,
+        "amount": 2
+      }
+    ]
+  },
+  "916975403636228136": {
+    "userId": "916975403636228136",
+    "tokens": 10,
+    "level": 1,
+    "experience": 5,
+    "messagesCount": 5,
+    "lastMessageTime": 1768234836716,
+    "totalTokensEarned": 10,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768234806212,
+        "amount": 2
+      },
+      {
+        "time": 1768234836716,
+        "amount": 2
+      }
+    ]
+  },
+  "1138561207830327396": {
+    "userId": "1138561207830327396",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768234791096,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768234791096,
+        "amount": 2
+      }
+    ]
+  },
+  "553843903430656013": {
+    "userId": "553843903430656013",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1768320844933,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768320844933,
+        "amount": 2
+      }
+    ]
+  },
+  "936321758598938686": {
+    "userId": "936321758598938686",
+    "tokens": 10,
+    "level": 1,
+    "experience": 5,
+    "messagesCount": 5,
+    "lastMessageTime": 1768321124833,
+    "totalTokensEarned": 10,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768321104919,
+        "amount": 2
+      },
+      {
+        "time": 1768321124833,
+        "amount": 2
+      }
+    ]
+  },
+  "737788854618161233": {
+    "userId": "737788854618161233",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1768321278640,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768321278640,
+        "amount": 2
+      }
+    ]
+  },
+  "484225558906011648": {
+    "userId": "484225558906011648",
+    "tokens": 10,
+    "level": 1,
+    "experience": 5,
+    "messagesCount": 5,
+    "lastMessageTime": 1768408066379,
+    "totalTokensEarned": 10,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768408066379,
+        "amount": 2
+      }
+    ]
+  },
+  "458086273492451329": {
+    "userId": "458086273492451329",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1768321485576,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768321485576,
+        "amount": 2
+      }
+    ]
+  },
+  "577845533142548511": {
+    "userId": "577845533142548511",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1768394582312,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768394582312,
+        "amount": 2
+      }
+    ]
+  },
+  "1257393650602741843": {
+    "userId": "1257393650602741843",
+    "tokens": 6,
+    "level": 1,
+    "experience": 3,
+    "messagesCount": 3,
+    "lastMessageTime": 1768408469645,
+    "totalTokensEarned": 6,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768408469645,
+        "amount": 2
+      }
+    ]
+  },
+  "864521579006525461": {
+    "userId": "864521579006525461",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768323185473,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768323185473,
+        "amount": 2
+      }
+    ]
+  },
+  "401839555327688704": {
+    "userId": "401839555327688704",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768323369390,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768323369390,
+        "amount": 2
+      }
+    ]
+  },
+  "1003445673947058306": {
+    "userId": "1003445673947058306",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768323371459,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768323371459,
+        "amount": 2
+      }
+    ]
+  },
+  "693133429805678692": {
+    "userId": "693133429805678692",
+    "tokens": 6,
+    "level": 1,
+    "experience": 3,
+    "messagesCount": 3,
+    "lastMessageTime": 1768394623905,
+    "totalTokensEarned": 6,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768394576879,
+        "amount": 2
+      },
+      {
+        "time": 1768394581248,
+        "amount": 2
+      },
+      {
+        "time": 1768394623905,
+        "amount": 2
+      }
+    ]
+  },
+  "1258740965414408254": {
+    "userId": "1258740965414408254",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768394686533,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768394686533,
+        "amount": 2
+      }
+    ]
+  },
+  "833875488795263028": {
+    "userId": "833875488795263028",
+    "tokens": 14,
+    "level": 1,
+    "experience": 7,
+    "messagesCount": 7,
+    "lastMessageTime": 1768409125176,
+    "totalTokensEarned": 14,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768409125176,
+        "amount": 2
+      }
+    ]
+  },
+  "1162548547024060526": {
+    "userId": "1162548547024060526",
+    "tokens": 10,
+    "level": 1,
+    "experience": 5,
+    "messagesCount": 5,
+    "lastMessageTime": 1768408464198,
+    "totalTokensEarned": 10,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768408446143,
+        "amount": 2
+      },
+      {
+        "time": 1768408464198,
+        "amount": 2
+      }
+    ]
+  },
+  "673155835660075029": {
+    "userId": "673155835660075029",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768408454271,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768408454271,
+        "amount": 2
+      }
+    ]
+  },
+  "996511003070189698": {
+    "userId": "996511003070189698",
+    "tokens": 4,
+    "level": 1,
+    "experience": 2,
+    "messagesCount": 2,
+    "lastMessageTime": 1768409010536,
+    "totalTokensEarned": 4,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768409010536,
+        "amount": 2
+      }
+    ]
+  },
+  "755467512254300251": {
+    "userId": "755467512254300251",
+    "tokens": 2,
+    "level": 1,
+    "experience": 1,
+    "messagesCount": 1,
+    "lastMessageTime": 1768409133584,
+    "totalTokensEarned": 2,
+    "achievements": [],
+    "dailyStreak": 0,
+    "lastDailyClaim": 0,
+    "weeklyStreak": 0,
+    "lastWeeklyClaim": 0,
+    "monthlyStreak": 0,
+    "lastMonthlyClaim": 0,
+    "recentTokens": [
+      {
+        "time": 1768409133584,
         "amount": 2
       }
     ]

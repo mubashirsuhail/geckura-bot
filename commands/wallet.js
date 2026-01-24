@@ -20,14 +20,14 @@ function readWallets() {
             // Create default structure if file doesn't exist
             const defaultWallets = {
                 whitelist: [],
-                og: []
+                airdrop: []
             };
             fs.writeFileSync(walletsPath, JSON.stringify(defaultWallets, null, 2));
             return defaultWallets;
         }
     } catch (error) {
         console.error('Error reading wallets:', error);
-        return { whitelist: [], og: [] };
+        return { whitelist: [], airdrop: [] };
     }
 }
 
@@ -50,7 +50,7 @@ module.exports = {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('submit')
-                .setDescription('Submit your wallet address for Whitelist or OG status')
+                .setDescription('Submit your wallet address for Whitelist or Airdrop Role')
                 .addStringOption(option =>
                     option
                         .setName('type')
@@ -58,7 +58,7 @@ module.exports = {
                         .setRequired(true)
                         .addChoices(
                             { name: 'Whitelist', value: 'whitelist' },
-                            { name: 'OG', value: 'og' }
+                            { name: 'Airdrop Role', value: 'airdrop' }
                         )
                 )
         )
@@ -80,7 +80,7 @@ module.exports = {
 
             if (!hasRole) {
                 await interaction.reply({
-                    content: `⚠️ **Access Denied:** You need the ${walletType === 'whitelist' ? 'Whitelist' : 'OG'} role to submit a wallet for this status type.\n\nIf you believe you should have this role, please contact a server administrator.`,
+                    content: `⚠️ **Access Denied:** You need the ${walletType === 'whitelist' ? 'Whitelist' : 'Airdrop'} role to submit a wallet for this status type.\n\nIf you believe you should have this role, please contact a server administrator.`,
                     ephemeral: true
                 });
                 return;
@@ -89,7 +89,7 @@ module.exports = {
             // Create modal for wallet submission
             const modal = new ModalBuilder()
                 .setCustomId(`wallet-submit-${walletType}`)
-                .setTitle(`${walletType === 'whitelist' ? 'Whitelist' : 'OG'} Wallet Submission`);
+                .setTitle(`${walletType === 'whitelist' ? 'Whitelist' : 'Airdrop'} Wallet Submission`);
 
             // Add text input for wallet address
             const walletInput = new TextInputBuilder()
@@ -113,9 +113,9 @@ module.exports = {
 
             // Check if user has submitted any wallets
             const wlEntry = wallets.whitelist.find(entry => entry.discordId === interaction.user.id);
-            const ogEntry = wallets.og.find(entry => entry.discordId === interaction.user.id);
+            const airdropEntry = wallets.airdrop.find(entry => entry.discordId === interaction.user.id);
 
-            if (!wlEntry && !ogEntry) {
+            if (!wlEntry && !airdropEntry) {
                 await interaction.reply({
                     content: 'You have not submitted any wallet addresses yet. Use `/wallet submit` to submit your wallet.',
                     ephemeral: true
@@ -141,12 +141,12 @@ Submitted: ${new Date(wlEntry.timestamp).toLocaleString()}`,
                 });
             }
 
-            // Add OG wallet if exists
-            if (ogEntry) {
+            // Add Airdrop wallet if exists
+            if (airdropEntry) {
                 embed.addFields({
-                    name: '👑 OG Wallet',
-                    value: `Address: \`${ogEntry.walletAddress}\`
-Submitted: ${new Date(ogEntry.timestamp).toLocaleString()}`,
+                    name: '🪂 Airdrop Role Wallet',
+                    value: `Address: \`${airdropEntry.walletAddress}\`
+Submitted: ${new Date(airdropEntry.timestamp).toLocaleString()}`,
                     inline: false
                 });
             }
@@ -206,8 +206,8 @@ Submitted: ${new Date(ogEntry.timestamp).toLocaleString()}`,
 
             // Save wallets
             if (writeWallets(wallets)) {
-                const roleEmoji = walletType === 'whitelist' ? '🔑' : '👑';
-                const roleName = walletType === 'whitelist' ? 'Whitelist' : 'OG';
+                const roleEmoji = walletType === 'whitelist' ? '🔑' : '🪂';
+                const roleName = walletType === 'whitelist' ? 'Whitelist' : 'Airdrop Role';
 
                 // Create success embed
                 const successEmbed = new EmbedBuilder()
@@ -224,7 +224,7 @@ Submitted: ${new Date(ogEntry.timestamp).toLocaleString()}`,
                             name: 'Next Steps',
                             value: walletType === 'whitelist' 
                                 ? 'If you qualify for Whitelist status, you will be automatically assigned the Whitelist role within the next hour. You will receive a DM notification when this happens.'
-                                : 'Your OG status will be verified based on our criteria (early member, server booster, staff member, etc.). If approved, you will be assigned the OG role within the next hour and receive a DM notification.',
+                                : 'Your Airdrop eligibility will be verified based on your activity and contribution to the community. If approved, you will be included in the airdrop and receive a DM notification.',
                             inline: false
                         }
                     )

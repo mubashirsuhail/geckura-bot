@@ -32,8 +32,8 @@ module.exports = {
 
     // Calculate experience needed for next level
     experienceForNextLevel(level) {
-        // Using the config baseExperience value (2000) multiplied by level
-        return level * 2000;
+        // Each level requires 25 messages
+        return (level + 1) * 25;
     },
 
     // Calculate tokens earned per message based on level
