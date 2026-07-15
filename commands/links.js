@@ -18,22 +18,42 @@ module.exports = {
         embed.addFields(
             {
                 name: '🌿 Discord Lair',
-                value: '[Join our community](https://discord.gg/yChGaA6HmJ)',
+                value: `[Join our community](${config.links.discord || 'https://discord.gg/yChGaA6HmJ'})`,
                 inline: false
             },
             {
                 name: '🌐 Sacred Web Portal',
-                value: 'https://www.geckura.app/',
+                value: config.links.website || 'https://geckura.app/',
+                inline: false
+            },
+            {
+                name: '🎁 Mystery Box Portal',
+                value: config.links.mysteryBox || 'https://mysterybox.geckura.app/',
+                inline: false
+            },
+            {
+                name: '🎁 Geckura Mystery Box',
+                value: `[Open Geckura Mystery Box](${config.links.geckuraMysteryBox || 'https://mysterybox.geckura.app/geckura'})`,
+                inline: false
+            },
+            {
+                name: '🪂 Airdrop Portal',
+                value: `[Claim Your Airdrop](${config.links.airdrop || 'http://airdrop.geckura.app/'})`,
+                inline: false
+            },
+            {
+                name: '🖼️ Mint',
+                value: '🔜 **Coming Soon** — Stay tuned for the official mint announcement!',
                 inline: false
             },
             {
                 name: '🌀 X Transmission Hub',
-                value: '[@Geckura](https://x.com/Geckura)',
+                value: `[@Geckura](${config.links.twitter || 'https://x.com/Geckura'})`,
                 inline: false
             },
             {
                 name: '🧪 Geckura Elixir',
-                value: 'https://magiceden.io/marketplace/geckura_elixir',
+                value: config.links.elixirMarket || 'https://magiceden.io/marketplace/geckura_elixir',
                 inline: false
             }
         );

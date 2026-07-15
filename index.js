@@ -2,7 +2,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits, PermissionFlagsBits } = require('discord.js');
 require('dotenv').config();
-console.log("Discord token loaded:", process.env.DISCORD_TOKEN ? "Yes" : "No");
 const config = require('./config.json');
 
 // Load chat2earn handler
@@ -11,15 +10,22 @@ const { handleMessage } = require('./utils/chat2earn-handler');
 // Load link filter
 const { execute: handleLinkFilter } = require('./utils/link-filter');
 
+// Load companion handler
+const { handleCompanionMessage, readCompanionConfig } = require('./utils/companion-handler');
+
 // Create a new client instance
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildInvites
     ]
 });
+
+// Cache to hold invite usage counts. Key: guildId, Value: Map of invite code -> uses
+const guildInvites = new Map();
 
 // Load commands
 client.commands = new Collection();
@@ -55,7 +61,7 @@ const { sendWelcomeMessage } = require('./utils/welcome-handler');
 const { handleRoleUpgrade } = require('./utils/role-upgrade-handler');
 
 // Event: Bot is ready
-client.once('ready', () => {
+client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setActivity('GeckAura — Where Innovation Meets Utility!', { type: 'WATCHING' });
     
@@ -66,15 +72,231 @@ client.once('ready', () => {
     // Start OG monitoring
     startOGMonitoring(client, config);
     console.log('OG monitoring system started.');
+
+    // Cache invites for all guilds the bot is in
+    client.guilds.cache.forEach(async guild => {
+        try {
+            if (guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild)) {
+                const invites = await guild.invites.fetch();
+                const codeUses = new Map();
+                invites.forEach(inv => codeUses.set(inv.code, inv.uses));
+                guildInvites.set(guild.id, codeUses);
+                console.log(`Cached ${invites.size} invites for guild: ${guild.name}`);
+            } else {
+                console.log(`Lacking ManageGuild permission to cache invites in: ${guild.name}`);
+            }
+        } catch (error) {
+            console.error(`Error caching invites for guild ${guild.name}:`, error);
+        }
+    });
+
+    // Start 2-hour Safety Reminder interval (2 * 60 * 60 * 1000 ms)
+    setInterval(async () => {
+        const generalChannel = client.channels.cache.find(c => 
+            c.name === 'general' || c.name === 'general-chat' || c.name === 'chat' || c.name === 'lounge'
+        );
+        if (generalChannel) {
+            try {
+                const safetyEmbed = {
+                    title: '🛡️ GECKURA OFFICIAL SAFETY REMINDER 🦎',
+                    description: 'Please read carefully to keep your assets secure:',
+                    color: 0x9D4EDD,
+                    fields: [
+                        {
+                            name: '🚫 No Direct Messages',
+                            value: 'Team members and founders will **NEVER** DM you first. If someone DMs you claiming to be support, staff, or a bot, it is a scam. Report them immediately.',
+                            inline: false
+                        },
+                        {
+                            name: '🌐 Official Links Only',
+                            value: '• Website: https://geckura.app/\n• Mystery Box: https://mysterybox.geckura.app/\n• Magic Eden: https://magiceden.io/marketplace/geckura_elixir',
+                            inline: false
+                        },
+                        {
+                            name: '🔒 Guard Your Seeds',
+                            value: 'Never enter your recovery phrase or private keys on any site. Our official portals will only ask you to connect your Solana wallet.',
+                            inline: false
+                        }
+                    ],
+                    timestamp: new Date().toISOString(),
+                    footer: {
+                        text: 'Geckura Safety System — Turning Chaos into Flow',
+                        icon_url: client.user.displayAvatarURL()
+                    }
+                };
+                await generalChannel.send({ embeds: [safetyEmbed] });
+                console.log('Safety reminder posted in general channel.');
+            } catch (error) {
+                console.error('Error posting safety reminder:', error);
+            }
+        }
+    }, 2 * 60 * 60 * 1000);
+    console.log('Safety reminder interval system active (every 2 hours).');
 });
 
-// Event: Guild member add (for welcome messages)
+// Event: Guild member add (for welcome messages, impersonation protection, and invite tracking)
 client.on('guildMemberAdd', async member => {
-    // Don't send welcome message immediately
+    // Impersonation check
+    await checkImpersonation(member);
+
+    // Track invite usage to award tokens
+    try {
+        const guild = member.guild;
+        if (guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild)) {
+            const currentInvites = await guild.invites.fetch();
+            const cachedInvites = guildInvites.get(guild.id) || new Map();
+            
+            // Find which invite's usage count increased
+            const usedInvite = currentInvites.find(inv => {
+                const cachedUses = cachedInvites.get(inv.code) || 0;
+                return inv.uses > cachedUses;
+            });
+
+            if (usedInvite && usedInvite.inviter) {
+                const inviter = usedInvite.inviter;
+                
+                // Exclude self-invites and bot inviters
+                if (inviter.id !== member.id && !inviter.bot) {
+                    const { getUserData, saveUserData } = require('./utils/chat2earn-handler');
+                    
+                    // Reward the inviter with 250 $GECKURA
+                    const inviterData = getUserData(inviter.id);
+                    inviterData.tokens += 250;
+                    inviterData.totalTokensEarned += 250;
+                    saveUserData(inviter.id, inviterData);
+                    
+                    console.log(`🎉 Invite Tracker: ${inviter.tag} invited ${member.user.tag} using code ${usedInvite.code}. Rewarded 250 $GECKURA.`);
+                    
+                    // Save invite mapping to track if they leave later
+                    try {
+                        const mappingPath = path.join(__dirname, 'data', 'invited-members.json');
+                        let mapping = {};
+                        if (fs.existsSync(mappingPath)) {
+                            mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf8'));
+                        }
+                        mapping[member.id] = inviter.id;
+                        fs.writeFileSync(mappingPath, JSON.stringify(mapping, null, 2));
+                    } catch (mapErr) {
+                        console.error('Error saving invite mapping:', mapErr);
+                    }
+                    
+                    // DM the inviter about their reward
+                    try {
+                        const rewardEmbed = {
+                            title: '🎉 Invite Reward Received!',
+                            description: `Thank you for inviting **${member.user.username}** to our community!`,
+                            color: 0x00FF99,
+                            fields: [
+                                { name: 'Reward Amount', value: '**250 $GECKURA** tokens', inline: true },
+                                { name: 'New Balance', value: `\`${inviterData.tokens} $GECKURA\``, inline: true }
+                            ],
+                            timestamp: new Date().toISOString(),
+                            footer: {
+                                text: 'Geckura — Turning Chaos into Flow',
+                                icon_url: client.user.displayAvatarURL()
+                            }
+                        };
+                        await inviter.send({ embeds: [rewardEmbed] });
+                    } catch (dmErr) {
+                        console.log(`Could not DM invite reward info to ${inviter.tag}`);
+                    }
+                }
+            }
+
+            // Update cached invites for the guild
+            const updatedCache = new Map();
+            currentInvites.forEach(inv => updatedCache.set(inv.code, inv.uses));
+            guildInvites.set(guild.id, updatedCache);
+        }
+    } catch (inviteError) {
+        console.error('Error tracking invite on guildMemberAdd:', inviteError);
+    }
 });
 
-// Event: Guild member update (for role upgrades)
+// Event: Invite created
+client.on('inviteCreate', async invite => {
+    try {
+        const guildId = invite.guild.id;
+        if (!guildInvites.has(guildId)) {
+            guildInvites.set(guildId, new Map());
+        }
+        guildInvites.get(guildId).set(invite.code, invite.uses);
+        console.log(`Cached new invite code ${invite.code} created for guild ${invite.guild.name}`);
+    } catch (e) {
+        console.error('Error in inviteCreate:', e);
+    }
+});
+
+// Event: Invite deleted
+client.on('inviteDelete', invite => {
+    try {
+        const guildId = invite.guild.id;
+        if (guildInvites.has(guildId)) {
+            guildInvites.get(guildId).delete(invite.code);
+            console.log(`Removed deleted invite code ${invite.code} from cache of guild ${invite.guild.name}`);
+        }
+    } catch (e) {
+        console.error('Error in inviteDelete:', e);
+    }
+});
+
+// Event: Guild member leave (charge back invite points if they leave)
+client.on('guildMemberRemove', async member => {
+    try {
+        const mappingPath = path.join(__dirname, 'data', 'invited-members.json');
+        if (fs.existsSync(mappingPath)) {
+            const mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf8'));
+            const inviterId = mapping[member.id];
+            
+            if (inviterId) {
+                const { getUserData, saveUserData } = require('./utils/chat2earn-handler');
+                
+                // Deduct 250 $GECKURA from the inviter
+                const inviterData = getUserData(inviterId);
+                inviterData.tokens = Math.max(0, inviterData.tokens - 250);
+                saveUserData(inviterId, inviterData);
+                
+                console.log(`📉 Invite Chargeback: ${member.user.tag} left the server. Deducted 250 $GECKURA from inviter ${inviterId}.`);
+                
+                // Try to notify the inviter about the chargeback
+                try {
+                    const inviterUser = await client.users.fetch(inviterId);
+                    if (inviterUser) {
+                        const chargebackEmbed = {
+                            title: '📉 Invite Reward Reversed',
+                            description: `The member you invited, **${member.user.username}**, has left the server. As a result, the reward points have been reversed.`,
+                            color: 0xFF5555,
+                            fields: [
+                                { name: 'Deducted Amount', value: '**-250 $GECKURA** tokens', inline: true },
+                                { name: 'Remaining Balance', value: `\`${inviterData.tokens} $GECKURA\``, inline: true }
+                            ],
+                            timestamp: new Date().toISOString(),
+                            footer: {
+                                text: 'Geckura — Turning Chaos into Flow',
+                                icon_url: client.user.displayAvatarURL()
+                            }
+                        };
+                        await inviterUser.send({ embeds: [chargebackEmbed] });
+                    }
+                } catch (dmErr) {
+                    console.log(`Could not send chargeback notice DM to inviter: ${inviterId}`);
+                }
+
+                // Delete member from mapping and save
+                delete mapping[member.id];
+                fs.writeFileSync(mappingPath, JSON.stringify(mapping, null, 2));
+            }
+        }
+    } catch (error) {
+        console.error('Error handling guildMemberRemove invite chargeback:', error);
+    }
+});
+
+// Event: Guild member update (for role upgrades and impersonation check)
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
+    // Impersonation check
+    await checkImpersonation(newMember);
+
     // Check if member gained the welcome role
     const welcomeRoleId = '1438176728651534356';
     
@@ -91,15 +313,40 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
 client.on('messageCreate', async message => {
     // Ignore messages from bots
     if (message.author.bot) return;
+
+    // Handle Direct Messages (DMs) separately
+    if (!message.guild) {
+        const companionConfig = readCompanionConfig();
+        if (companionConfig.enabled) {
+            handleCompanionMessage(message, client);
+        }
+        return;
+    }
+
+    // Spam check (applies only to server messages from non-admins/non-moderators)
+    const bypassSpamCheck = message.member.permissions.has(PermissionFlagsBits.Administrator) ||
+                            message.member.permissions.has(PermissionFlagsBits.ManageMessages);
     
+    if (!bypassSpamCheck && isSpamming(message.author.id)) {
+        try {
+            await message.delete();
+            const spamWarning = await message.channel.send(`⚠️ ${message.author}, **please avoid spamming!** Slow down your messages to keep the server clean.`);
+            setTimeout(() => spamWarning.delete().catch(() => {}), 5000);
+        } catch (e) {
+            console.error('Error handling spam message deletion:', e);
+        }
+        return;
+    }
+
     // Process chat2earn rewards
     handleMessage(message, client);
     
-    // Check if user has admin permissions
-    const isAdmin = message.member.permissions.has(PermissionFlagsBits.Administrator);
+    // Check if user has admin/moderator permissions to bypass link filters
+    const bypassLinkFilter = message.member.permissions.has(PermissionFlagsBits.Administrator) ||
+                             message.member.permissions.has(PermissionFlagsBits.ManageMessages);
     
-    // If user is not an admin, check for links
-    if (!isAdmin) {
+    // If user cannot bypass, check for links
+    if (!bypassLinkFilter) {
         // Regular expression to detect URLs
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         const containsUrl = urlRegex.test(message.content);
@@ -142,10 +389,11 @@ client.on('messageCreate', async message => {
                 await message.channel.send({ embeds: [alertEmbed] });
                 
                 // Timeout the user for 48 hours (48 * 60 * 60 * 1000 milliseconds)
-                // Check if bot has permission to timeout members
+                // Check if bot has permission to timeout members and member is moderatable
                 if (!message.guild.members.me.permissions.has('MODERATE_MEMBERS')) {
                     console.error(`Bot doesn't have permission to timeout members in server ${message.guild.name}`);
-                    // Still try to send the alert even if we can't timeout
+                } else if (!message.member.moderatable) {
+                    console.log(`Cannot timeout ${message.author.tag} due to role hierarchy/permissions.`);
                 } else {
                     await message.member.timeout(48 * 60 * 60 * 1000, 'Posting links without admin permission');
                 }
@@ -187,6 +435,17 @@ client.on('messageCreate', async message => {
             } catch (error) {
                 console.error('Error handling link violation:', error);
             }
+        }
+    }
+
+    // AI Companion check for server channels
+    const companionConfig = readCompanionConfig();
+    if (companionConfig.enabled) {
+        const isInCompanionChannel = companionConfig.companionChannelId && message.channel.id === companionConfig.companionChannelId;
+        const isBotMentioned = message.mentions.has(client.user) && !message.mentions.everyone;
+        
+        if (isInCompanionChannel || isBotMentioned) {
+            handleCompanionMessage(message, client);
         }
     }
 });
@@ -331,6 +590,26 @@ client.on('interactionCreate', async interaction => {
                 });
             }
         }
+        // Check if this is a collection PFP button
+        else if (interaction.customId.startsWith('pfp_')) {
+            try {
+                const command = client.commands.get('collection');
+                if (command && command.handleButton) {
+                    await command.handleButton(interaction, client, config);
+                } else {
+                    await interaction.reply({
+                        content: '⚠️ **Error:** Could not find the collection button handler. Please try again later.',
+                        ephemeral: true
+                    });
+                }
+            } catch (error) {
+                console.error('Error handling collection button:', error);
+                await interaction.reply({
+                    content: '⚠️ **Error:** There was an error processing your selection. Please try again later.',
+                    ephemeral: true
+                });
+            }
+        }
     }
     // Handle modal submissions
     else if (interaction.isModalSubmit()) {
@@ -357,13 +636,146 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-// Log in to Discord with your client's token
-console.log("Attempting to log in to Discord with token...");
-console.log("Token (first 10 chars):", process.env.DISCORD_TOKEN ? process.env.DISCORD_TOKEN.substring(0, 10) + "..." : "undefined");
-console.log("Token length:", process.env.DISCORD_TOKEN ? process.env.DISCORD_TOKEN.length : "undefined");
+// Global error handlers to prevent full process crash
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error.message);
+    console.error(error.stack);
+});
 
-try {
-    client.login(process.env.DISCORD_TOKEN);
-} catch (error) {
-    console.error("Error during login:", error.message);
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// Log in to Discord with your client's token
+if (!process.env.DISCORD_TOKEN || process.env.DISCORD_TOKEN === 'YOUR_NEW_TOKEN_HERE') {
+    console.error('FATAL: No valid DISCORD_TOKEN found in .env. Please set your bot token.');
+    process.exit(1);
 }
+
+client.login(process.env.DISCORD_TOKEN).catch(error => {
+    console.error('Failed to log in to Discord:', error.message);
+    process.exit(1);
+});
+
+// ==========================================
+// SECURITY & MODERATION HELPER FUNCTIONS
+// ==========================================
+
+// Impersonation Guard Helper
+async function checkImpersonation(member) {
+    if (!member || !member.guild || member.user.bot) return;
+    
+    try {
+        const hasBypass = member.permissions.has(PermissionFlagsBits.Administrator) ||
+                          member.roles.cache.some(r => r.name === config.roles.admin || r.name === config.roles.alchemist);
+        if (hasBypass) return;
+
+        const nickname = member.nickname || '';
+        const username = member.user.username || '';
+        const nameToCheck = `${nickname} ${username}`.toLowerCase();
+        
+        // Impersonation keywords (restricted founders, staff, mods, bots)
+        const restrictedKeywords = ['faizan', 'geckura', 'gekura', 'founder', 'admin', 'moderator', 'support', 'staff', 'mod'];
+        const matchesForbidden = restrictedKeywords.some(keyword => nameToCheck.includes(keyword));
+        
+        if (matchesForbidden) {
+            console.log(`🛡️ Impersonation Guard: Impersonation detected for user ${member.user.tag} (Name contains restricted keywords).`);
+            
+            // Check if user is a new member (joined in the last 24 hours)
+            const joinedAgeMs = Date.now() - member.joinedTimestamp;
+            const isNewMember = joinedAgeMs < 24 * 60 * 60 * 1000; // 24 hours
+
+            let banSuccess = false;
+            let banErrorMsg = "";
+
+            // Attempt to DM the user before banning them (banned users cannot be DMed by the bot)
+            try {
+                await member.send({
+                    embeds: [{
+                        title: '🛡️ Security Warning',
+                        description: `You have been automatically banned from **${member.guild.name}** for attempting to impersonate server founders, team members, or official bots.`,
+                        color: 0xFF0000,
+                        timestamp: new Date().toISOString(),
+                        footer: { text: 'Geckura Security System' }
+                    }]
+                });
+            } catch (dmError) {
+                console.log(`Could not send ban notification DM to ${member.user.tag}`);
+            }
+
+            // Perform direct ban
+            if (member.bannable) {
+                try {
+                    await member.ban({ deleteMessageSeconds: 60 * 60 * 24, reason: '🛡️ Auto-Ban: Impersonating server founders, team, or official bots' });
+                    banSuccess = true;
+                    console.log(`🛡️ Impersonation Guard: Banned user ${member.user.tag} successfully.`);
+                } catch (banErr) {
+                    console.error('Error executing ban:', banErr);
+                    banErrorMsg = banErr.message;
+                }
+            } else {
+                console.log(`Lacking permission to ban ${member.user.tag} (role hierarchy).`);
+                banErrorMsg = "Bot lacks permission to ban this member (role hierarchy or ownership).";
+            }
+
+            // Alert the moderators in the logging channel
+            const alertChannel = member.guild.channels.cache.find(c => 
+                c.name === 'mod-logs' || c.name === 'logs' || c.name === 'alerts' || c.name === 'staff-chat' || c.name === 'admin'
+            );
+            if (alertChannel) {
+                try {
+                    const alertEmbed = {
+                        title: '🚨 SECURITY INCIDENT: IMPERSONATOR AUTO-BANNED',
+                        description: `Impersonation Guard triggered for name: \`${nickname || username}\``,
+                        color: 0xFF0000,
+                        fields: [
+                            { name: 'User Tag', value: `${member.user.tag}`, inline: true },
+                            { name: 'User ID', value: `\`${member.user.id}\``, inline: true },
+                            { name: 'Target Account', value: `${member}`, inline: true },
+                            { name: 'Account Age', value: `Joined Server: <t:${Math.floor(member.joinedTimestamp / 1000)}:R>`, inline: true },
+                            { name: 'Account Check', value: isNewMember ? '🚨 **NEW ACCOUNT (< 24 HOURS)**' : 'Standard Member', inline: true },
+                            { name: 'Ban Status', value: banSuccess ? '✅ **User Banned successfully**' : `❌ **Ban Failed**: ${banErrorMsg}`, inline: false }
+                        ],
+                        timestamp: new Date().toISOString(),
+                        footer: { text: 'Geckura Safety System' }
+                    };
+                    await alertChannel.send({ embeds: [alertEmbed] });
+                } catch (e) {
+                    console.error('Error sending alert to mod channel:', e);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error executing checkImpersonation helper:', error);
+    }
+}
+
+// In-memory spam tracker
+const messageHistory = new Map();
+
+function isSpamming(userId) {
+    const now = Date.now();
+    if (!messageHistory.has(userId)) {
+        messageHistory.set(userId, []);
+    }
+    
+    const timestamps = messageHistory.get(userId);
+    const recent = timestamps.filter(time => now - time < 6000);
+    recent.push(now);
+    messageHistory.set(userId, recent);
+    
+    return recent.length > 4;
+}
+
+// Periodic cleanup: purge stale spam tracker entries every 60 seconds to prevent memory leaks
+setInterval(() => {
+    const now = Date.now();
+    for (const [userId, timestamps] of messageHistory.entries()) {
+        const recent = timestamps.filter(time => now - time < 6000);
+        if (recent.length === 0) {
+            messageHistory.delete(userId);
+        } else {
+            messageHistory.set(userId, recent);
+        }
+    }
+}, 60 * 1000);

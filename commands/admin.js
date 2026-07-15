@@ -67,7 +67,13 @@ module.exports = {
     // Get user data or create a new entry
     getUserData(userId) {
         const userDataPath = path.join(__dirname, '..', 'data', 'chat2earn-users.json');
-        let userData = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
+        let userData = {};
+        try {
+            userData = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
+        } catch (error) {
+            console.error('admin.js: Error reading user data file:', error);
+            userData = {};
+        }
 
         if (!userData[userId]) {
             userData[userId] = {
@@ -80,7 +86,11 @@ module.exports = {
                 totalTokensEarned: 0,
                 achievements: []
             };
-            fs.writeFileSync(userDataPath, JSON.stringify(userData, null, 2));
+            try {
+                fs.writeFileSync(userDataPath, JSON.stringify(userData, null, 2));
+            } catch (writeErr) {
+                console.error('admin.js: Error writing user data file:', writeErr);
+            }
         }
 
         return userData[userId];
@@ -89,22 +99,41 @@ module.exports = {
     // Save user data
     saveUserData(userId, data) {
         const userDataPath = path.join(__dirname, '..', 'data', 'chat2earn-users.json');
-        let userData = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
+        let userData = {};
+        try {
+            userData = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
+        } catch (error) {
+            console.error('admin.js: Error reading user data for save:', error);
+        }
         userData[userId] = data;
-        fs.writeFileSync(userDataPath, JSON.stringify(userData, null, 2));
+        try {
+            fs.writeFileSync(userDataPath, JSON.stringify(userData, null, 2));
+        } catch (writeErr) {
+            console.error('admin.js: Error writing user data file:', writeErr);
+        }
     },
     
     // Add item to shop
     addShopItem(type, itemData) {
         const shopPath = path.join(__dirname, '..', 'data', 'chat2earn-shop.json');
-        let shopData = JSON.parse(fs.readFileSync(shopPath, 'utf8'));
+        let shopData = {};
+        try {
+            shopData = JSON.parse(fs.readFileSync(shopPath, 'utf8'));
+        } catch (error) {
+            console.error('admin.js: Error reading shop data file:', error);
+            shopData = {};
+        }
         
         if (!shopData[type]) {
             shopData[type] = [];
         }
         
         shopData[type].push(itemData);
-        fs.writeFileSync(shopPath, JSON.stringify(shopData, null, 2));
+        try {
+            fs.writeFileSync(shopPath, JSON.stringify(shopData, null, 2));
+        } catch (writeErr) {
+            console.error('admin.js: Error writing shop data file:', writeErr);
+        }
     },
 
     async execute(interaction, client) {
@@ -133,6 +162,13 @@ module.exports = {
         // Handle different actions
         switch (action) {
             case 'give':
+                // Validate amount: must be a positive integer, capped at 1,000,000
+                if (!amount || amount <= 0 || amount > 1_000_000) {
+                    return await interaction.reply({
+                        content: '⚠️ **Invalid Amount:** Please provide a positive number between 1 and 1,000,000.',
+                        ephemeral: true
+                    });
+                }
                 userData.tokens += amount;
                 userData.totalTokensEarned += amount;
                 this.saveUserData(targetUserId, userData);
@@ -149,6 +185,13 @@ module.exports = {
                 break;
 
             case 'remove':
+                // Validate amount: must be a positive integer, capped at 1,000,000
+                if (!amount || amount <= 0 || amount > 1_000_000) {
+                    return await interaction.reply({
+                        content: '⚠️ **Invalid Amount:** Please provide a positive number between 1 and 1,000,000.',
+                        ephemeral: true
+                    });
+                }
                 userData.tokens = Math.max(0, userData.tokens - amount);
                 this.saveUserData(targetUserId, userData);
 

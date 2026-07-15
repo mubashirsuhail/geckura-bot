@@ -19,11 +19,15 @@
     "whitelist": "whitelist"
   },
   "links": {
-    "website": "https://geckura.com",
-    "twitter": "https://twitter.com/geckura",
-    "discord": "https://discord.gg/geckura",
+    "website": "https://geckura.app/",
+    "mysteryBox": "https://mysterybox.geckura.app/",
+    "geckuraMysteryBox": "https://mysterybox.geckura.app/geckura",
+    "airdrop": "http://airdrop.geckura.app/",
+    "twitter": "https://x.com/Geckura",
+    "discord": "https://discord.gg/yChGaA6HmJ",
     "mintSite": "https://mint.geckura.com",
-    "banner": "https://i.imgur.com/GeckuraBanner.png"
+    "banner": "https://i.imgur.com/GeckuraBanner.png",
+    "elixirMarket": "https://magiceden.io/marketplace/geckura_elixir"
   },
   "footer": "GeckAura — Where Innovation Meets Utility!"
 }

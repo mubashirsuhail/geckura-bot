@@ -1,0 +1,199 @@
+{
+  "project": {
+    "name": "Geckura",
+    "network": "Solana",
+    "description": "Geckura is a Solana NFT ecosystem focused on building long-term utility through NFTs, community engagement, reward systems, and Web3 applications. The ecosystem includes NFT collections, a utility token, Mystery Boxes, staking, a Trait Shop, and white-label services for other projects."
+  },
+  "collections": {
+    "geckura_elixir": {
+      "name": "Geckura Elixir",
+      "supply": 300,
+      "description": "A premium NFT collection within the Geckura ecosystem.",
+      "benefits": [
+        "Reserved allocation for the Geckura PFP collection",
+        "Exclusive holder rewards",
+        "Priority access to future utilities",
+        "Future ecosystem benefits"
+      ]
+    },
+    "geckura_pfp": {
+      "name": "Geckura PFP Collection",
+      "supply": 666,
+      "allocation": {
+        "paid_mint": 333,
+        "elixir_holders": 150,
+        "solana_community_free_mints": 150,
+        "team_treasury_marketing": 66
+      },
+      "description": "The main profile picture NFT collection for the Geckura ecosystem."
+    }
+  },
+  "token": {
+    "name": "GECKURA",
+    "symbol": "GECKURA",
+    "type": "Reward Utility Token",
+    "liquidity": "Non-LP",
+    "description": "GECKURA is the ecosystem reward and utility token used throughout the Geckura platform.",
+    "earning_methods": [
+      "Discord chatting",
+      "Raid participation",
+      "Twitter/X engagement",
+      "Community events",
+      "Giveaways",
+      "Special campaigns",
+      "Future quests"
+    ],
+    "utilities": [
+      "Open Mystery Boxes",
+      "Community rewards",
+      "Future ecosystem utilities",
+      "Exclusive events"
+    ],
+    "tradable": false,
+    "notes": [
+      "Anyone can earn GECKURA.",
+      "NFT ownership is not required to start earning.",
+      "GECKURA is not designed as a publicly traded token."
+    ]
+  },
+  "mystery_boxes": {
+    "description": "Mystery Boxes allow users to spend GECKURA tokens to receive randomized rewards.",
+    "pricing": {
+      "fixed_price": false,
+      "details": "Each Mystery Box has its own price depending on the reward pool, rarity, event, or campaign."
+    },
+    "possible_rewards": [
+      "GECKURA Tokens",
+      "Geckura Free Mint",
+      "NFT rewards",
+      "Exclusive collectibles",
+      "Limited edition rewards",
+      "Event rewards",
+      "Future ecosystem rewards"
+    ]
+  },
+  "staking": {
+    "status": "Planned",
+    "description": "NFT staking will allow holders to earn rewards and unlock additional ecosystem benefits.",
+    "benefits": [
+      "Passive rewards",
+      "Holder incentives",
+      "Exclusive utilities",
+      "Future staking campaigns"
+    ]
+  },
+  "trait_shop": {
+    "status": "Planned",
+    "description": "The Trait Shop will allow holders to customize their Geckura NFTs.",
+    "features": [
+      "NFT customization",
+      "Exclusive traits",
+      "Collectible cosmetics",
+      "Future upgrades"
+    ]
+  },
+  "holder_benefits": {
+    "why_buy": [
+      "NFT staking rewards",
+      "Exclusive holder campaigns",
+      "Trait Shop access",
+      "Future ecosystem utilities",
+      "Priority access to upcoming features",
+      "Community events",
+      "Mystery Box opportunities",
+      "Long-term ecosystem benefits"
+    ]
+  },
+  "community": {
+    "who_can_join": "Anyone",
+    "description": "Everyone is welcome to join the Geckura community and begin earning GECKURA through engagement.",
+    "activities": [
+      "Chatting",
+      "Raids",
+      "Twitter/X tasks",
+      "Events",
+      "Community competitions"
+    ]
+  },
+  "white_label": {
+    "available": true,
+    "description": "Geckura provides white-label services for NFT and Web3 projects.",
+    "services": [
+      "Mystery Box platform",
+      "Reward systems",
+      "Custom branding",
+      "Project integrations",
+      "Future ecosystem utilities"
+    ]
+  },
+  "faq": [
+    {
+      "question": "What is Geckura?",
+      "answer": "Geckura is a Solana NFT ecosystem focused on building utilities, rewards, and community-driven experiences."
+    },
+    {
+      "question": "How many NFT collections does Geckura have?",
+      "answer": "Geckura currently has two collections: Geckura Elixir (300 supply) and the Geckura PFP Collection (666 supply)."
+    },
+    {
+      "question": "How is the PFP collection allocated?",
+      "answer": "333 paid mint, 150 reserved for Elixir holders, 150 free mints for Solana communities, and 66 reserved for the team, treasury, partnerships, and marketing."
+    },
+    {
+      "question": "What is GECKURA?",
+      "answer": "GECKURA is the ecosystem's non-LP reward and utility token."
+    },
+    {
+      "question": "Can anyone earn GECKURA?",
+      "answer": "Yes. Anyone can join the community and earn GECKURA through participation."
+    },
+    {
+      "question": "Do I need an NFT to earn GECKURA?",
+      "answer": "No. NFT ownership is not required to earn GECKURA."
+    },
+    {
+      "question": "What can GECKURA be used for?",
+      "answer": "GECKURA can be used for Mystery Boxes and future ecosystem utilities."
+    },
+    {
+      "question": "Is GECKURA tradable?",
+      "answer": "No. GECKURA is a non-LP ecosystem reward token."
+    },
+    {
+      "question": "How much does a Mystery Box cost?",
+      "answer": "There is no fixed price. Each Mystery Box has its own price based on its rewards and event."
+    },
+    {
+      "question": "What rewards can Mystery Boxes contain?",
+      "answer": "Rewards may include GECKURA, Free Mints, NFTs, collectibles, event rewards, and future ecosystem utilities."
+    },
+    {
+      "question": "Why should I buy a Geckura NFT?",
+      "answer": "NFT holders receive staking rewards, exclusive campaigns, Trait Shop access, Mystery Box opportunities, future utilities, and other holder-only benefits."
+    },
+    {
+      "question": "Will staking be available?",
+      "answer": "Yes. NFT staking is a planned utility."
+    },
+    {
+      "question": "Will there be a Trait Shop?",
+      "answer": "Yes. Holders will be able to customize their NFTs with collectible traits."
+    },
+    {
+      "question": "Does Geckura provide services to other projects?",
+      "answer": "Yes. Geckura offers white-label services including Mystery Boxes, reward systems, and custom integrations."
+    }
+  ],
+  "roadmap": {
+    "planned_features": [
+      "NFT Staking",
+      "Trait Shop",
+      "Expanded Mystery Boxes",
+      "Additional token utilities",
+      "Community reward systems",
+      "Holder-exclusive features",
+      "White-label ecosystem expansion",
+      "Future partnerships"
+    ]
+  }
+}

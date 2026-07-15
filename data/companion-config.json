@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "companionChannelId": null,
+  "personality": "sage",
+  "customInstructions": "",
+  "modelName": "gemini-2.0-flash",
+  "strictProjectScope": true
+}

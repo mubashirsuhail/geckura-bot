@@ -157,8 +157,16 @@ Submitted: ${new Date(airdropEntry.timestamp).toLocaleString()}`,
 
     // Handle modal submission
     async handleModal(interaction) {
-        // Extract wallet type from custom ID
-        const walletType = interaction.customId.replace('wallet-submit-', '');
+        // Extract wallet type from custom ID and strictly whitelist it
+        const rawType = interaction.customId.replace('wallet-submit-', '');
+        const ALLOWED_TYPES = ['whitelist', 'airdrop'];
+        if (!ALLOWED_TYPES.includes(rawType)) {
+            return await interaction.reply({
+                content: '⚠️ **Invalid Request:** Unknown wallet submission type.',
+                ephemeral: true
+            });
+        }
+        const walletType = rawType;
         const walletAddress = interaction.fields.getTextInputValue('walletAddress').trim();
 
         // Validate wallet address (basic validation for Solana addresses)

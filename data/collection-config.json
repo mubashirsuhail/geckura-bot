@@ -1,0 +1,18 @@
+{
+  "name": "Geckura PFP Collection",
+  "supply": "666",
+  "blockchain": "Solana",
+  "mintPrice": "FREE for Elixir holders (150 spots) / Free Mint for Solana community (150 spots) / Paid Mint (333 spots)",
+  "mintDate": "Coming Soon / TBA",
+  "banner": "https://i.imgur.com/GeckuraBanner.png",
+  "about": "The Geckura PFP Collection is the main profile picture NFT collection representing the core identity of our Solana ecosystem. Each NFT is crafted with narrative, utility, and long-term value at the center.",
+  "benefits": [
+    "✅ NFT Staking Rewards (Planned passive rewards)",
+    "✅ Trait Shop Access for customization & upgrades (Planned)",
+    "✅ Exclusive holder campaigns & community events",
+    "✅ Mystery Box opportunities & reward pools",
+    "✅ White-label ecosystem benefits & utilities"
+  ],
+  "roadmap": "The PFP Collection is the centerpiece of the Geckura roadmap. It rewards long-term holders with staking options, trait shop access, and integration with white-label utilities.",
+  "whitelistInfo": "Allocation breakdown:\n• 150 reserved for Geckura Elixir holders (guaranteed FCFS/Free Mint)\n• 150 free mints reserved for selected Solana partner communities\n• 333 spots allocated for the Paid Public Mint\n• 66 spots reserved for team, treasury, and marketing."
+}

@@ -11,9 +11,15 @@ const commands = [];
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
+const loadedNames = new Set();
 for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
+    if (loadedNames.has(command.data.name)) {
+        console.log(`Skipping duplicate command name "${command.data.name}" from backup file ${file}`);
+        continue;
+    }
+    loadedNames.add(command.data.name);
     console.log(`Loading command: ${command.data.name} from ${file}`);
     commands.push(command.data.toJSON());
 }

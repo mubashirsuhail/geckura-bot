@@ -34,6 +34,14 @@ module.exports = {
                 .setName('all')
                 .setDescription('Export all wallets')),
     async execute(interaction) {
+        // Runtime admin permission check (defense-in-depth beyond Discord API-level gate)
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+            return await interaction.reply({
+                content: "⚠️ **Access Denied:** Only administrators can export wallet data.",
+                ephemeral: true
+            });
+        }
+
         const subcommand = interaction.options.getSubcommand();
 
         // Acknowledge the command immediately
