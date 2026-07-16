@@ -265,8 +265,10 @@ ADDITIONAL SERVER GUIDELINES:
     } catch (error) {
         console.error('Error in AI companion query:', error);
         // Remove the failed user query from history so history doesn't get corrupted
-        chatHistories[historyId].pop();
-        await message.reply("⚠️ *The gecko seems to have lost connection to the aura...* (An error occurred while processing the AI response. Please try again in a moment.)");
+        if (chatHistories[historyId] && chatHistories[historyId].length > 0) {
+            chatHistories[historyId].pop();
+        }
+        await message.reply(`⚠️ *The gecko seems to have lost connection to the aura...* (Error: ${error.message || "Unknown error"})`);
     }
 }
 
