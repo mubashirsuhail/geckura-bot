@@ -11,9 +11,11 @@
     "admin": "Admin",
     "alchemist": "Alchemist",
     "chosenSeeker": "Chosen Seeker",
-    "primeGecko": "Prime Gecko"
+    "primeGecko": "Prime Gecko",
+    "welcome": "1438176728651534356"
   },
   "channels": {
+    "general": "1436744195145597169",
     "announcements": "announcements",
     "roadmap": "roadmap",
     "whitelist": "whitelist"

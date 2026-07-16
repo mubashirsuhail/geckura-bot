@@ -92,7 +92,7 @@ async function sendWelcomeMessage(member, client) {
     if (!welcomeConfig.enabled) return;
 
     // Assign roles after verification
-    const welcomeRoleId = '1438176728651534356';
+    const welcomeRoleId = welcomeConfig.welcomeRoleId || '1438176728651534356';
     const adminRoleId = '1040680172472516729';
     
     try {

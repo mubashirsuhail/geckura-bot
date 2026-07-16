@@ -19,6 +19,7 @@ function readCompanionConfig() {
     return {
         enabled: true,
         companionChannelId: null,
+        allowedRoleId: null,
         personality: "sage",
         customInstructions: "",
         modelName: "gemini-2.0-flash",

@@ -92,9 +92,16 @@ client.once('ready', async () => {
 
     // Start 2-hour Safety Reminder interval (2 * 60 * 60 * 1000 ms)
     setInterval(async () => {
-        const generalChannel = client.channels.cache.find(c => 
-            c.name === 'general' || c.name === 'general-chat' || c.name === 'chat' || c.name === 'lounge'
-        );
+        let generalChannel = null;
+        if (config.channels && config.channels.general) {
+            generalChannel = client.channels.cache.get(config.channels.general) || 
+                             client.channels.cache.find(c => c.name === config.channels.general || c.id === config.channels.general);
+        }
+        if (!generalChannel) {
+            generalChannel = client.channels.cache.find(c => 
+                c.name === 'general' || c.name === 'general-chat' || c.name === 'chat' || c.name === 'lounge'
+            );
+        }
         if (generalChannel) {
             try {
                 const safetyEmbed = {
@@ -125,7 +132,7 @@ client.once('ready', async () => {
                     }
                 };
                 await generalChannel.send({ embeds: [safetyEmbed] });
-                console.log('Safety reminder posted in general channel.');
+                console.log(`Safety reminder posted in ${generalChannel.name} channel.`);
             } catch (error) {
                 console.error('Error posting safety reminder:', error);
             }
@@ -298,7 +305,7 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     await checkImpersonation(newMember);
 
     // Check if member gained the welcome role
-    const welcomeRoleId = '1438176728651534356';
+    const welcomeRoleId = config.roles?.welcome || '1438176728651534356';
     
     if (!oldMember.roles.cache.has(welcomeRoleId) && newMember.roles.cache.has(welcomeRoleId)) {
         // Member was just verified, send welcome message
@@ -318,6 +325,22 @@ client.on('messageCreate', async message => {
     if (!message.guild) {
         const companionConfig = readCompanionConfig();
         if (companionConfig.enabled) {
+            if (companionConfig.allowedRoleId) {
+                try {
+                    const guild = client.guilds.cache.get(process.env.GUILD_ID || config.guildId);
+                    if (guild) {
+                        const member = await guild.members.fetch(message.author.id).catch(() => null);
+                        if (!member || !member.roles.cache.has(companionConfig.allowedRoleId)) {
+                            return; // Ignore if not in guild or doesn't have the role
+                        }
+                    } else {
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Error checking user roles in DM:', e);
+                    return;
+                }
+            }
             handleCompanionMessage(message, client);
         }
         return;
@@ -445,6 +468,10 @@ client.on('messageCreate', async message => {
         const isBotMentioned = message.mentions.has(client.user) && !message.mentions.everyone;
         
         if (isInCompanionChannel || isBotMentioned) {
+            if (companionConfig.allowedRoleId) {
+                const hasRole = message.member && message.member.roles.cache.has(companionConfig.allowedRoleId);
+                if (!hasRole) return; // Ignore if they don't have the role
+            }
             handleCompanionMessage(message, client);
         }
     }

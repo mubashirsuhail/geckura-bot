@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "companionChannelId": null,
+  "companionChannelId": "1436744195145597169",
   "personality": "sage",
   "customInstructions": "",
   "modelName": "gemini-2.0-flash",

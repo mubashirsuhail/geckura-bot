@@ -18,6 +18,7 @@ function readCompanionConfig() {
     return {
         enabled: true,
         companionChannelId: null,
+        allowedRoleId: null,
         personality: "sage",
         customInstructions: "",
         modelName: "gemini-2.0-flash",
@@ -51,6 +52,9 @@ module.exports = {
                 .addChannelOption(option =>
                     option.setName('channel')
                         .setDescription('Dedicated channel where companion answers all messages without pings'))
+                .addRoleOption(option =>
+                    option.setName('role')
+                        .setDescription('Required role to interact with the companion (leave empty for everyone)'))
                 .addStringOption(option =>
                     option.setName('personality')
                         .setDescription('The AI companion personality style')
@@ -82,6 +86,7 @@ module.exports = {
             if (subcommand === 'configure') {
                 const enabled = interaction.options.getBoolean('enabled');
                 const channel = interaction.options.getChannel('channel');
+                const role = interaction.options.getRole('role');
                 const personality = interaction.options.getString('personality');
                 const strictScope = interaction.options.getBoolean('strict-scope');
                 const instructions = interaction.options.getString('instructions');
@@ -95,6 +100,10 @@ module.exports = {
                 if (channel !== null) {
                     companionConfig.companionChannelId = channel ? channel.id : null;
                     changes.push(`Channel: ${channel ? `<#${channel.id}>` : '**None** (Pings only)'}`);
+                }
+                if (interaction.options.get('role') !== null) {
+                    companionConfig.allowedRoleId = role ? role.id : null;
+                    changes.push(`Required Role: ${role ? `<@&${role.id}>` : '**Everyone (No Role Required)**'}`);
                 }
                 if (personality !== null) {
                     companionConfig.personality = personality;
@@ -137,6 +146,7 @@ module.exports = {
                         { name: 'Personality', value: `\`${companionConfig.personality.toUpperCase()}\``, inline: true },
                         { name: 'Strict Project Scope', value: companionConfig.strictProjectScope ? '🔒 Strict' : '🌐 Open', inline: true },
                         { name: 'Dedicated Channel', value: companionConfig.companionChannelId ? `<#${companionConfig.companionChannelId}>` : 'None (Responds only to pings/mentions)', inline: false },
+                        { name: 'Required Role', value: companionConfig.allowedRoleId ? `<@&${companionConfig.allowedRoleId}>` : 'Everyone (No Role Required)', inline: true },
                         { name: 'Model Name', value: `\`${companionConfig.modelName || 'gemini-2.0-flash'}\``, inline: true },
                         { name: 'Gemini API Key Loaded', value: process.env.GEMINI_API_KEY ? '✅ Configured' : '❌ Missing from .env', inline: true },
                         { name: 'Custom Instructions', value: companionConfig.customInstructions || '*None*', inline: false }

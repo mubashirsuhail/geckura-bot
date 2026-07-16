@@ -60,10 +60,12 @@ async function handleRoleUpgrade(oldMember, newMember, client, config) {
             );
 
         // Always post in the general channel instead of DM
-        // Find the general channel by name
-        const channel = newMember.guild.channels.cache.find(
-            ch => ch.name === "general"
-        );
+        // Find the general channel using config or by name fallback
+        const generalChannelSetting = config.channels?.general;
+        const channel = generalChannelSetting ? 
+            (newMember.guild.channels.cache.get(generalChannelSetting) || 
+             newMember.guild.channels.cache.find(ch => ch.name === generalChannelSetting || ch.id === generalChannelSetting)) :
+            newMember.guild.channels.cache.find(ch => ch.name === "general" || ch.name === "general-chat");
         if (channel) {
             // Create a public congratulatory message
             await channel.send({
