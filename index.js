@@ -90,7 +90,7 @@ client.once('ready', async () => {
         }
     });
 
-    // Start 2-hour Safety Reminder interval (2 * 60 * 60 * 1000 ms)
+    // Start 12-hour Safety Reminder interval (12 * 60 * 60 * 1000 ms)
     setInterval(async () => {
         let generalChannel = null;
         if (config.channels && config.channels.general) {
@@ -137,8 +137,8 @@ client.once('ready', async () => {
                 console.error('Error posting safety reminder:', error);
             }
         }
-    }, 2 * 60 * 60 * 1000);
-    console.log('Safety reminder interval system active (every 2 hours).');
+    }, 12 * 60 * 60 * 1000);
+    console.log('Safety reminder interval system active (every 12 hours).');
 });
 
 // Event: Guild member add (for welcome messages, impersonation protection, and invite tracking)
@@ -461,14 +461,24 @@ client.on('messageCreate', async message => {
 
     // AI Companion check for server channels
     const companionConfig = readCompanionConfig();
+    const isBotMentioned = message.mentions.has(client.user) && !message.mentions.everyone;
+
     if (companionConfig.enabled) {
         const isInCompanionChannel = companionConfig.companionChannelId && message.channel.id === companionConfig.companionChannelId;
-        const isBotMentioned = message.mentions.has(client.user) && !message.mentions.everyone;
         
         if (isInCompanionChannel || isBotMentioned) {
             if (companionConfig.allowedRoleId) {
                 const hasRole = message.member && message.member.roles.cache.has(companionConfig.allowedRoleId);
-                if (!hasRole) return; // Ignore if they don't have the role
+                if (!hasRole) {
+                    if (isBotMentioned) {
+                        try {
+                            await message.reply(`⚠️ You do not have the required role (<@&${companionConfig.allowedRoleId}>) to interact with the AI Companion.`);
+                        } catch (err) {
+                            console.error('Error replying for role restriction:', err);
+                        }
+                    }
+                    return; // Ignore if they don't have the role
+                }
             }
             
             // If in the companion channel but not mentioned, check if it's actually a question/query about the project
@@ -522,6 +532,12 @@ client.on('messageCreate', async message => {
                     }
                 }, delayMs);
             }
+        }
+    } else if (isBotMentioned) {
+        try {
+            await message.reply(`⚠️ The AI Companion is currently disabled. An administrator can enable it using the \`/companion-setup\` command.`);
+        } catch (err) {
+            console.error('Error replying for disabled companion:', err);
         }
     }
 });
