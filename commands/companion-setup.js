@@ -21,7 +21,7 @@ function readCompanionConfig() {
         allowedRoleId: null,
         personality: "sage",
         customInstructions: "",
-        modelName: "gemini-2.0-flash",
+        modelName: "gemini-flash-latest",
         strictProjectScope: true
     };
 }
@@ -147,7 +147,7 @@ module.exports = {
                         { name: 'Strict Project Scope', value: companionConfig.strictProjectScope ? '🔒 Strict' : '🌐 Open', inline: true },
                         { name: 'Dedicated Channel', value: companionConfig.companionChannelId ? `<#${companionConfig.companionChannelId}>` : 'None (Responds only to pings/mentions)', inline: false },
                         { name: 'Required Role', value: companionConfig.allowedRoleId ? `<@&${companionConfig.allowedRoleId}>` : 'Everyone (No Role Required)', inline: true },
-                        { name: 'Model Name', value: `\`${companionConfig.modelName || 'gemini-2.0-flash'}\``, inline: true },
+                        { name: 'Model Name', value: `\`${companionConfig.modelName || 'gemini-flash-latest'}\``, inline: true },
                         { name: 'Gemini API Key Loaded', value: process.env.GEMINI_API_KEY ? '✅ Configured' : '❌ Missing from .env', inline: true },
                         { name: 'Custom Instructions', value: companionConfig.customInstructions || '*None*', inline: false }
                     )
@@ -166,7 +166,7 @@ module.exports = {
                     });
                 }
 
-                const model = companionConfig.modelName || 'gemini-2.0-flash';
+                const model = companionConfig.modelName || 'gemini-flash-latest';
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
                 try {

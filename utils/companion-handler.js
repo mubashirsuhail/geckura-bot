@@ -22,7 +22,7 @@ function readCompanionConfig() {
         allowedRoleId: null,
         personality: "sage",
         customInstructions: "",
-        modelName: "gemini-2.0-flash",
+        modelName: "gemini-flash-latest",
         strictProjectScope: true
     };
 }
@@ -212,7 +212,7 @@ ADDITIONAL SERVER GUIDELINES:
 - User custom instructions: ${companionConfig.customInstructions || 'None'}
 `;
 
-        const model = companionConfig.modelName || "gemini-2.0-flash";
+        const model = companionConfig.modelName || "gemini-flash-latest";
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
         // Prepare conversation list
