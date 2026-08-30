@@ -10,8 +10,6 @@ const { handleMessage } = require('./utils/chat2earn-handler');
 // Load link filter
 const { execute: handleLinkFilter } = require('./utils/link-filter');
 
-// Load companion handler
-const { handleCompanionMessage, readCompanionConfig } = require('./utils/companion-handler');
 
 // Create a new client instance
 const client = new Client({
@@ -316,9 +314,6 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     await handleRoleUpgrade(oldMember, newMember, client, config);
 });
 
-// Map to track pending delayed responses for AI Companion (key: messageId, value: { timeout, channelId })
-const pendingCompanionResponses = new Map();
-
 // Event: Message created (for auto-link deletion and chat2earn)
 client.on('messageCreate', async message => {
     // Ignore messages from bots
@@ -326,23 +321,6 @@ client.on('messageCreate', async message => {
 
     // Ignore all Direct Messages (DMs)
     if (!message.guild) return;
-
-    // Check if message is from a moderator/administrator
-    const isMod = message.member && (
-        message.member.permissions.has(PermissionFlagsBits.Administrator) ||
-        message.member.permissions.has(PermissionFlagsBits.ManageMessages)
-    );
-
-    // If a moderator posted, cancel all pending companion bot responses in this channel
-    if (isMod) {
-        for (const [msgId, pending] of pendingCompanionResponses.entries()) {
-            if (pending.channelId === message.channel.id) {
-                clearTimeout(pending.timeout);
-                pendingCompanionResponses.delete(msgId);
-                console.log(`Cancelled pending companion response to message ${msgId} in #${message.channel.name} because moderator ${message.author.tag} posted.`);
-            }
-        }
-    }
 
     // Spam check (applies only to server messages from non-admins/non-moderators)
     const bypassSpamCheck = message.member.permissions.has(PermissionFlagsBits.Administrator) ||
@@ -459,87 +437,7 @@ client.on('messageCreate', async message => {
         }
     }
 
-    // AI Companion check for server channels
-    const companionConfig = readCompanionConfig();
-    const isBotMentioned = message.mentions.has(client.user) && !message.mentions.everyone;
 
-    if (companionConfig.enabled) {
-        const isInCompanionChannel = companionConfig.companionChannelId && message.channel.id === companionConfig.companionChannelId;
-        
-        if (isInCompanionChannel || isBotMentioned) {
-            if (companionConfig.allowedRoleId) {
-                const hasRole = message.member && message.member.roles.cache.has(companionConfig.allowedRoleId);
-                if (!hasRole) {
-                    if (isBotMentioned) {
-                        try {
-                            await message.reply(`⚠️ You do not have the required role (<@&${companionConfig.allowedRoleId}>) to interact with the AI Companion.`);
-                        } catch (err) {
-                            console.error('Error replying for role restriction:', err);
-                        }
-                    }
-                    return; // Ignore if they don't have the role
-                }
-            }
-            
-            // If in the companion channel but not mentioned, check if it's actually a question/query about the project
-            if (isInCompanionChannel && !isBotMentioned) {
-                const content = message.content.toLowerCase();
-                const projectKeywords = [
-                    'geckura', 'gecko', 'mint', 'wl', 'whitelist', 'airdrop', 'token', 
-                    'elixir', 'wallet', 'roadmap', 'supply', 'price', 'website', 
-                    'twitter', 'link', 'launch', 'stak', 'nft', 'aura', 'help', 
-                    'faq', 'info', 'utility', 'box', 'mystery'
-                ];
-                const questionIndicators = [
-                    '?', 'how', 'what', 'where', 'when', 'who', 'why', 'can i', 
-                    'is there', 'are there', 'does anyone', 'anyone know', 'help'
-                ];
-                
-                const hasKeyword = projectKeywords.some(keyword => content.includes(keyword));
-                const isQuestion = questionIndicators.some(indicator => content.includes(indicator));
-                
-                if (!hasKeyword || !isQuestion) {
-                    return; // Ignore general chatter
-                }
-
-                // Schedule response with a 2-3 minute delay (randomized)
-                const delayMs = (120 + Math.random() * 60) * 1000; // 120 to 180 seconds
-                const messageId = message.id;
-                
-                console.log(`Scheduling delayed response (in ${Math.round(delayMs/1000)}s) to message ${messageId} by ${message.author.tag} in #${message.channel.name}`);
-                
-                const timeout = setTimeout(async () => {
-                    pendingCompanionResponses.delete(messageId);
-                    try {
-                        await handleCompanionMessage(message, client);
-                    } catch (err) {
-                        console.error('Error executing delayed companion reply:', err);
-                    }
-                }, delayMs);
-                
-                pendingCompanionResponses.set(messageId, {
-                    timeout,
-                    channelId: message.channel.id
-                });
-            } else {
-                // For direct pings, respond with a short typing delay (3-5 seconds) to simulate a real user typing
-                const delayMs = (3 + Math.random() * 2) * 1000;
-                setTimeout(async () => {
-                    try {
-                        await handleCompanionMessage(message, client);
-                    } catch (err) {
-                        console.error('Error executing direct companion reply:', err);
-                    }
-                }, delayMs);
-            }
-        }
-    } else if (isBotMentioned) {
-        try {
-            await message.reply(`⚠️ The AI Companion is currently disabled. An administrator can enable it using the \`/companion-setup\` command.`);
-        } catch (err) {
-            console.error('Error replying for disabled companion:', err);
-        }
-    }
 });
 
 // Event: Interaction created

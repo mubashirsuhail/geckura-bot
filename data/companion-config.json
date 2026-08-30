@@ -1,8 +1,0 @@
-{
-  "enabled": true,
-  "companionChannelId": "1436744195145597169",
-  "personality": "sage",
-  "customInstructions": "",
-  "modelName": "gemini-flash-latest",
-  "strictProjectScope": true
-}
