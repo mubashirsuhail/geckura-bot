@@ -224,7 +224,7 @@ module.exports = {
         // Handle admin tweet posting
         if (subcommand === 'post') {
             // Check if user has admin permissions
-            if (!interaction.member.permissions.has('ADMINISTRATOR')) {
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return await interaction.reply({
                     content: "You don't have permission to use this command.",
                     ephemeral: true

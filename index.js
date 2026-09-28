@@ -22,71 +22,19 @@ const client = new Client({
     ]
 });
 
-// Cache to hold invite usage counts. Key: guildId, Value: Map of invite code -> uses
-const guildInvites = new Map();
-
-// Load commands
-client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    client.commands.set(command.data.name, command);
-    console.log(`Loaded command: ${command.data.name}`);
-}
-
-// Load whitelist data
-let whitelistData;
-try {
-    whitelistData = require('./whitelist.json');
-} catch (error) {
-    whitelistData = { whitelisted: [] };
-    fs.writeFileSync('./whitelist.json', JSON.stringify(whitelistData, null, 2));
-}
-
-// Load whitelist monitoring system
-const { startMonitoring } = require('./utils/wl-monitor');
-
-// Load OG monitoring system
-const { startMonitoring: startOGMonitoring } = require('./utils/og-monitor');
-
-// Load welcome handler
-const { sendWelcomeMessage } = require('./utils/welcome-handler');
-
-// Load role upgrade handler
-const { handleRoleUpgrade } = require('./utils/role-upgrade-handler');
-
 // Event: Bot is ready
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setActivity('GeckAura — Where Innovation Meets Utility!', { type: 'WATCHING' });
-    
-    // Start whitelist monitoring
-    startMonitoring(client, config);
-    console.log('Whitelist monitoring system started.');
 
-    // Start OG monitoring
-    startOGMonitoring(client, config);
-    console.log('OG monitoring system started.');
-
-    // Cache invites for all guilds the bot is in
-    client.guilds.cache.forEach(async guild => {
-        try {
-            if (guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild)) {
-                const invites = await guild.invites.fetch();
-                const codeUses = new Map();
-                invites.forEach(inv => codeUses.set(inv.code, inv.uses));
-                guildInvites.set(guild.id, codeUses);
-                console.log(`Cached ${invites.size} invites for guild: ${guild.name}`);
-            } else {
-                console.log(`Lacking ManageGuild permission to cache invites in: ${guild.name}`);
-            }
-        } catch (error) {
-            console.error(`Error caching invites for guild ${guild.name}:`, error);
-        }
-    });
+    // Start background raffle auto checker (15s interval)
+    try {
+        const { startAutoRaffleChecker } = require('./commands/raffle');
+        startAutoRaffleChecker(client);
+        console.log('Raffle background auto-checker started.');
+    } catch (err) {
+        console.error('Error starting raffle auto checker:', err);
+    }
 
     // Start 12-hour Safety Reminder interval (12 * 60 * 60 * 1000 ms)
     setInterval(async () => {
@@ -139,162 +87,10 @@ client.once('ready', async () => {
     console.log('Safety reminder interval system active (every 12 hours).');
 });
 
-// Event: Guild member add (for welcome messages, impersonation protection, and invite tracking)
+// Event: Guild member add (for welcome messages and impersonation protection)
 client.on('guildMemberAdd', async member => {
     // Impersonation check
     await checkImpersonation(member);
-
-    // Track invite usage to award tokens
-    try {
-        const guild = member.guild;
-        if (guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild)) {
-            const currentInvites = await guild.invites.fetch();
-            const cachedInvites = guildInvites.get(guild.id) || new Map();
-            
-            // Find which invite's usage count increased
-            const usedInvite = currentInvites.find(inv => {
-                const cachedUses = cachedInvites.get(inv.code) || 0;
-                return inv.uses > cachedUses;
-            });
-
-            if (usedInvite && usedInvite.inviter) {
-                const inviter = usedInvite.inviter;
-                
-                // Exclude self-invites and bot inviters
-                if (inviter.id !== member.id && !inviter.bot) {
-                    const { getUserData, saveUserData } = require('./utils/chat2earn-handler');
-                    
-                    // Reward the inviter with 250 $GECKURA
-                    const inviterData = getUserData(inviter.id);
-                    inviterData.tokens += 250;
-                    inviterData.totalTokensEarned += 250;
-                    saveUserData(inviter.id, inviterData);
-                    
-                    console.log(`🎉 Invite Tracker: ${inviter.tag} invited ${member.user.tag} using code ${usedInvite.code}. Rewarded 250 $GECKURA.`);
-                    
-                    // Save invite mapping to track if they leave later
-                    try {
-                        const mappingPath = path.join(__dirname, 'data', 'invited-members.json');
-                        let mapping = {};
-                        if (fs.existsSync(mappingPath)) {
-                            mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf8'));
-                        }
-                        mapping[member.id] = inviter.id;
-                        fs.writeFileSync(mappingPath, JSON.stringify(mapping, null, 2));
-                    } catch (mapErr) {
-                        console.error('Error saving invite mapping:', mapErr);
-                    }
-                    
-                    // DM the inviter about their reward
-                    try {
-                        const rewardEmbed = {
-                            title: '🎉 Invite Reward Received!',
-                            description: `Thank you for inviting **${member.user.username}** to our community!`,
-                            color: 0x00FF99,
-                            fields: [
-                                { name: 'Reward Amount', value: '**250 $GECKURA** tokens', inline: true },
-                                { name: 'New Balance', value: `\`${inviterData.tokens} $GECKURA\``, inline: true }
-                            ],
-                            timestamp: new Date().toISOString(),
-                            footer: {
-                                text: 'Geckura — Turning Chaos into Flow',
-                                icon_url: client.user.displayAvatarURL()
-                            }
-                        };
-                        await inviter.send({ embeds: [rewardEmbed] });
-                    } catch (dmErr) {
-                        console.log(`Could not DM invite reward info to ${inviter.tag}`);
-                    }
-                }
-            }
-
-            // Update cached invites for the guild
-            const updatedCache = new Map();
-            currentInvites.forEach(inv => updatedCache.set(inv.code, inv.uses));
-            guildInvites.set(guild.id, updatedCache);
-        }
-    } catch (inviteError) {
-        console.error('Error tracking invite on guildMemberAdd:', inviteError);
-    }
-});
-
-// Event: Invite created
-client.on('inviteCreate', async invite => {
-    try {
-        const guildId = invite.guild.id;
-        if (!guildInvites.has(guildId)) {
-            guildInvites.set(guildId, new Map());
-        }
-        guildInvites.get(guildId).set(invite.code, invite.uses);
-        console.log(`Cached new invite code ${invite.code} created for guild ${invite.guild.name}`);
-    } catch (e) {
-        console.error('Error in inviteCreate:', e);
-    }
-});
-
-// Event: Invite deleted
-client.on('inviteDelete', invite => {
-    try {
-        const guildId = invite.guild.id;
-        if (guildInvites.has(guildId)) {
-            guildInvites.get(guildId).delete(invite.code);
-            console.log(`Removed deleted invite code ${invite.code} from cache of guild ${invite.guild.name}`);
-        }
-    } catch (e) {
-        console.error('Error in inviteDelete:', e);
-    }
-});
-
-// Event: Guild member leave (charge back invite points if they leave)
-client.on('guildMemberRemove', async member => {
-    try {
-        const mappingPath = path.join(__dirname, 'data', 'invited-members.json');
-        if (fs.existsSync(mappingPath)) {
-            const mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf8'));
-            const inviterId = mapping[member.id];
-            
-            if (inviterId) {
-                const { getUserData, saveUserData } = require('./utils/chat2earn-handler');
-                
-                // Deduct 250 $GECKURA from the inviter
-                const inviterData = getUserData(inviterId);
-                inviterData.tokens = Math.max(0, inviterData.tokens - 250);
-                saveUserData(inviterId, inviterData);
-                
-                console.log(`📉 Invite Chargeback: ${member.user.tag} left the server. Deducted 250 $GECKURA from inviter ${inviterId}.`);
-                
-                // Try to notify the inviter about the chargeback
-                try {
-                    const inviterUser = await client.users.fetch(inviterId);
-                    if (inviterUser) {
-                        const chargebackEmbed = {
-                            title: '📉 Invite Reward Reversed',
-                            description: `The member you invited, **${member.user.username}**, has left the server. As a result, the reward points have been reversed.`,
-                            color: 0xFF5555,
-                            fields: [
-                                { name: 'Deducted Amount', value: '**-250 $GECKURA** tokens', inline: true },
-                                { name: 'Remaining Balance', value: `\`${inviterData.tokens} $GECKURA\``, inline: true }
-                            ],
-                            timestamp: new Date().toISOString(),
-                            footer: {
-                                text: 'Geckura — Turning Chaos into Flow',
-                                icon_url: client.user.displayAvatarURL()
-                            }
-                        };
-                        await inviterUser.send({ embeds: [chargebackEmbed] });
-                    }
-                } catch (dmErr) {
-                    console.log(`Could not send chargeback notice DM to inviter: ${inviterId}`);
-                }
-
-                // Delete member from mapping and save
-                delete mapping[member.id];
-                fs.writeFileSync(mappingPath, JSON.stringify(mapping, null, 2));
-            }
-        }
-    } catch (error) {
-        console.error('Error handling guildMemberRemove invite chargeback:', error);
-    }
 });
 
 // Event: Guild member update (for role upgrades and impersonation check)
@@ -354,7 +150,7 @@ client.on('messageCreate', async message => {
         if (containsUrl) {
             try {
                 // Check if bot has permission to delete messages
-                if (!message.channel.permissionsFor(client.user).has('MANAGE_MESSAGES')) {
+                if (!message.channel.permissionsFor(client.user).has(PermissionFlagsBits.ManageMessages)) {
                     console.error(`Bot doesn't have permission to delete messages in channel ${message.channel.name}`);
                     return;
                 }
@@ -389,7 +185,7 @@ client.on('messageCreate', async message => {
                 
                 // Timeout the user for 48 hours (48 * 60 * 60 * 1000 milliseconds)
                 // Check if bot has permission to timeout members and member is moderatable
-                if (!message.guild.members.me.permissions.has('MODERATE_MEMBERS')) {
+                if (!message.guild.members.me.permissions.has(PermissionFlagsBits.ModerateMembers)) {
                     console.error(`Bot doesn't have permission to timeout members in server ${message.guild.name}`);
                 } else if (!message.member.moderatable) {
                     console.log(`Cannot timeout ${message.author.tag} due to role hierarchy/permissions.`);
@@ -448,81 +244,7 @@ client.on('interactionCreate', async interaction => {
         if (!command) return;
 
         try {
-            // Special handling for the airdrop command
-            if (interaction.commandName === 'airdrop') {
-                const { EmbedBuilder } = require('discord.js');
-                const embed = new EmbedBuilder()
-                    .setTitle('🪂 GECKURA AIRDROP — ELIGIBILITY & MAXIMIZATION GUIDE 🦎')
-                    .setColor('#9D4EDD')
-                    .setThumbnail(client.user.displayAvatarURL())
-                    .setFooter({ text: 'Geckura — Built for movers, rewarded by the system', iconURL: client.user.displayAvatarURL() })
-                    .setTimestamp();
-
-                // Core Eligibility
-                embed.addFields({
-                    name: '🔑 Core Eligibility',
-                    value: 'Hold Geckura Elixir → Required for airdrop eligibility → Grants RevShare, bonus rewards, and more → Geckura Elixir holders receive a FREE mint in the Geckura PFP collection\n\nSecondary Market (Elixir): 🔗https://magiceden.io/marketplace/geckura_elixir',
-                    inline: false
-                });
-
-                // PFP Minting
-                embed.addFields({
-                    name: '🖼 Geckura PFP Minting Soon',
-                    value: 'Mint & Hold a Geckura PFP NFT → Significantly increases airdrop allocation → Snapshot-based rewards',
-                    inline: false
-                });
-
-                // Level System
-                embed.addFields({
-                    name: '⬆️ Level System',
-                    value: 'Level up to Level 20 → Higher levels = higher airdrop weight → Earn XP through activity and engagement',
-                    inline: false
-                });
-
-                // Community Tasks
-                embed.addFields({
-                    name: '📣 Community Tasks',
-                    value: '• Raid all official Geckura tweets\n• Engage consistently (likes, reposts, replies)\n• Be active in Discord discussions\n• Participate in community games & events',
-                    inline: false
-                });
-
-                // Collabs & Partnerships
-                embed.addFields({
-                    name: '🤝 Collabs & Partnerships',
-                    value: '• Bonus rewards from Solana project collaborations\n• Partner campaign participation increases eligibility',
-                    inline: false
-                });
-
-                // Twitter Selection
-                embed.addFields({
-                    name: '🐦 Twitter Selection',
-                    value: '• Random and merit-based picks from Twitter raids & posts\n• Quality engagement matters — spam does not',
-                    inline: false
-                });
-
-                // Important Notes
-                embed.addFields({
-                    name: '⚠️ Important Notes',
-                    value: '• Snapshots will be taken periodically\n• Sybil & low-effort farming will be filtered\n• Final airdrop weights are not disclosed',
-                    inline: false
-                });
-
-                // Summary
-                embed.addFields({
-                    name: '✅ Summary',
-                    value: 'Hold. Mint. Level up. Engage. Raid. Those who contribute to the ecosystem are rewarded.',
-                    inline: false
-                });
-
-                await interaction.reply({ embeds: [embed] });
-            } else {
-                await command.execute(interaction, client, config, whitelistData);
-            }
-
-            // Save whitelist data if modified
-            if (command.modifiesWhitelist) {
-                fs.writeFileSync('./whitelist.json', JSON.stringify(whitelistData, null, 2));
-            }
+            await command.execute(interaction, client, config);
         } catch (error) {
             console.error(error);
             await interaction.reply({
@@ -560,67 +282,281 @@ client.on('interactionCreate', async interaction => {
                 });
             }
         }
-        // Check if this is a whitelist-related button
-        else if (interaction.customId === 'submit_whitelist_wallet' || interaction.customId === 'submit_og_wallet') {
+        // Check if this is a Mystery Box Inquiry button
+        else if (interaction.customId === 'mb_inquire') {
             try {
-                const command = client.commands.get('wallet');
-                if (command && command.handleButton) {
-                    await command.handleButton(interaction);
-                } else {
-                    await interaction.reply({
-                        content: '⚠️ **Error:** Could not find the wallet submission handler. Please try again later.',
-                        ephemeral: true
-                    });
-                }
-            } catch (error) {
-                console.error('Error handling wallet submission button:', error);
-                await interaction.reply({
-                    content: `⚠️ **Error:** ${error.message || 'There was an error processing your wallet submission. Please try again later.'}`,
-                    ephemeral: true
-                });
+                const { EmbedBuilder } = require('discord.js');
+                const embed = new EmbedBuilder()
+                    .setTitle('📩 How to Order / Integrate Mystery Box Utility')
+                    .setDescription('We are excited to power your project! Follow these quick steps to get started:')
+                    .setColor(0x00FF99)
+                    .addFields(
+                        {
+                            name: '1️⃣ Open an Inquiry Ticket',
+                            value: 'Head to our support/ticket channel or DM our founding team (`@Faizan`) to discuss your project requirements.',
+                            inline: false
+                        },
+                        {
+                            name: '2️⃣ Select Your Integration Package',
+                            value: 'Choose between a 1-Time Campaign Drop, Monthly Subscription, or Full White-Label Portal with custom token support.',
+                            inline: false
+                        },
+                        {
+                            name: '3️⃣ Provide Branding & Token Details',
+                            value: 'Share your project logo, banner, preferred color palette, SPL token mint address (if custom token), and prize pool table.',
+                            inline: false
+                        },
+                        {
+                            name: '⚡ 24-Hour Express Deployment',
+                            value: 'Our dev team will deploy your custom Mystery Box portal & Discord webhook integrations within 24 hours!',
+                            inline: false
+                        }
+                    )
+                    .setFooter({ text: 'Geckura B2B Utility Services — Elevating Solana Projects' })
+                    .setTimestamp();
+
+                await interaction.reply({ embeds: [embed], ephemeral: true });
+            } catch (err) {
+                console.error('Error in mb_inquire button:', err);
+                await interaction.reply({ content: '⚠️ Error processing inquiry request.', ephemeral: true });
             }
         }
-        // Check if this is a collection PFP button
-        else if (interaction.customId.startsWith('pfp_')) {
+        // Check if this is a Mystery Box Specs button
+        else if (interaction.customId === 'mb_specs') {
             try {
-                const command = client.commands.get('collection');
-                if (command && command.handleButton) {
-                    await command.handleButton(interaction, client, config);
-                } else {
-                    await interaction.reply({
-                        content: '⚠️ **Error:** Could not find the collection button handler. Please try again later.',
-                        ephemeral: true
-                    });
+                const { EmbedBuilder } = require('discord.js');
+                const embed = new EmbedBuilder()
+                    .setTitle('📜 Mystery Box Utility — Technical Specs & Packages')
+                    .setDescription('Explore our flexible integration packages designed for Web3 & Solana projects of all sizes:')
+                    .setColor(0x9D4EDD)
+                    .addFields(
+                        {
+                            name: '🥉 STARTER TIER (Single Campaign)',
+                            value: '• 1 Custom Mystery Box Setup\n• Supports SOL or $GECKURA payments\n• Standard Webhook win announcements\n• Ideal for 1-time holder drops or event raffles',
+                            inline: false
+                        },
+                        {
+                            name: '🥈 PRO TIER (Monthly Utility Subscription)',
+                            value: '• Up to 3 Simultaneous Mystery Box Tiers (Common / Rare / Legendary)\n• Custom SPL Token Payment Sink (burn or treasury auto-transfer)\n• Dedicated Web App Subdomain (`mysterybox.geckura.app/yourproject`)\n• Live Discord Webhook feeds with role mentions',
+                            inline: false
+                        },
+                        {
+                            name: '🥇 ENTERPRISE TIER (White-Label Portal)',
+                            value: '• Complete standalone custom web application under your custom domain\n• Full custom smart contract logic & dedicated high-speed Solana RPC\n• Real-time admin portal for live prize odds & inventory management\n• Priority 24/7 technical support & custom Discord bot integration',
+                            inline: false
+                        }
+                    )
+                    .setFooter({ text: 'Geckura — Turning Chaos into Flow' })
+                    .setTimestamp();
+
+                await interaction.reply({ embeds: [embed], ephemeral: true });
+            } catch (err) {
+                console.error('Error in mb_specs button:', err);
+                await interaction.reply({ content: '⚠️ Error processing specs request.', ephemeral: true });
+            }
+        }
+        // Check if this is a raffle entry button
+        else if (interaction.customId.startsWith('raffle_enter_')) {
+            try {
+                const raffleId = interaction.customId.replace('raffle_enter_', '');
+                const fs = require('fs');
+                const path = require('path');
+                const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
+                const rafflesPath = path.join(__dirname, 'data', 'raffles.json');
+                
+                if (fs.existsSync(rafflesPath)) {
+                    const raffles = JSON.parse(fs.readFileSync(rafflesPath, 'utf8'));
+                    const raffle = (raffles.active || []).find(r => r.id === raffleId);
+
+                    if (!raffle || raffle.status !== 'active') {
+                        return await interaction.reply({ content: '⚠️ **Raffle Ended:** This raffle is no longer active.', ephemeral: true });
+                    }
+
+                    if (Date.now() > raffle.endTime) {
+                        return await interaction.reply({ content: '⚠️ **Raffle Expired:** Ticket sales for this raffle have concluded.', ephemeral: true });
+                    }
+
+                    if (raffle.maxTickets && (raffle.tickets || []).length >= raffle.maxTickets) {
+                        return await interaction.reply({ content: '⚠️ **Sold Out:** Maximum ticket capacity reached!', ephemeral: true });
+                    }
+
+                    const userTicketCount = (raffle.tickets || []).filter(t => t.discordId === interaction.user.id).length;
+                    if (raffle.maxPerUser && userTicketCount >= raffle.maxPerUser) {
+                        return await interaction.reply({
+                            content: `⚠️ **Per-User Limit Reached:** You have already bought **${userTicketCount} / ${raffle.maxPerUser}** allowed tickets for this raffle.`,
+                            ephemeral: true
+                        });
+                    }
+
+                    // Open modal for ticket purchase
+                    const modal = new ModalBuilder()
+                        .setCustomId(`raffle_modal_${raffle.id}`)
+                        .setTitle(`🎟️ Buy Raffle Ticket (${raffle.ticketPrice} ${raffle.currency})`);
+
+                    const txInput = new TextInputBuilder()
+                        .setCustomId('tx_sig_input')
+                        .setLabel(raffle.currency === 'GECKURA' ? 'Confirm Purchase (Type AGREE to confirm)' : `Solana TX Signature (${raffle.currency} Transfer)`)
+                        .setPlaceholder(raffle.currency === 'GECKURA' ? 'Type AGREE' : `Paste TX hash sent to ${raffle.treasuryWallet.slice(0, 6)}...`)
+                        .setStyle(TextInputStyle.Short)
+                        .setRequired(true);
+
+                    const firstRow = new ActionRowBuilder().addComponents(txInput);
+                    modal.addComponents(firstRow);
+
+                    await interaction.showModal(modal);
                 }
             } catch (error) {
-                console.error('Error handling collection button:', error);
-                await interaction.reply({
-                    content: '⚠️ **Error:** There was an error processing your selection. Please try again later.',
-                    ephemeral: true
-                });
+                console.error('Error handling raffle button modal:', error);
+                await interaction.reply({ content: '⚠️ Error opening ticket purchase dialog.', ephemeral: true });
             }
         }
     }
     // Handle modal submissions
     else if (interaction.isModalSubmit()) {
-        // Check if this is a wallet-related modal
-        if (interaction.customId.includes('wallet-submit-')) {
+        // Check if this is a raffle entry modal
+        if (interaction.customId.startsWith('raffle_modal_')) {
             try {
-                const command = client.commands.get('wallet');
-                if (command && command.handleModal) {
-                    await command.handleModal(interaction);
-                } else {
-                    await interaction.reply({
-                        content: '⚠️ **Error:** Could not find the wallet submission handler. Please try again later.',
-                        ephemeral: true
+                await interaction.deferReply({ ephemeral: true });
+                const raffleId = interaction.customId.replace('raffle_modal_', '');
+                const fs = require('fs');
+                const path = require('path');
+                const { Connection } = require('@solana/web3.js');
+                const { buildRaffleEmbed, executeDraw } = require('./commands/raffle');
+
+                const rafflesPath = path.join(__dirname, 'data', 'raffles.json');
+                const userBalancePath = path.join(__dirname, 'data', 'chat2earn-users.json');
+
+                if (!fs.existsSync(rafflesPath)) return await interaction.editReply({ content: '⚠️ Raffle data error.' });
+                
+                const raffles = JSON.parse(fs.readFileSync(rafflesPath, 'utf8'));
+                const raffle = (raffles.active || []).find(r => r.id === raffleId);
+
+                if (!raffle || raffle.status !== 'active') {
+                    return await interaction.editReply({ content: '⚠️ **Raffle Ended:** This raffle is no longer active.' });
+                }
+
+                const userTicketCount = (raffle.tickets || []).filter(t => t.discordId === interaction.user.id).length;
+                if (raffle.maxPerUser && userTicketCount >= raffle.maxPerUser) {
+                    return await interaction.editReply({
+                        content: `⚠️ **Per-User Limit Reached:** You have already bought **${userTicketCount} / ${raffle.maxPerUser}** allowed tickets for this raffle.`
                     });
                 }
-            } catch (error) {
-                console.error('Error handling wallet submission modal:', error);
-                await interaction.reply({
-                    content: '⚠️ **Error:** There was an error submitting your wallet. Please try again later.',
-                    ephemeral: true
+
+                const submittedInput = interaction.fields.getTextInputValue('tx_sig_input').trim();
+
+                // 1. $GECKURA Token Payment
+                if (raffle.currency === 'GECKURA') {
+                    let userData = {};
+                    if (fs.existsSync(userBalancePath)) {
+                        userData = JSON.parse(fs.readFileSync(userBalancePath, 'utf8'));
+                    }
+                    const userObj = userData[interaction.user.id] || { tokens: 0 };
+
+                    if (userObj.tokens < raffle.ticketPrice) {
+                        return await interaction.editReply({
+                            content: `⚠️ **Insufficient Balance:** You have \`${userObj.tokens} $GECKURA\` but ticket costs \`${raffle.ticketPrice} $GECKURA\`.`
+                        });
+                    }
+
+                    userObj.tokens -= raffle.ticketPrice;
+                    userData[interaction.user.id] = userObj;
+                    fs.writeFileSync(userBalancePath, JSON.stringify(userData, null, 2));
+
+                    const ticketNum = (raffle.tickets || []).length + 1;
+                    raffle.tickets.push({
+                        ticketNumber: ticketNum,
+                        discordId: interaction.user.id,
+                        discordTag: interaction.user.tag,
+                        timestamp: new Date().toISOString(),
+                        txSignature: 'INTERNAL_TOKEN_PAYMENT'
+                    });
+
+                    fs.writeFileSync(rafflesPath, JSON.stringify(raffles, null, 2));
+
+                    // Update channel message
+                    if (raffle.messageId && raffle.channelId) {
+                        try {
+                            const channel = await client.channels.fetch(raffle.channelId);
+                            if (channel) {
+                                const originalMsg = await channel.messages.fetch(raffle.messageId);
+                                if (originalMsg) {
+                                    await originalMsg.edit({ embeds: [buildRaffleEmbed(raffle)] });
+                                }
+                            }
+                        } catch (e) {}
+                    }
+
+                    await interaction.editReply({
+                        content: `🎉 **Ticket Purchased!** Confirmed Ticket **#${ticketNum}** for \`${raffle.ticketPrice} $GECKURA\`! Good luck in the draw!`
+                    });
+
+                    // Check Instant Sell Out Auto-Draw
+                    if (raffle.maxTickets && raffle.tickets.length >= raffle.maxTickets) {
+                        await executeDraw(client, raffle);
+                    }
+                    return;
+                }
+
+                // 2. SOL / SPL On-Chain Payment
+                if (!submittedInput || submittedInput.length < 32) {
+                    return await interaction.editReply({ content: '⚠️ **Invalid Solana Transaction Hash:** Please submit a valid transaction signature.' });
+                }
+
+                // Check TX signature duplicate
+                if ((raffle.tickets || []).some(t => t.txSignature === submittedInput)) {
+                    return await interaction.editReply({ content: '⚠️ **Duplicate TX:** This transaction signature has already been submitted for a ticket.' });
+                }
+
+                // On-chain verification via RPC
+                const SOLANA_RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
+                const connection = new Connection(SOLANA_RPC, 'confirmed');
+
+                const tx = await connection.getParsedTransaction(submittedInput, { commitment: 'confirmed', maxSupportedTransactionVersion: 0 });
+
+                if (!tx || !tx.meta) {
+                    return await interaction.editReply({ content: '⚠️ **Transaction Not Found:** Signature not found on Solana mainnet. Please wait a few seconds and try again.' });
+                }
+
+                if (tx.meta.err) {
+                    return await interaction.editReply({ content: '⚠️ **Transaction Failed:** Transaction failed on-chain.' });
+                }
+
+                const ticketNum = (raffle.tickets || []).length + 1;
+                raffle.tickets.push({
+                    ticketNumber: ticketNum,
+                    discordId: interaction.user.id,
+                    discordTag: interaction.user.tag,
+                    timestamp: new Date().toISOString(),
+                    txSignature: submittedInput
                 });
+
+                fs.writeFileSync(rafflesPath, JSON.stringify(raffles, null, 2));
+
+                // Update channel message
+                if (raffle.messageId && raffle.channelId) {
+                    try {
+                        const channel = await client.channels.fetch(raffle.channelId);
+                        if (channel) {
+                            const originalMsg = await channel.messages.fetch(raffle.messageId);
+                            if (originalMsg) {
+                                await originalMsg.edit({ embeds: [buildRaffleEmbed(raffle)] });
+                            }
+                        }
+                    } catch (e) {}
+                }
+
+                await interaction.editReply({
+                    content: `✅ **On-Chain Payment Verified!** Ticket **#${ticketNum}** confirmed for raffle **${raffle.title}**!\nTransaction: [View on Solscan](https://solscan.io/tx/${submittedInput})`
+                });
+
+                // Check Instant Sell Out Auto-Draw
+                if (raffle.maxTickets && raffle.tickets.length >= raffle.maxTickets) {
+                    await executeDraw(client, raffle);
+                }
+
+            } catch (error) {
+                console.error('Error in raffle modal submission:', error);
+                await interaction.editReply({ content: `⚠️ Error verifying ticket: ${error.message || 'Unknown error'}` });
             }
         }
     }

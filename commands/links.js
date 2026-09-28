@@ -42,8 +42,8 @@ module.exports = {
                 inline: false
             },
             {
-                name: '🖼️ Mint',
-                value: '🔜 **Coming Soon** — Stay tuned for the official mint announcement!',
+                name: '🔥 Mint Live Now',
+                value: `[Mint Geckura Collection](${config.links.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'})`,
                 inline: false
             },
             {

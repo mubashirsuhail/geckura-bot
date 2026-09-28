@@ -73,8 +73,8 @@
     ]
   },
   "staking": {
-    "status": "Planned",
-    "description": "NFT staking will allow holders to earn rewards and unlock additional ecosystem benefits.",
+    "status": "Live",
+    "description": "NFT staking allows holders to earn rewards and unlock additional ecosystem benefits.",
     "benefits": [
       "Passive rewards",
       "Holder incentives",
@@ -83,14 +83,19 @@
     ]
   },
   "trait_shop": {
-    "status": "Planned",
-    "description": "The Trait Shop will allow holders to customize their Geckura NFTs.",
+    "status": "Live",
+    "description": "The Trait Shop allows holders to customize their Geckura NFTs with Aura Mods.",
     "features": [
       "NFT customization",
       "Exclusive traits",
       "Collectible cosmetics",
       "Future upgrades"
     ]
+  },
+  "mint": {
+    "status": "Live",
+    "link": "https://launchpad.tribexlabs.xyz/geckura",
+    "description": "Official Geckura Collection Mint is currently live on TribeX Launchpad."
   },
   "holder_benefits": {
     "why_buy": [
@@ -140,6 +145,10 @@
       "answer": "333 paid mint, 150 reserved for Elixir holders, 150 free mints for Solana communities, and 66 reserved for the team, treasury, partnerships, and marketing."
     },
     {
+      "question": "Where can I mint Geckura?",
+      "answer": "Mint is live now on TribeX Launchpad at https://launchpad.tribexlabs.xyz/geckura"
+    },
+    {
       "question": "What is GECKURA?",
       "answer": "GECKURA is the ecosystem's non-LP reward and utility token."
     },
@@ -173,11 +182,11 @@
     },
     {
       "question": "Will staking be available?",
-      "answer": "Yes. NFT staking is a planned utility."
+      "answer": "Yes. NFT staking is currently LIVE."
     },
     {
-      "question": "Will there be a Trait Shop?",
-      "answer": "Yes. Holders will be able to customize their NFTs with collectible traits."
+      "question": "Is there a Trait Shop?",
+      "answer": "Yes. The Trait Shop is LIVE, allowing holders to customize their NFTs with collectible traits."
     },
     {
       "question": "Does Geckura provide services to other projects?",
@@ -185,15 +194,19 @@
     }
   ],
   "roadmap": {
-    "planned_features": [
-      "NFT Staking",
-      "Trait Shop",
-      "Expanded Mystery Boxes",
-      "Additional token utilities",
-      "Community reward systems",
-      "Holder-exclusive features",
-      "White-label ecosystem expansion",
-      "Future partnerships"
+    "achieved": [
+      "Social Media & Website Launch",
+      "Strategic Collaborations & Partnerships",
+      "Solana Mystery Box Utility Launch",
+      "Geckura Mint Live on TribeX",
+      "NFT Staking Rewards System",
+      "Trait Shop Customization Portal"
+    ],
+    "upcoming": [
+      "Geckura LP Token Mining & Liquidity Pools",
+      "Gamified Web3 Mini-Games",
+      "Expanded Mystery Box Pools",
+      "White-Label B2B Ecosystem Integrations"
     ]
   }
 }

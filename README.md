@@ -1,111 +1,78 @@
-# Geckura Discord Bot
+# Geckura Discord Bot 🦎
 
-A professional Discord bot for the Geckura NFT project on Solana, featuring embed management, whitelist system, roadmap display, and more.
+A clean, modern Discord bot for the Geckura Solana ecosystem, featuring NFT flexing, wallet connecting, level/XP system, and community management.
 
-## 🦎 Features
+## 🌟 Features
 
-- **Embed Posting Command** (`/embed`) - Create styled embed messages with custom titles, descriptions, images, and colors
-- **Whitelist System** (`/whitelist`) - Manage whitelisted users with wallet addresses
-- **Role Auto-Assign** - Automatically assigns roles when users get whitelisted
-- **Roadmap Command** (`/roadmap`) - Display the project roadmap in a stylized embed
-- **Utility Embed Command** (`/utility`) - Show information about Geckura utilities
-- **Link Hub Command** (`/links`) - Display social links in an embed
-- **Mint Info Command** (`/mintinfo`) - Display mint information
-- **Announcement Command** (`/announce`) - Create styled announcement embeds with pings
-- **Wallet Verification** (`/verify`) - Allow users to verify their wallet addresses
+- **NFT Flexing** (`/flex`) — Flex your owned Solana & Geckura NFTs with high-resolution image embeds, collection details, mint address links, and interactive navigation buttons.
+- **Wallet Connection** (`/connect` / `/wallet`) — Link your Solana wallet address for NFT flexing, WL, and community rewards.
+- **Leveling & Economy** (`/level`, `/balance`, `/daily`, `/leaderboard`) — Chat2Earn system awarding XP and $GECKURA tokens for activity.
+- **Embed & Announcements** (`/embed`, `/announce`) — Styled embed message builder and announcement tools.
+- **Community Hub** (`/links`, `/roadmap`, `/utility`, `/tweet`) — Display official links, roadmap, utility details, and Twitter raid tracking.
 
-## 🚀 Setup
+## 🚀 Setup & Installation
 
 ### Prerequisites
 
 - Node.js 16.6.0 or higher
-- A Discord bot application with the appropriate permissions
+- A Discord Bot Application token
 
-### Installation
+### Configuration
 
-1. Clone this repository:
-   ```
-   git clone https://github.com/gh00sty123/geckura.git
-   cd geckura
-   ```
-
-2. Install dependencies:
-   ```
+1. Clone & install dependencies:
+   ```bash
    npm install
    ```
 
-3. Configure the bot:
-   - Fill in your bot token, client ID, and guild ID in the `.env` file
-   - Update `config.json` with your server-specific settings (role names, channel names, etc.)
-
-4. Register the slash commands:
+2. Configure environment variables in `.env`:
+   ```env
+   DISCORD_TOKEN=your_bot_token_here
+   CLIENT_ID=your_client_id_here
+   GUILD_ID=your_guild_id_here
    ```
+
+3. Register slash commands:
+   ```bash
    npm run deploy
    ```
 
-5. Start the bot:
-   ```
+4. Start the bot:
+   ```bash
    npm start
    ```
 
-## 📋 Configuration
-
-### Environment Variables (.env)
-
-- `DISCORD_TOKEN`: Your Discord bot token
-- `CLIENT_ID`: Your Discord application ID
-- `GUILD_ID`: Your Discord server ID (for testing commands)
-- `MONGODB_URI`: MongoDB connection string (optional, for production)
-
-### Config File (config.json)
-
-The `config.json` file contains various settings for the bot:
-
-- `colors`: Theme colors for embeds
-- `roles`: Role names used by the bot
-- `channels`: Channel names for specific functions
-- `links`: Social media links
-- `footer`: Default footer text for embeds
-
-## 🛠️ Commands
-
-### Admin/Alchemist Only Commands
-
-- `/embed` - Create a styled embed message
-- `/whitelist add` - Add a user to the whitelist
-- `/whitelist list` - List all whitelisted users
-- `/whitelist check` - Check if a user is whitelisted
-- `/announce` - Create a styled announcement embed
+## 🛠️ Slash Commands
 
 ### Public Commands
+- `/flex` — Flex your owned NFTs from your connected Solana wallet
+- `/connect` — Connect your Solana wallet address
+- `/raffle enter` — Enter an active Solana NFT/Token raffle with SOL, SPL, or $GECKURA
+- `/raffle list` — View all active Solana raffles
+- `/wallet` — Submit or check your linked wallet address
+- `/my-wallet` — Check your saved wallet address
+- `/balance` — View your current $GECKURA token balance & XP
+- `/daily` — Claim daily $GECKURA tokens & XP
+- `/level` — Check your rank, level, and XP progress
+- `/leaderboard` — View server XP and token rankings
+- `/roadmap` — Display the project roadmap
+- `/utility` — View Geckura ecosystem utility details
+- `/links` — Display official links and social media hubs
 
-- `/roadmap` - Display the project roadmap
-- `/utility` - Show information about Geckura utilities
-- `/links` - Display social links
-- `/mintinfo` - Display mint information
-- `/verify` - Verify your wallet address
+### Admin & Staff Commands
+- `/raffle create` — Create a new Solana NFT/Token raffle with custom treasury wallet & ticket price
+- `/raffle draw` — Draw a verifiable winner for a raffle
+- `/admin` — Access admin setup and configuration panel
+- `/embed` — Build custom styled Discord embeds
+- `/announce` — Send stylized announcement embeds
+- `/wallets` — View and search submitted member wallets
+- `/reset-ranks` — Reset server XP/ranks
+- `/welcome-setup` — Configure welcome channel and rules
 
-## 🔐 Security
+## 🔐 Security & Moderation
 
-- Only users with "Admin" or "Alchemist" roles can use admin commands
-- Environment variables are used to store sensitive information
-- The bot uses role-based permissions to control access to features
-
-## 🎨 Customization
-
-You can customize the bot's appearance and behavior by modifying the `config.json` file:
-
-- Change colors to match your brand
-- Update role names to match your server
-- Modify the footer text
-- Update social media links
-
-## 📝 License
-
-This project is licensed under the MIT License.
+- **Impersonation Guard**: Automatic detection and banning of accounts impersonating team members, founders, or official bots.
+- **Anti-Spam & Link Filter**: Automatic message rate-limiting and link moderation.
+- **Invite Tracking**: Automatic reward system for inviing members (with automatic chargebacks if invited members leave).
 
 ## 🦎 Geckura
-
-Geckura — Turning Chaos into Flow
-
-Your trading dojo assistant — guiding Seekers and Alchemists through the Solana flow.
+*Geckura — Turning Chaos into Flow*

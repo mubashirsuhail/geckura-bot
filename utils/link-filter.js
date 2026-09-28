@@ -1,13 +1,13 @@
-const { Events } = require('discord.js');
+const { Events, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     name: Events.MessageCreate,
     async execute(message) {
-        // Ignore messages from bots
-        if (message.author.bot) return;
+        // Ignore messages from bots or DMs
+        if (message.author.bot || !message.guild || !message.member) return;
 
         // Check if user has admin permissions
-        const isAdmin = message.member.permissions.has('Administrator');
+        const isAdmin = message.member.permissions.has(PermissionFlagsBits.Administrator);
 
         // If not admin and contains a link
         if (!isAdmin && containsLink(message.content)) {

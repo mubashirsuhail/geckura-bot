@@ -1,0 +1,45 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "🎁 GECKURA MYSTERY BOX UTILITY — Solana Integration for Projects",
+      "description": "**Supercharge your project ecosystem with fully automated, gamified Solana Mystery Boxes!**\n\nProvide real utility to your holders, sink native tokens, drive marketplace volume, and automate reward distribution with zero code needed on your end.",
+      "color": 65433,
+      "fields": [
+        {
+          "name": "⚡ Custom Token & SOL Payments",
+          "value": "• Support **SOL** or **your native SPL Token**\n• Automatic SPL token sink to reduce supply\n• On-chain signature verification & ATA balance checking"
+        },
+        {
+          "name": "🎯 Verifiable On-Chain Fair Odds",
+          "value": "• Provably fair randomness for every prize roll\n• Instant prize claiming & wallet transfers\n• Supports NFTs, SPL Tokens, Whitelist Spots, & Custom Rewards"
+        },
+        {
+          "name": "🎨 White-Label UI & Dedicated Branding",
+          "value": "• Custom branded landing page with your project logo & color scheme\n• Dedicated project URL (e.g. `mysterybox.geckura.app/yourproject`)\n• Mobile & desktop responsive web app interface"
+        },
+        {
+          "name": "🔔 Discord Webhook & Live Bot Alerts",
+          "value": "• Automated live draw feed into your project Discord\n• Instant win announcements & winner mentions\n• Automatic role assignment for mystery box openers"
+        },
+        {
+          "name": "📊 Real-Time Admin Portal & Analytics",
+          "value": "• Live dashboard to set odds, adjust box tiers, and view revenue\n• Full audit logging of all opens, transactions, and user wallets\n• Direct treasury payout configuration"
+        },
+        {
+          "name": "🤝 Ready to Boost Your Project Utility?",
+          "value": "Get your custom Mystery Box deployed in **under 24 hours**. DM `@Faizan` or open a ticket to inquire!"
+        }
+      ],
+      "thumbnail": {
+        "url": "https://i.imgur.com/GeckuraBanner.png"
+      },
+      "image": {
+        "url": "https://i.imgur.com/GeckuraBanner.png"
+      },
+      "footer": {
+        "text": "Geckura Mystery Box Services — Elevate Your Ecosystem"
+      }
+    }
+  ]
+}

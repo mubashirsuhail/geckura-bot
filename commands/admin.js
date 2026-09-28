@@ -15,8 +15,6 @@ module.exports = {
                     { name: 'Give tokens', value: 'give' },
                     { name: 'Remove tokens', value: 'remove' },
                     { name: 'Reset user', value: 'reset' },
-                    { name: 'Add shop item', value: 'add-item' },
-                    { name: 'Add shop role', value: 'add-role' },
                     { name: 'Approve tweet', value: 'tweet-approve' },
                     { name: 'Reject tweet', value: 'tweet-reject' },
                     { name: 'Configure tweet rewards', value: 'tweet-config' }
@@ -223,77 +221,6 @@ module.exports = {
                         { name: 'Admin', value: interaction.user.username, inline: true }
                     );
 
-                await interaction.reply({ embeds: [embed] });
-                break;
-                
-            case 'add-item':
-                const itemName = interaction.options.getString('item-name');
-                const itemDescription = interaction.options.getString('item-description');
-                const itemPrice = interaction.options.getInteger('price');
-                const itemSupply = interaction.options.getInteger('supply');
-                
-                if (!itemName || !itemDescription || !itemPrice) {
-                    return await interaction.reply({
-                        content: "Missing required parameters: item-name, item-description, and price are required.",
-                        ephemeral: true
-                    });
-                }
-                
-                this.addShopItem('item', {
-                    name: itemName,
-                    description: itemDescription,
-                    price: itemPrice,
-                    supply: itemSupply || null,
-                    active: true,
-                    id: Date.now().toString()
-                });
-                
-                embed
-                    .setTitle('Shop Item Added')
-                    .setDescription(`Added **${itemName}** to the shop for **${itemPrice} $GECKURA**`)
-                    .addFields(
-                        { name: 'Admin', value: interaction.user.username, inline: true }
-                    );
-                
-                if (itemSupply) {
-                    embed.addFields({ name: 'Supply', value: `${itemSupply} units`, inline: true });
-                } else {
-                    embed.addFields({ name: 'Supply', value: 'Unlimited', inline: true });
-                }
-                
-                await interaction.reply({ embeds: [embed] });
-                break;
-                
-            case 'add-role':
-                const roleName = interaction.options.getString('item-name');
-                const roleDescription = interaction.options.getString('item-description');
-                const rolePrice = interaction.options.getInteger('price');
-                const discordRole = interaction.options.getRole('role');
-                
-                if (!roleName || !roleDescription || !rolePrice || !discordRole) {
-                    return await interaction.reply({
-                        content: "Missing required parameters: item-name, item-description, price, and role are required.",
-                        ephemeral: true
-                    });
-                }
-                
-                this.addShopItem('role', {
-                    name: roleName,
-                    description: roleDescription,
-                    price: rolePrice,
-                    roleId: discordRole.id,
-                    active: true,
-                    id: Date.now().toString()
-                });
-                
-                embed
-                    .setTitle('Shop Role Added')
-                    .setDescription(`Added **${roleName}** role to the shop for **${rolePrice} $GECKURA**`)
-                    .addFields(
-                        { name: 'Admin', value: interaction.user.username, inline: true },
-                        { name: 'Discord Role', value: `<@&${discordRole.id}>`, inline: true }
-                    );
-                
                 await interaction.reply({ embeds: [embed] });
                 break;
                 

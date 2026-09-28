@@ -1,74 +1,84 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('roadmap')
-        .setDescription('Display the Geckura roadmap'),
+        .setDescription('Display the Geckura roadmap & achieved milestones'),
 
     async execute(interaction, client, config, whitelistData) {
         const embed = new EmbedBuilder()
-            .setTitle('🧭 GECKURA ROADMAP')
-            .setColor('#9D4EDD')
+            .setTitle('🧭 GECKURA ROADMAP & MILESTONES')
+            .setColor(parseInt(config.colors?.secondary?.replace('#', '') || '9D4EDD', 16))
             .setThumbnail(client.user.displayAvatarURL())
-            .setFooter({ text: 'Geckura — Turning Chaos into Flow', iconURL: client.user.displayAvatarURL() })
+            .setDescription('From vision to reality — tracking the evolution and growth of the Geckura ecosystem.')
+            .setFooter({ text: config.footer || 'Geckura — Turning Chaos into Flow', iconURL: client.user.displayAvatarURL() })
             .setTimestamp();
 
-        // Phase 1
+        // Achieved Phase 1
         embed.addFields({
-            name: '🚀 Phase 1 — Foundation',
-            value: 'Social media launch & community building\nOfficial Geckura website launch\nBrand positioning & ecosystem vision reveal',
+            name: '✅ Phase 1 — Launch & Socials (ACHIEVED)',
+            value: '• Official Geckura Website & Social Media launch\n• Brand positioning & community hub setup\n• Strategic Web3 collabs & partner growth',
             inline: false
         });
 
-        // Phase 2
+        // Achieved Phase 2
         embed.addFields({
-            name: '🤝 Phase 2 — Collabs & Growth',
-            value: 'Strategic collaborations & partnerships\nInfluencer, creator & community marketing\nEarly visibility across Web3 platforms',
+            name: '✅ Phase 2 — Core Utilities Launch (ACHIEVED)',
+            value: '• Solana Mystery Box utility portal launch\n• Chat2Earn & gamified token distribution\n• White-label utility architecture initialized',
             inline: false
         });
 
-        // Phase 3
+        // Live Mint Phase
         embed.addFields({
-            name: '🧪 Phase 3 — Elixir Launch',
-            value: 'FREE Geckura Elixir NFT for early adopters\nWhitelist-based distribution\nEarly supporter recognition',
+            name: '🔥 Phase 3 — Geckura Mint (LIVE NOW)',
+            value: '• **Official Geckura Mint is LIVE!**\n• Mint Portal: [launchpad.tribexlabs.xyz/geckura](https://launchpad.tribexlabs.xyz/geckura)',
             inline: false
         });
 
-        // Phase 4
+        // Achieved Phase 4
         embed.addFields({
-            name: '🔄 Phase 4 — Secondary Market',
-            value: 'Geckura Elixir listed on secondary marketplaces\nOpen trading & liquidity\nHolder discovery & ecosystem expansion',
+            name: '✅ Phase 4 — Staking Rewards & Trait Shop (ACHIEVED)',
+            value: '• NFT Staking & Aura Level reward systems active\n• Trait Shop (Aura Mods) customization live\n• 40% Secondary royalty revenue share model',
             inline: false
         });
 
-        // Phase 5
+        // Next Phase 5
         embed.addFields({
-            name: '🎨 Phase 5 — PFP & Token Campaign',
-            value: 'Geckura PFP Collection launch\n$GECKURA token airdrop campaign\nHolder rewards & ecosystem incentives',
+            name: '⏳ Phase 5 — LP Token Mining & Web3 Games (NEXT)',
+            value: '• Geckura LP Token liquidity mining & yield farming\n• Interactive Web3 mini-games & quest rewards\n• Ecosystem token sinks & expanded utility mechanics',
             inline: false
         });
 
-        // Phase 6
+        // Future Phase 6
         embed.addFields({
-            name: '🔒 Phase 6 — Staking & Rewards',
-            value: 'NFT staking for Geckura holders\nOngoing airdrops & reward cycles\nLong-term holder incentives',
-            inline: false
-        });
-
-        // Phase 7
-        embed.addFields({
-            name: '⚙️ Phase 7 — Ecosystem Utilities',
-            value: 'Utility expansion across the Geckura ecosystem\nDAO tooling & governance activation\nContinuous feature & use-case additions',
+            name: '🚀 Phase 6 — Ecosystem Expansion (COMING SOON)',
+            value: '• B2B White-Label suite scaling for partner projects\n• Alpha DAO & trading tools optimization\n• Continuous utility drops & ecosystem innovations',
             inline: false
         });
 
         // Journey Forward
         embed.addFields({
             name: '🧬 THE JOURNEY FORWARD',
-            value: 'Geckura is not a one-time drop — it\'s a living ecosystem. Built with holders. Grown by community. Powered by long-term vision. 🚀',
+            value: 'Geckura is not just a drop — it\'s a living Solana ecosystem. Built with holders. Grown by community. Powered by real utility. 🚀',
             inline: false
         });
 
-        await interaction.reply({ embeds: [embed] });
+        // Action Row with Mint Link Button
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setLabel('🔥 Mint Live on TribeX')
+                .setStyle(ButtonStyle.Link)
+                .setURL(config.links?.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'),
+            new ButtonBuilder()
+                .setLabel('🌐 Official Website')
+                .setStyle(ButtonStyle.Link)
+                .setURL(config.links?.website || 'https://geckura.app/'),
+            new ButtonBuilder()
+                .setLabel('🎁 Mystery Boxes')
+                .setStyle(ButtonStyle.Link)
+                .setURL(config.links?.mysteryBox || 'https://mysterybox.geckura.app/')
+        );
+
+        await interaction.reply({ embeds: [embed], components: [row] });
     }
 };

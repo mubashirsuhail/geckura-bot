@@ -17,8 +17,7 @@
   "channels": {
     "general": "1436744195145597169",
     "announcements": "announcements",
-    "roadmap": "roadmap",
-    "whitelist": "whitelist"
+    "roadmap": "roadmap"
   },
   "links": {
     "website": "https://geckura.app/",
@@ -27,7 +26,7 @@
     "airdrop": "http://airdrop.geckura.app/",
     "twitter": "https://x.com/Geckura",
     "discord": "https://discord.gg/yChGaA6HmJ",
-    "mintSite": "https://mint.geckura.com",
+    "mintSite": "https://launchpad.tribexlabs.xyz/geckura",
     "banner": "https://i.imgur.com/GeckuraBanner.png",
     "elixirMarket": "https://magiceden.io/marketplace/geckura_elixir"
   },
