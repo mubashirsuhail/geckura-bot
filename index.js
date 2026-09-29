@@ -497,7 +497,11 @@ client.on('interactionCreate', async interaction => {
                 return await handleVerificationModalSubmit(interaction, client);
             } catch (err) {
                 console.error('Error handling verification modal submit:', err);
-                return await interaction.reply({ content: '⚠️ Error processing wallet verification.', ephemeral: true });
+                if (interaction.deferred || interaction.replied) {
+                    return await interaction.editReply({ content: '⚠️ Error processing wallet verification.' });
+                } else {
+                    return await interaction.reply({ content: '⚠️ Error processing wallet verification.', ephemeral: true });
+                }
             }
         }
         // Check if this is a raffle entry modal
