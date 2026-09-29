@@ -14,6 +14,52 @@
         "geckoName": "Gecko #07"
       },
       "status": "COMPLETED"
+    },
+    {
+      "frenzyId": "frenzy_1790683512319_11",
+      "startTime": 1790683512319,
+      "endTime": 1790683572538,
+      "playersCount": 10,
+      "rewardToken": "$GECKURA",
+      "rewardAmount": 1000,
+      "winner": {
+        "discordId": "user-001",
+        "username": "SolanaWhaleGecko",
+        "geckoName": "Gecko #01",
+        "wallet": "11111111111111111111111111111111"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "frenzyId": "frenzy_1790683583660_617",
+      "startTime": 1790683583660,
+      "endTime": 1790683649741,
+      "playersCount": 10,
+      "rewardToken": "$GECKURA",
+      "rewardAmount": 1000,
+      "winner": {
+        "discordId": "user-006",
+        "username": "MysticGecko",
+        "geckoName": "Gecko #06",
+        "wallet": "44444444444444444444444444444444"
+      },
+      "status": "COMPLETED"
+    },
+    {
+      "frenzyId": "frenzy_1790700423567_403",
+      "creatorId": "1040680172472516729",
+      "startTime": 1790700423568,
+      "endTime": 1790700634111,
+      "playersCount": 3,
+      "rewardToken": "gaura",
+      "rewardAmount": 1000,
+      "winner": {
+        "discordId": "1308341450693541911",
+        "username": "username.88#0",
+        "geckoName": "Gecko #01",
+        "wallet": "FsCS6c4eqmRbPMQf7sypSsABVUNXxTEfaTMYSyyUyVhx"
+      },
+      "status": "COMPLETED"
     }
   ]
 }
