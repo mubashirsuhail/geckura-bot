@@ -418,6 +418,27 @@ class FrenzyManager {
                     saveUserData(winner.discordId, userData);
                 }
 
+                // Attempt On-Chain Payout if Winner Has Linked Solana Wallet
+                const winnerUserData = getUserData(winner.discordId);
+                let proofText = '';
+
+                if (winnerUserData && winnerUserData.solanaWallet) {
+                    try {
+                        const { sendTokenReward } = require('./solana-payout');
+                        const payoutResult = await sendTokenReward(
+                            winnerUserData.solanaWallet,
+                            frenzy.rewardAmount,
+                            process.env.GECKURA_TOKEN_MINT
+                        );
+
+                        if (payoutResult.success && payoutResult.explorerUrl) {
+                            proofText = `\n\n🔗 **ON-CHAIN SOLSCAN PROOF**\n[View Transaction on Solscan](${payoutResult.explorerUrl})\n\`${payoutResult.txSignature}\``;
+                        }
+                    } catch (payoutErr) {
+                        console.error('On-chain payout attempt error:', payoutErr);
+                    }
+                }
+
                 // Final Winner Embed
                 const winnerEmbed = new EmbedBuilder()
                     .setTitle('👑 GECKO FRENZY COMPLETE')
@@ -428,11 +449,12 @@ class FrenzyManager {
                         `🦎 **${winner.name}** (<@${winner.discordId}>)\n\n` +
                         `🔥 **LAST GECKO STANDING**\n\n` +
                         `💰 **REWARD PAID**\n` +
-                        `**${frenzy.rewardAmount.toLocaleString()} ${frenzy.rewardToken}**\n\n` +
+                        `**${frenzy.rewardAmount.toLocaleString()} ${frenzy.rewardToken}**` +
+                        `${proofText}\n\n` +
                         `━━━━━━━━━━━━━━━━━━━━\n` +
                         `GG, Gecko!`
                     )
-                    .setFooter({ text: 'Geckura Gecko Frenzy — Where Chaos Meets Rewards!' })
+                    .setFooter({ text: 'Geckura Gecko Frenzy — Verified Solana On-Chain Payouts!', iconURL: client.user?.displayAvatarURL() })
                     .setTimestamp();
 
                 await channel.send({ embeds: [winnerEmbed] });
@@ -449,7 +471,8 @@ class FrenzyManager {
                     winner: {
                         discordId: winner.discordId,
                         username: winner.username,
-                        geckoName: winner.name
+                        geckoName: winner.name,
+                        wallet: winnerUserData ? winnerUserData.solanaWallet : null
                     },
                     status: 'COMPLETED'
                 });
