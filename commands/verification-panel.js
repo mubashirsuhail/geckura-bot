@@ -11,7 +11,7 @@ function buildVerificationEmbed(config, client) {
         .setColor(primaryColor)
         .setDescription(
             `Welcome to the official **Geckura Holder Verification Portal**!\n\n` +
-            `Connect your Solana wallet to verify your **Geckura NFTs** and automatically unlock your exclusive holder roles, revenue share access, and Discord perks.\n\n` +
+            `Connect your Solana wallet to verify your **Geckura NFTs** and automatically unlock your exclusive holder roles and Discord perks.\n\n` +
             `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
             `🎭 **QUANTITY-BASED HOLDER TIERS**\n` +
             `• 🎟️ **1 – 3 NFTs:** \`Geckura Holder\`\n` +
