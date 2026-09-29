@@ -223,93 +223,25 @@ module.exports = {
 
         // Handle admin tweet posting
         if (subcommand === 'post') {
-            // Check if user has admin permissions
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return await interaction.reply({
-                    content: "You don't have permission to use this command.",
+                    content: "❌ You don't have permission to use this command.",
                     ephemeral: true
                 });
             }
 
-            const tweetLink = interaction.options.getString('link');
+            const tweetLink = interaction.options.getString('link').trim();
             const role = interaction.options.getRole('role');
 
-            // Validate tweet link
             if (!this.isValidTweetUrl(tweetLink)) {
                 return await interaction.reply({
-                    content: 'Please provide a valid Twitter/X URL.',
+                    content: '❌ Please provide a valid Twitter/X URL.',
                     ephemeral: true
                 });
             }
 
-            // Create announcement embed
-            const embed = new EmbedBuilder()
-                .setTitle('🐦 New Tweet from Geckura!')
-                .setColor('#1DA1F2')
-                .setTimestamp()
-                .setFooter({ text: 'Geckura — Where Innovation Meets Utility!' });
-
-            // Extract tweet ID and fetch tweet content
-            const tweetId = this.getTweetIdFromUrl(tweetLink);
-
-            // Create notification content first
-            let notificationContent = '@everyone Check out our new tweet!';
-            if (role) {
-                notificationContent += ` ${role}`;
-            }
-
-            // Create engagement buttons
-            const row = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setLabel('View Tweet')
-                        .setStyle(ButtonStyle.Link)
-                        .setURL(`https://twitter.com/i/web/status/${tweetId}`),
-                    new ButtonBuilder()
-                        .setLabel('Like & Retweet')
-                        .setStyle(ButtonStyle.Secondary)
-                        .setCustomId('tweet_engage')
-                );
-
-            // Fetch tweet data first
-            try {
-                const tweetData = await this.fetchTweetData(tweetId);
-                
-                // Add tweet content field
-                embed.addFields({
-                    name: `🐦 Tweet by ${tweetData.authorName}`,
-                    value: tweetData.text.length > 1024 ? tweetData.text.substring(0, 1021) + '...' : tweetData.text,
-                    inline: false
-                })
-                .addFields({
-                    name: '📊 Engagement',
-                    value: `❤️ ${tweetData.likes} Likes\n🔄 ${tweetData.retweets} Retweets`,
-                    inline: true
-                });
-                
-                // Add media if available
-                if (tweetData.imageUrl) {
-                    embed.setImage(tweetData.imageUrl);
-                }
-            } catch (error) {
-                console.error('Error fetching tweet data:', error);
-                
-                // Add fallback content
-                embed.addFields({
-                    name: '🐦 Tweet Content',
-                    value: `Could not load tweet content.\n\n[View on Twitter/X](https://twitter.com/i/web/status/${tweetId})`,
-                    inline: false
-                });
-            }
-
-            // Create initial reply
-            await interaction.reply({
-                content: notificationContent,
-                embeds: [embed],
-                components: [row]
-            });
-
-            return;
+            const { postRaidAlert } = require('../utils/raid-handler');
+            return await postRaidAlert(interaction, interaction.client, tweetLink, 100, role);
         }
 
         // Handle tweet submission

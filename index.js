@@ -343,31 +343,24 @@ client.on('interactionCreate', async interaction => {
                 await interaction.reply({ content: '⚠️ Error updating benefits view.', ephemeral: true });
             }
         }
-        // Check if this is a tweet engagement button
-        else if (interaction.customId === 'tweet_engage') {
+        // Check if this is a Raid Claim button
+        else if (interaction.customId.startsWith('raid_claim_')) {
             try {
-                const { EmbedBuilder } = require('discord.js');
-                
-                const embed = new EmbedBuilder()
-                    .setTitle('🐦 Thanks for your support!')
-                    .setDescription('Thank you for engaging with our tweet! Your support helps us grow the Geckura community.')
-                    .setColor('#1DA1F2')
-                    .addFields(
-                        { name: 'Don\'t forget to:', value: '• Like the tweet\n• Retweet with comment\n• Turn on notifications', inline: false }
-                    )
-                    .setTimestamp()
-                    .setFooter({ text: 'Geckura — Where Innovation Meets Utility!' });
-                
-                await interaction.reply({
-                    embeds: [embed],
-                    ephemeral: true
-                });
-            } catch (error) {
-                console.error('Error handling tweet engagement button:', error);
-                await interaction.reply({
-                    content: 'There was an error processing your request!',
-                    ephemeral: true
-                });
+                const { handleRaidClaim } = require('./utils/raid-handler');
+                return await handleRaidClaim(interaction, client);
+            } catch (err) {
+                console.error('Error handling raid claim button:', err);
+                return await interaction.reply({ content: '⚠️ Error processing raid reward claim.', ephemeral: true });
+            }
+        }
+        // Check if this is a Raid Stats button
+        else if (interaction.customId.startsWith('raid_stats_')) {
+            try {
+                const { handleRaidStats } = require('./utils/raid-handler');
+                return await handleRaidStats(interaction, client);
+            } catch (err) {
+                console.error('Error handling raid stats button:', err);
+                return await interaction.reply({ content: '⚠️ Error fetching raid statistics.', ephemeral: true });
             }
         }
         // Check if this is a Mystery Box Inquiry button

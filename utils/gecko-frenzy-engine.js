@@ -290,7 +290,7 @@ class FrenzyManager {
         const playerObj = {
             discordId: user.id,
             username: user.tag || user.username,
-            geckoNum: geckoIndex,
+            geckoNum: frenzy.players.length + 1,
             name: playerName,
             alive: true
         };
