@@ -51,7 +51,7 @@ module.exports = {
 
         const requiredRole = interaction.options.getRole('role');
         const joinTimeMinutes = interaction.options.getInteger('time') || 3;
-        const rewardToken = interaction.options.getString('reward_token') || '$GECKURA';
+        const rewardToken = interaction.options.getString('reward_token') || '$GAURA';
         const rewardAmount = interaction.options.getInteger('reward_amount') || 1000;
         const maxPlayers = interaction.options.getInteger('max_players') || 20;
         const targetChannel = interaction.options.getChannel('channel') || interaction.channel;
@@ -98,6 +98,36 @@ module.exports = {
             });
         }
 
+        // Schedule 2 lobby countdown reminders (for 2+ min lobbies)
+        const totalDurationMs = joinTimeMinutes * 60 * 1000;
+
+        // Reminder 1: Sent at ~66% time remaining (e.g. 2 mins left on a 3-min lobby)
+        const reminder1TimeMs = Math.floor(totalDurationMs * (1 / 3));
+        if (reminder1TimeMs > 15000) {
+            setTimeout(async () => {
+                const currentFrenzy = frenzyManager.getFrenzy(frenzy.id);
+                if (currentFrenzy && currentFrenzy.status === 'JOINING') {
+                    const remainingMins = Math.ceil((currentFrenzy.endTime - Date.now()) / (60 * 1000));
+                    await targetChannel.send({
+                        content: `⏰ **${remainingMins} MINUTES REMAINING!** The Gecko Frenzy arena is filling up (${currentFrenzy.players.length}/${currentFrenzy.maxPlayers} players)! Click **🦎 JOIN FRENZY** above to enter!`
+                    }).catch(() => {});
+                }
+            }, reminder1TimeMs);
+        }
+
+        // Reminder 2: Sent at 60 seconds remaining (1 minute final call)
+        const reminder2TimeMs = totalDurationMs - 60000;
+        if (reminder2TimeMs > 20000 && reminder2TimeMs > reminder1TimeMs + 10000) {
+            setTimeout(async () => {
+                const currentFrenzy = frenzyManager.getFrenzy(frenzy.id);
+                if (currentFrenzy && currentFrenzy.status === 'JOINING') {
+                    await targetChannel.send({
+                        content: `🚨 **1 MINUTE REMAINING!** Final call! Lobby is closing soon for the **${currentFrenzy.rewardAmount.toLocaleString()} ${currentFrenzy.rewardToken}** battle!`
+                    }).catch(() => {});
+                }
+            }, reminder2TimeMs);
+        }
+
         // Interval to update timer on lobby message every 10 seconds
         const updateInterval = setInterval(async () => {
             const currentFrenzy = frenzyManager.getFrenzy(frenzy.id);
@@ -121,6 +151,6 @@ module.exports = {
             if (currentFrenzy && currentFrenzy.status === 'JOINING') {
                 await frenzyManager.startFrenzyLoop(client, frenzy.id);
             }
-        }, joinTimeMinutes * 60 * 1000);
+        }, totalDurationMs);
     }
 };

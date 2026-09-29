@@ -4,8 +4,10 @@ const path = require('path');
 const fetch = require('node-fetch');
 const { Connection, PublicKey } = require('@solana/web3.js');
 
+const { getUserData } = require('../utils/chat2earn-handler');
+
 // Solana RPC Endpoint
-const SOLANA_RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
+const SOLANA_RPC = process.env.SOLANA_RPC_URL || process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
 const connection = new Connection(SOLANA_RPC, 'confirmed');
 
 // Path to wallets file
@@ -15,15 +17,21 @@ const walletsPath = path.join(dataPath, 'wallets.json');
 // Read wallets helper
 function getUserWallet(discordId) {
     try {
-        if (!fs.existsSync(walletsPath)) return null;
-        const wallets = JSON.parse(fs.readFileSync(walletsPath, 'utf8'));
-        
-        // Search in whitelist first, then airdrop
-        const wlEntry = (wallets.whitelist || []).find(w => w.discordId === discordId);
-        if (wlEntry) return wlEntry.walletAddress;
+        // 1. Primary check: Chat2Earn user profile (saved via /wallet set & Matrica verification modal)
+        const userData = getUserData(discordId);
+        if (userData && userData.solanaWallet) {
+            return userData.solanaWallet;
+        }
 
-        const airdropEntry = (wallets.airdrop || []).find(w => w.discordId === discordId);
-        if (airdropEntry) return airdropEntry.walletAddress;
+        // 2. Fallback check: wallets.json (legacy whitelist / airdrop)
+        if (fs.existsSync(walletsPath)) {
+            const wallets = JSON.parse(fs.readFileSync(walletsPath, 'utf8'));
+            const wlEntry = (wallets.whitelist || []).find(w => w.discordId === discordId);
+            if (wlEntry) return wlEntry.walletAddress;
+
+            const airdropEntry = (wallets.airdrop || []).find(w => w.discordId === discordId);
+            if (airdropEntry) return airdropEntry.walletAddress;
+        }
 
         return null;
     } catch (err) {
@@ -32,35 +40,79 @@ function getUserWallet(discordId) {
     }
 }
 
-// Fetch NFTs from wallet via Magic Eden API & Solana RPC
+// Fetch NFTs from wallet via Helius DAS API & Magic Eden API
 async function fetchWalletNFTs(walletAddress) {
     let nfts = [];
 
-    // 1. Try Magic Eden API first (fast & rich metadata)
+    // 1. Try Helius DAS API first (Supports Metaplex Core & SPL Tokens natively)
     try {
-        const meRes = await fetch(`https://api-mainnet.magiceden.dev/v2/wallets/${walletAddress}/tokens?limit=50`, {
-            headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' },
+        const rpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
+        const dasRes = await fetch(rpcUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                jsonrpc: '2.0',
+                id: 'flex-das-fetch',
+                method: 'getAssetsByOwner',
+                params: {
+                    ownerAddress: walletAddress,
+                    page: 1,
+                    limit: 50
+                }
+            }),
             timeout: 8000
         });
 
-        if (meRes.ok) {
-            const meTokens = await meRes.json();
-            if (Array.isArray(meTokens) && meTokens.length > 0) {
-                for (const item of meTokens) {
-                    nfts.push({
-                        mint: item.mintAddress || item.mint,
-                        name: item.name || 'Unnamed Solana NFT',
-                        symbol: item.symbol || '',
-                        image: item.image || item.mediaUrl || '',
-                        collection: item.collectionName || item.collection || 'Solana NFT',
-                        attributes: item.attributes || [],
-                        externalUrl: item.externalUrl || `https://magiceden.io/item-details/${item.mintAddress || item.mint}`
-                    });
-                }
+        if (dasRes.ok) {
+            const dasData = await dasRes.json();
+            const items = dasData.result?.items || [];
+            for (const item of items) {
+                const name = item.content?.metadata?.name || item.id?.slice(0, 8) || 'Solana NFT';
+                const image = item.content?.files?.[0]?.uri || item.content?.links?.image || '';
+                const collection = item.grouping?.find(g => g.group_key === 'collection')?.group_value || 'Geckura NFT';
+                
+                nfts.push({
+                    mint: item.id,
+                    name: name,
+                    symbol: item.content?.metadata?.symbol || '',
+                    image: image,
+                    collection: collection,
+                    attributes: item.content?.metadata?.attributes || [],
+                    externalUrl: `https://solscan.io/token/${item.id}`
+                });
             }
         }
-    } catch (err) {
-        console.warn('Magic Eden API lookup error:', err.message);
+    } catch (dasErr) {
+        console.warn('Helius DAS API flex lookup notice:', dasErr.message);
+    }
+
+    // 2. Fallback to Magic Eden API if DAS yields no results
+    if (nfts.length === 0) {
+        try {
+            const meRes = await fetch(`https://api-mainnet.magiceden.dev/v2/wallets/${walletAddress}/tokens?limit=50`, {
+                headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' },
+                timeout: 8000
+            });
+
+            if (meRes.ok) {
+                const meTokens = await meRes.json();
+                if (Array.isArray(meTokens) && meTokens.length > 0) {
+                    for (const item of meTokens) {
+                        nfts.push({
+                            mint: item.mintAddress || item.mint,
+                            name: item.name || 'Unnamed Solana NFT',
+                            symbol: item.symbol || '',
+                            image: item.image || item.mediaUrl || '',
+                            collection: item.collectionName || item.collection || 'Solana NFT',
+                            attributes: item.attributes || [],
+                            externalUrl: item.externalUrl || `https://magiceden.io/item-details/${item.mintAddress || item.mint}`
+                        });
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn('Magic Eden API lookup error:', err.message);
+        }
     }
 
     // 2. Fallback to Solana RPC parsed token accounts if ME returns empty or fails
@@ -175,7 +227,7 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
 
         const targetUser = interaction.options.getUser('user') || interaction.user;
         const customWallet = interaction.options.getString('wallet');

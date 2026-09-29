@@ -46,19 +46,18 @@ async function handleVerificationButton(interaction, client) {
         try {
             const verifResult = await verifyWalletNFTs(linkedWallet);
             const assignedRoles = await assignHolderRoles(interaction.member, verifResult);
-
-            const hashConfig = getHashlistConfig();
-            const holderRoleId = hashConfig.roleId || '1451245425116840133';
+            const roleList = Array.isArray(assignedRoles) ? assignedRoles : (assignedRoles.assigned || []);
+            const nftCount = verifResult.count ?? verifResult.holderCount ?? 0;
 
             const refreshEmbed = new EmbedBuilder()
                 .setTitle('🔄 Holder Roles Re-verified!')
                 .setColor(verifResult.isHolder ? 0x00FF99 : 0xFF9900)
                 .setDescription(
                     `📍 **Linked Wallet:** \`${linkedWallet}\`\n\n` +
-                    `🎨 **Geckura NFTs Detected:** **${verifResult.count}**\n` +
+                    `🎨 **Geckura NFTs Detected:** **${nftCount}**\n` +
                     `👑 **Holder Status:** ${verifResult.isHolder ? '✅ **VERIFIED HOLDER**' : '❌ **NO GECKURA NFTs FOUND**'}\n\n` +
                     `🎭 **Assigned Roles:**\n` +
-                    (assignedRoles.length > 0 ? assignedRoles.map(r => `• <@&${r}>`).join('\n') : '• No active holder roles assigned.')
+                    (roleList.length > 0 ? roleList.map(r => `• <@&${r}>`).join('\n') : '• No active holder roles assigned.')
                 )
                 .setFooter({ text: 'Geckura Automated Holder Verification', iconURL: client.user?.displayAvatarURL() })
                 .setTimestamp();
@@ -83,7 +82,7 @@ async function handleVerificationButton(interaction, client) {
             .setDescription(
                 `👤 **Discord User:** <@${userId}>\n` +
                 `📍 **Linked Solana Wallet:** \`${linkedWallet}\`\n` +
-                `💰 **Chat2Earn Tokens:** \`${tokens.toLocaleString()} $GECKURA\`\n\n` +
+                `💰 **Chat2Earn Tokens:** \`${tokens.toLocaleString()} $GAURA\`\n\n` +
                 `💡 *Need to update your wallet? Click **💳 Paste Wallet & Verify** anytime!*`
             )
             .setFooter({ text: 'Geckura Profile Portal', iconURL: client.user?.displayAvatarURL() })
@@ -119,6 +118,8 @@ async function handleVerificationModalSubmit(interaction, client) {
         // Perform instant Metaplex Core & DAS on-chain verification
         const verifResult = await verifyWalletNFTs(submittedWallet);
         const assignedRoles = await assignHolderRoles(interaction.member, verifResult);
+        const roleList = Array.isArray(assignedRoles) ? assignedRoles : (assignedRoles.assigned || []);
+        const nftCount = verifResult.count ?? verifResult.holderCount ?? 0;
 
         const successEmbed = new EmbedBuilder()
             .setTitle(verifResult.isHolder ? '🎉 GECKURA HOLDER VERIFIED!' : '⚡ WALLET LINKED & VERIFIED')
@@ -126,10 +127,10 @@ async function handleVerificationModalSubmit(interaction, client) {
             .setDescription(
                 `Your Solana wallet has been linked and checked against the Geckura NFT collection on-chain!\n\n` +
                 `📍 **Linked Wallet:** \`${submittedWallet}\`\n` +
-                `🎨 **Geckura NFTs Found:** **${verifResult.count}**\n\n` +
+                `🎨 **Geckura NFTs Found:** **${nftCount}**\n\n` +
                 `🎭 **DISCORD ROLES GRANTED:**\n` +
-                (assignedRoles.length > 0 
-                    ? assignedRoles.map(r => `• <@&${r}>`).join('\n')
+                (roleList.length > 0 
+                    ? roleList.map(r => `• <@&${r}>`).join('\n')
                     : '• No NFTs found in this wallet. (Holder role requires 1+ Geckura NFTs).') + '\n\n' +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                 `💡 *If you purchase more Geckura NFTs, click **🔄 Re-verify Roles** anytime to update your perks!*`

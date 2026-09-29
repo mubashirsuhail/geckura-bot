@@ -237,7 +237,7 @@ class FrenzyManager {
             creatorId,
             requiredRole: requiredRole || null,
             joinTimeMinutes: joinTimeMinutes || 3,
-            rewardToken: rewardToken || '$GECKURA',
+            rewardToken: rewardToken || '$GAURA',
             rewardAmount: rewardAmount || 1000,
             maxPlayers: maxPlayers || 20,
             status: 'JOINING',
@@ -286,7 +286,7 @@ class FrenzyManager {
 
         const geckoIndex = frenzy.players.length + 1;
         const geckoNumStr = String(geckoIndex).padStart(2, '0');
-        const geckoName = `Gecko #${geckoNumStr}`;
+        const geckoName = `🦎 Gecko #${geckoNumStr} (<@${user.id}>)`;
 
         const playerObj = {
             discordId: user.id,

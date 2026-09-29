@@ -174,6 +174,8 @@ async function verifyWalletNFTs(walletAddress) {
 
         // Determine Quantity Tier
         const count = result.holderCount;
+        result.count = count;
+
         if (count >= 10) {
             result.assignedTier = 'tier10_30';
         } else if (count >= 4) {
@@ -196,7 +198,7 @@ async function verifyWalletNFTs(walletAddress) {
  * Tier 10-30+: Geckura Whale
  */
 async function assignHolderRoles(guildMember, verificationResult) {
-    if (!guildMember || !guildMember.roles) return { assigned: [], removed: [] };
+    if (!guildMember || !guildMember.roles) return [];
 
     const config = getHashlistConfig();
     const roleNames = config.roles || {
@@ -207,7 +209,6 @@ async function assignHolderRoles(guildMember, verificationResult) {
     };
 
     const assigned = [];
-    const removed = [];
     const guild = guildMember.guild;
 
     const findRole = (nameOrId) => {
@@ -224,8 +225,6 @@ async function assignHolderRoles(guildMember, verificationResult) {
     const tier3Role = findRole(roleNames.tier10_30) || primaryRole;
     const oneOfOneRole = findRole(roleNames.oneOfOne);
 
-    const tierRoles = [primaryRole, tier1Role, tier2Role, tier3Role].filter(Boolean);
-
     // Determine target role for quantity tier
     let targetRole = null;
     if (verificationResult.isHolder) {
@@ -234,25 +233,34 @@ async function assignHolderRoles(guildMember, verificationResult) {
         else targetRole = tier1Role || primaryRole;
     }
 
-    // Apply Primary & Tiered Quantity Roles
-    if (verificationResult.isHolder && targetRole) {
+    // Apply Primary Holder Role (1451245425116840133) & Tier Role
+    if (verificationResult.isHolder) {
+        // 1. Primary Holder Role
         try {
-            await guildMember.roles.add(targetRole.id || targetRole).catch(() => {});
-            assigned.push(targetRole.id || primaryHolderRoleId);
-        } catch (e) {}
-    }
-
-    // Apply 1-of-1 Role if applicable
-    if (oneOfOneRole) {
-        if (verificationResult.is1of1Holder) {
-            if (!guildMember.roles.cache.has(oneOfOneRole.id)) {
-                await guildMember.roles.add(oneOfOneRole).catch(() => {});
-                assigned.push(oneOfOneRole.name);
+            if (primaryRole) {
+                await guildMember.roles.add(primaryRole.id || primaryHolderRoleId).catch(() => {});
+                assigned.push(primaryRole.id || primaryHolderRoleId);
             }
+        } catch (e) {}
+
+        // 2. Quantity Tier Role
+        if (targetRole && targetRole.id !== primaryRole?.id) {
+            try {
+                await guildMember.roles.add(targetRole.id || targetRole).catch(() => {});
+                assigned.push(targetRole.id || targetRole.name);
+            } catch (e) {}
         }
     }
 
-    return { assigned, removed, targetRoleName: targetRole ? targetRole.name : null };
+    // Apply 1-of-1 Role if applicable
+    if (oneOfOneRole && verificationResult.is1of1Holder) {
+        try {
+            await guildMember.roles.add(oneOfOneRole.id || oneOfOneRole).catch(() => {});
+            assigned.push(oneOfOneRole.id || oneOfOneRole.name);
+        } catch (e) {}
+    }
+
+    return Array.from(new Set(assigned));
 }
 
 module.exports = {
