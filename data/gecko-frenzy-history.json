@@ -1,0 +1,19 @@
+{
+  "completed": [
+    {
+      "frenzyId": "frenzy_1790678238082_527",
+      "creatorId": "admin_user",
+      "startTime": 1790678238082,
+      "endTime": 1790678238719,
+      "playersCount": 10,
+      "rewardToken": "$GECKURA",
+      "rewardAmount": 1000,
+      "winner": {
+        "discordId": "user_7",
+        "username": "MoonShooter#8888",
+        "geckoName": "Gecko #07"
+      },
+      "status": "COMPLETED"
+    }
+  ]
+}

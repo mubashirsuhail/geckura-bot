@@ -22,6 +22,20 @@ const client = new Client({
     ]
 });
 
+// Initialize client commands collection and load command modules
+client.commands = new Collection();
+const commandsPath = path.join(__dirname, 'commands');
+if (fs.existsSync(commandsPath)) {
+    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+    for (const file of commandFiles) {
+        const filePath = path.join(commandsPath, file);
+        const command = require(filePath);
+        if (command && command.data && command.data.name) {
+            client.commands.set(command.data.name, command);
+        }
+    }
+}
+
 // Event: Bot is ready
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -255,8 +269,68 @@ client.on('interactionCreate', async interaction => {
     }
     // Handle button interactions
     else if (interaction.isButton()) {
+        // Check if this is a Gecko Frenzy Join button
+        if (interaction.customId.startsWith('gecko_frenzy_join_')) {
+            try {
+                const frenzyId = interaction.customId.replace('gecko_frenzy_join_', '');
+                const { frenzyManager } = require('./utils/gecko-frenzy-engine');
+                const frenzy = frenzyManager.getFrenzy(frenzyId);
+
+                if (!frenzy) {
+                    return await interaction.reply({ content: '⚠️ **Frenzy Expired:** This Gecko Frenzy is no longer active.', ephemeral: true });
+                }
+
+                const result = frenzyManager.addPlayer(frenzyId, interaction.user, interaction.member);
+
+                if (!result.success) {
+                    return await interaction.reply({ content: result.reason, ephemeral: true });
+                }
+
+                // Ephemeral confirmation
+                await interaction.reply({
+                    content: `✅ **You're in!**\n\n🦎 **${result.geckoName}**\n\n👥 Players: **${result.playerCount} / ${result.maxPlayers}**`,
+                    ephemeral: true
+                });
+
+                // Instantly update public lobby embed
+                if (frenzy.messageId) {
+                    try {
+                        const channel = await client.channels.fetch(frenzy.channelId);
+                        if (channel) {
+                            const msg = await channel.messages.fetch(frenzy.messageId);
+                            if (msg) {
+                                const updatedEmbed = frenzyManager.buildLobbyEmbed(frenzy);
+                                const updatedButtons = frenzyManager.buildLobbyButtons(frenzy);
+                                await msg.edit({ embeds: [updatedEmbed], components: [updatedButtons] });
+                            }
+                        }
+                    } catch (e) {}
+                }
+
+                // Auto-start early if max capacity reached
+                if (frenzy.players.length >= frenzy.maxPlayers && frenzy.status === 'JOINING') {
+                    await frenzyManager.startFrenzyLoop(client, frenzy.id);
+                }
+            } catch (err) {
+                console.error('Error handling gecko frenzy join button:', err);
+                await interaction.reply({ content: '⚠️ Error processing join request.', ephemeral: true });
+            }
+        }
+        // Check if this is a Benefits filter button
+        else if (interaction.customId.startsWith('benefits_filter_')) {
+            try {
+                const category = interaction.customId.replace('benefits_filter_', '');
+                const { buildBenefitsEmbed, buildBenefitsButtons } = require('./commands/benefits');
+                const embed = buildBenefitsEmbed(category, client, config);
+                const rows = buildBenefitsButtons(category, config);
+                await interaction.update({ embeds: [embed], components: rows });
+            } catch (err) {
+                console.error('Error in benefits button interaction:', err);
+                await interaction.reply({ content: '⚠️ Error updating benefits view.', ephemeral: true });
+            }
+        }
         // Check if this is a tweet engagement button
-        if (interaction.customId === 'tweet_engage') {
+        else if (interaction.customId === 'tweet_engage') {
             try {
                 const { EmbedBuilder } = require('discord.js');
                 
@@ -287,32 +361,25 @@ client.on('interactionCreate', async interaction => {
             try {
                 const { EmbedBuilder } = require('discord.js');
                 const embed = new EmbedBuilder()
-                    .setTitle('📩 How to Order / Integrate Mystery Box Utility')
-                    .setDescription('We are excited to power your project! Follow these quick steps to get started:')
+                    .setTitle('📩 Open a Ticket for More Info & Orders')
+                    .setDescription(
+                        'Ready to launch **Mystery Box as a Service (MaaS)** for your project or need more info?\n\n' +
+                        '🎫 **Open a Support Ticket** in our Discord server or DM the founding team (`@Mubi`) to discuss your custom project requirements.'
+                    )
                     .setColor(0x00FF99)
                     .addFields(
                         {
-                            name: '1️⃣ Open an Inquiry Ticket',
-                            value: 'Head to our support/ticket channel or DM our founding team (`@Faizan`) to discuss your project requirements.',
+                            name: '🎟️ How to Get Started',
+                            value: '1. Head over to our **ticket channel** and open an Inquiry Ticket.\n2. Share your project details, logo, banner, custom token details, and prize pool idea.\n3. Our dev team will guide you through setup and deploy your custom Mystery Box portal!',
                             inline: false
                         },
                         {
-                            name: '2️⃣ Select Your Integration Package',
-                            value: 'Choose between a 1-Time Campaign Drop, Monthly Subscription, or Full White-Label Portal with custom token support.',
-                            inline: false
-                        },
-                        {
-                            name: '3️⃣ Provide Branding & Token Details',
-                            value: 'Share your project logo, banner, preferred color palette, SPL token mint address (if custom token), and prize pool table.',
-                            inline: false
-                        },
-                        {
-                            name: '⚡ 24-Hour Express Deployment',
-                            value: 'Our dev team will deploy your custom Mystery Box portal & Discord webhook integrations within 24 hours!',
+                            name: '⚡ Fast Turnaround',
+                            value: 'Full custom portal setup & Discord webhook integration delivered within 24 hours of onboarding!',
                             inline: false
                         }
                     )
-                    .setFooter({ text: 'Geckura B2B Utility Services — Elevating Solana Projects' })
+                    .setFooter({ text: 'Geckura B2B Utility Services — Open a Ticket for More Info' })
                     .setTimestamp();
 
                 await interaction.reply({ embeds: [embed], ephemeral: true });

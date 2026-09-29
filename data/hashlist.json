@@ -1,0 +1,13 @@
+{
+  "collectionAddresses": [
+    "4CVKjsUmP6RaRGkSjWXUV5updjUu9XKn6wPtd5BimHD7"
+  ],
+  "hashlist": [],
+  "oneOfOneHashlist": [],
+  "roles": {
+    "tier1_3": "Geckura Holder",
+    "tier4_9": "Geckura Collector",
+    "tier10_30": "Geckura Whale",
+    "oneOfOne": "Geckura 1-of-1 Holder"
+  }
+}

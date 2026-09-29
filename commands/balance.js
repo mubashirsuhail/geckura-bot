@@ -37,11 +37,12 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle(`${interaction.user.username}'s $GECKURA Balance`)
             .setColor('#00FF99')
-            .setDescription(`You currently have **${userData.tokens} $GECKURA** tokens!`)
+            .setDescription(`You currently have **${userData.tokens.toLocaleString()} $GECKURA** tokens!`)
             .addFields(
-                { name: 'Total Earned', value: `${userData.totalTokensEarned} $GECKURA`, inline: true },
+                { name: 'Total Earned', value: `${userData.totalTokensEarned.toLocaleString()} $GECKURA`, inline: true },
                 { name: 'Current Level', value: `Level ${userData.level}`, inline: true },
-                { name: 'Messages Sent', value: `${userData.messagesCount}`, inline: true }
+                { name: 'Messages Sent', value: `${userData.messagesCount}`, inline: true },
+                { name: '📍 Solana Wallet', value: userData.solanaWallet ? `\`${userData.solanaWallet}\`` : '⚠️ *Not linked (Use `/wallet set`)*', inline: false }
             )
             .setTimestamp()
             .setFooter({ text: 'Geckura — Where Innovation Meets Utility!' });

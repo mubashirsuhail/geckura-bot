@@ -7,7 +7,6 @@
   "collections": {
     "geckura_elixir": {
       "name": "Geckura Elixir",
-      "supply": 300,
       "description": "A premium NFT collection within the Geckura ecosystem.",
       "benefits": [
         "Reserved allocation for the Geckura PFP collection",
@@ -18,13 +17,6 @@
     },
     "geckura_pfp": {
       "name": "Geckura PFP Collection",
-      "supply": 666,
-      "allocation": {
-        "paid_mint": 333,
-        "elixir_holders": 150,
-        "solana_community_free_mints": 150,
-        "team_treasury_marketing": 66
-      },
       "description": "The main profile picture NFT collection for the Geckura ecosystem."
     }
   },
@@ -36,6 +28,7 @@
     "description": "GECKURA is the ecosystem reward and utility token used throughout the Geckura platform.",
     "earning_methods": [
       "Discord chatting",
+      "Gecko Frenzy Discord Game",
       "Raid participation",
       "Twitter/X engagement",
       "Community events",
@@ -98,15 +91,26 @@
     "description": "Official Geckura Collection Mint is currently live on TribeX Launchpad."
   },
   "holder_benefits": {
+    "geckura_1of1_benefits": [
+      "Revenue sharing from Solana Mystery Box platform volume & opening fees",
+      "2.5x Staking $GAURA yield multiplier & daily emission boost",
+      "Free & bonus Mystery Box ticket allocations for all drops",
+      "Private VIP Alpha Lounge & ecosystem governance privileges"
+    ],
+    "geckura_collection_benefits": [
+      "Access to Solana Mystery Box platform & discounted box keys",
+      "Staking $GAURA for passive earnings & TraitShop Aura level upgrades",
+      "Mystery Box tickets earned through staking, Chat2Earn & Discord activity",
+      "Exclusive holder-only raffles for Solana NFTs, tokens & SOL prizes",
+      "Geckura Mining Game early access & LP token yield multipliers"
+    ],
     "why_buy": [
-      "NFT staking rewards",
-      "Exclusive holder campaigns",
-      "Trait Shop access",
-      "Future ecosystem utilities",
-      "Priority access to upcoming features",
-      "Community events",
-      "Mystery Box opportunities",
-      "Long-term ecosystem benefits"
+      "Mystery Box Revenue Sharing (1-of-1)",
+      "2.5x Boosted $GAURA Staking (1-of-1)",
+      "NFT Staking rewards & Trait Shop customization",
+      "Mystery Box ticket allocations & holder raffles",
+      "Geckura Web3 Mining Game access",
+      "Long-term ecosystem yield & Solana utility"
     ]
   },
   "community": {
@@ -138,11 +142,7 @@
     },
     {
       "question": "How many NFT collections does Geckura have?",
-      "answer": "Geckura currently has two collections: Geckura Elixir (300 supply) and the Geckura PFP Collection (666 supply)."
-    },
-    {
-      "question": "How is the PFP collection allocated?",
-      "answer": "333 paid mint, 150 reserved for Elixir holders, 150 free mints for Solana communities, and 66 reserved for the team, treasury, partnerships, and marketing."
+      "answer": "Geckura currently has two collections: Geckura Elixir and the Geckura PFP Collection."
     },
     {
       "question": "Where can I mint Geckura?",
