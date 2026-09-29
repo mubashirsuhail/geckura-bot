@@ -101,22 +101,7 @@ function buildBenefitsEmbed(category, client, config) {
 }
 
 function buildBenefitsButtons(currentCategory, config) {
-    const row1 = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setCustomId('benefits_filter_all')
-            .setLabel('🌐 All Benefits')
-            .setStyle(currentCategory === 'all' ? ButtonStyle.Success : ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId('benefits_filter_1-1')
-            .setLabel('👑 1-of-1 Benefits')
-            .setStyle(currentCategory === '1-1' ? ButtonStyle.Primary : ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId('benefits_filter_collection')
-            .setLabel('🦎 Collection Benefits')
-            .setStyle(currentCategory === 'collection' ? ButtonStyle.Primary : ButtonStyle.Secondary)
-    );
-
-    const row2 = new ActionRowBuilder().addComponents(
+    const linkRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setLabel('🔥 Mint Live on TribeX')
             .setStyle(ButtonStyle.Link)
@@ -127,7 +112,7 @@ function buildBenefitsButtons(currentCategory, config) {
             .setURL(config?.links?.mysteryBox || 'https://mysterybox.geckura.app/')
     );
 
-    return [row1, row2];
+    return [linkRow];
 }
 
 module.exports = {
