@@ -1,5 +1,5 @@
 const { Connection, Keypair, PublicKey, SystemProgram, Transaction } = require('@solana/web3.js');
-const { getOrCreateAssociatedTokenAccount, createTransferInstruction, TOKEN_PROGRAM_ID } = require('@solana/spl-token');
+const { getAssociatedTokenAddress, getOrCreateAssociatedTokenAccount, createTransferInstruction, TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const bs58 = require('bs58');
 
 // Helper to parse keypair from string (base58 or json array)
@@ -32,6 +32,10 @@ function getSolanaConnection() {
 
 /**
  * Send SPL Token Reward (e.g. $GECKURA) to recipient wallet address
+ * Rules:
+ * 1. User MUST have a linked Solana wallet.
+ * 2. User MUST have an initialized Associated Token Account (ATA) with at least 1 token held.
+ * 
  * @param {string} recipientAddress - Solana wallet address of the winner
  * @param {number} amountTokens - Amount of tokens to transfer
  * @param {string} [tokenMintAddress] - SPL Token mint address
@@ -40,15 +44,19 @@ async function sendTokenReward(recipientAddress, amountTokens, tokenMintAddress)
     const mintStr = tokenMintAddress || process.env.GECKURA_TOKEN_MINT;
 
     if (!recipientAddress) {
-        return { success: false, error: 'Recipient Solana wallet address is missing.' };
+        return {
+            success: false,
+            error: 'NO_WALLET_CONNECTED',
+            message: '⚠️ Winner has not connected a Solana wallet via `/wallet set`.'
+        };
     }
 
-    // If no custom token mint is set, fallback to SOL or return mock/offchain status if key unconfigured
     if (!process.env.SOLANA_TREASURY_SECRET_KEY) {
         return {
             success: false,
             simulated: true,
-            error: 'SOLANA_TREASURY_SECRET_KEY not set in .env yet.'
+            error: 'KEY_UNCONFIGURED',
+            message: 'SOLANA_TREASURY_SECRET_KEY not set in .env yet.'
         };
     }
 
@@ -58,7 +66,7 @@ async function sendTokenReward(recipientAddress, amountTokens, tokenMintAddress)
         const recipientPubKey = new PublicKey(recipientAddress);
 
         if (!mintStr) {
-            // Transfer native SOL as fallback
+            // Native SOL transfer if no SPL mint is set
             const lamports = Math.floor(amountTokens * 1e9);
             const transaction = new Transaction().add(
                 SystemProgram.transfer({
@@ -82,29 +90,49 @@ async function sendTokenReward(recipientAddress, amountTokens, tokenMintAddress)
             };
         }
 
-        // Transfer SPL Token
+        // SPL Token Transfer with mandatory ATA & 1 Token balance check
         const mintPubKey = new PublicKey(mintStr);
+        const recipientAta = await getAssociatedTokenAddress(mintPubKey, recipientPubKey);
+
+        // Check if Recipient ATA account exists on-chain
+        const ataInfo = await connection.getAccountInfo(recipientAta);
+        if (!ataInfo) {
+            return {
+                success: false,
+                error: 'NO_ATA_FOUND',
+                message: '❌ Winner does not have an active Token Account (ATA) initialized for this token.'
+            };
+        }
+
+        // Check if Recipient holds at least 1 token
+        try {
+            const balanceResponse = await connection.getTokenAccountBalance(recipientAta);
+            const uiBalance = balanceResponse.value.uiAmount || 0;
+
+            if (uiBalance < 1) {
+                return {
+                    success: false,
+                    error: 'INSUFFICIENT_ATA_BALANCE',
+                    message: `❌ Winner ATA balance is ${uiBalance} tokens. Must hold at least 1 token to receive automated transfer.`
+                };
+            }
+        } catch (balErr) {
+            return {
+                success: false,
+                error: 'ATA_BALANCE_CHECK_FAILED',
+                message: '❌ Failed to verify recipient Token Account balance.'
+            };
+        }
+
+        // Execute Transfer
         const decimals = parseInt(process.env.TOKEN_DECIMALS || '9', 10);
         const rawAmount = BigInt(Math.floor(amountTokens * Math.pow(10, decimals)));
 
-        // Get or Create ATAs for Treasury & Recipient
-        const fromAta = await getOrCreateAssociatedTokenAccount(
-            connection,
-            treasury,
-            mintPubKey,
-            treasury.publicKey
-        );
-
-        const toAta = await getOrCreateAssociatedTokenAccount(
-            connection,
-            treasury,
-            mintPubKey,
-            recipientPubKey
-        );
+        const fromAta = await getAssociatedTokenAddress(mintPubKey, treasury.publicKey);
 
         const transferIx = createTransferInstruction(
-            fromAta.address,
-            toAta.address,
+            fromAta,
+            recipientAta,
             treasury.publicKey,
             rawAmount,
             [],
@@ -130,7 +158,8 @@ async function sendTokenReward(recipientAddress, amountTokens, tokenMintAddress)
         console.error('Solana Payout Error:', err);
         return {
             success: false,
-            error: err.message
+            error: 'PAYOUT_EXCEPTION',
+            message: err.message
         };
     }
 }

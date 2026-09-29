@@ -418,11 +418,13 @@ class FrenzyManager {
                     saveUserData(winner.discordId, userData);
                 }
 
-                // Attempt On-Chain Payout if Winner Has Linked Solana Wallet
+                // Attempt On-Chain Payout if Winner Has Linked Solana Wallet & Active ATA (1+ Tokens)
                 const winnerUserData = getUserData(winner.discordId);
                 let proofText = '';
 
-                if (winnerUserData && winnerUserData.solanaWallet) {
+                if (!winnerUserData || !winnerUserData.solanaWallet) {
+                    proofText = `\n\n⚠️ **NO SOLANA WALLET LINKED**\nLink your wallet using \`/wallet set <address>\` to claim on-chain rewards!`;
+                } else {
                     try {
                         const { sendTokenReward } = require('./solana-payout');
                         const payoutResult = await sendTokenReward(
@@ -433,6 +435,8 @@ class FrenzyManager {
 
                         if (payoutResult.success && payoutResult.explorerUrl) {
                             proofText = `\n\n🔗 **ON-CHAIN SOLSCAN PROOF**\n[View Transaction on Solscan](${payoutResult.explorerUrl})\n\`${payoutResult.txSignature}\``;
+                        } else if (payoutResult.error === 'NO_ATA_FOUND' || payoutResult.error === 'INSUFFICIENT_ATA_BALANCE') {
+                            proofText = `\n\n⚠️ **TOKEN ACCOUNT (ATA) REQUIRED**\nRecipient must hold at least 1 token & have an active Token Account (ATA) to receive on-chain payouts.`;
                         }
                     } catch (payoutErr) {
                         console.error('On-chain payout attempt error:', payoutErr);
