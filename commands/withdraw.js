@@ -5,10 +5,10 @@ const { sendTokenReward } = require('../utils/solana-payout');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('withdraw')
-        .setDescription('Withdraw your earned $GECKURA tokens directly to your linked Solana wallet (Min 500 tokens)')
+        .setDescription('Withdraw your earned $GAURA tokens directly to your linked Solana wallet (Min 500 tokens)')
         .addIntegerOption(option =>
             option.setName('amount')
-                .setDescription('Amount of $GECKURA tokens to withdraw (Minimum: 500)')
+                .setDescription('Amount of $GAURA tokens to withdraw (Minimum: 500)')
                 .setRequired(true)
                 .setMinValue(500)),
 
@@ -21,7 +21,7 @@ module.exports = {
         // 1. Minimum withdrawal threshold check (500 tokens)
         if (amount < 500) {
             return await interaction.reply({
-                content: '⚠️ **Minimum Withdrawal Threshold:** You must withdraw at least **500 $GECKURA** tokens per transaction.',
+                content: '⚠️ **Minimum Withdrawal Threshold:** You must withdraw at least **500 $GAURA** tokens per transaction.',
                 ephemeral: true
             });
         }
@@ -39,7 +39,7 @@ module.exports = {
         const currentBalance = userData.tokens || 0;
         if (currentBalance < amount) {
             return await interaction.reply({
-                content: `❌ **Insufficient Balance:** You currently have **${currentBalance.toLocaleString()} $GECKURA** tokens, but requested **${amount.toLocaleString()} $GECKURA**.`,
+                content: `❌ **Insufficient Balance:** You currently have **${currentBalance.toLocaleString()} $GAURA** tokens, but requested **${amount.toLocaleString()} $GAURA**.`,
                 ephemeral: true
             });
         }
@@ -63,13 +63,13 @@ module.exports = {
             saveUserData(userId, userData);
 
             const successEmbed = new EmbedBuilder()
-                .setTitle('💸 $GECKURA Withdrawal Complete!')
+                .setTitle('💸 $GAURA Withdrawal Complete!')
                 .setColor(0x00FF99)
                 .setDescription(
                     `🎉 **Your withdrawal transaction has been submitted and confirmed on Solana!**\n\n` +
-                    `💰 **Amount Withdrawn:** \`${amount.toLocaleString()} $GECKURA\`\n` +
+                    `💰 **Amount Withdrawn:** \`${amount.toLocaleString()} $GAURA\`\n` +
                     `📍 **Recipient Wallet:** \`${recipientWallet}\`\n` +
-                    `💳 **Remaining Balance:** \`${userData.tokens.toLocaleString()} $GECKURA\`\n\n` +
+                    `💳 **Remaining Balance:** \`${userData.tokens.toLocaleString()} $GAURA\`\n\n` +
                     `🔗 **ON-CHAIN SOLSCAN PROOF:**\n` +
                     `[View Transaction on Solscan](${payoutResult.explorerUrl})\n\`${payoutResult.txSignature}\``
                 )
