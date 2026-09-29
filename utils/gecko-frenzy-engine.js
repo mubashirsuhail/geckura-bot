@@ -423,7 +423,7 @@ class FrenzyManager {
                 let proofText = '';
 
                 if (!winnerUserData || !winnerUserData.solanaWallet) {
-                    proofText = `\n\n⚠️ **NO SOLANA WALLET LINKED**\nLink your wallet using \`/wallet set <address>\` to claim on-chain rewards!`;
+                    proofText = `\n\n💡 **REWARD SAVED IN BALANCE**\nYour **${frenzy.rewardAmount} ${frenzy.rewardToken}** is saved in your bot balance!\nLink your wallet (\`/wallet set <address>\`) & run \`/withdraw\` anytime to claim on-chain.`;
                 } else {
                     try {
                         const { sendTokenReward } = require('./solana-payout');
@@ -434,9 +434,15 @@ class FrenzyManager {
                         );
 
                         if (payoutResult.success && payoutResult.explorerUrl) {
+                            // Deduct from balance since it was paid out directly on-chain
+                            const uData = getUserData(winner.discordId);
+                            uData.tokens = Math.max(0, (uData.tokens || 0) - frenzy.rewardAmount);
+                            uData.totalWithdrawn = (uData.totalWithdrawn || 0) + frenzy.rewardAmount;
+                            saveUserData(winner.discordId, uData);
+
                             proofText = `\n\n🔗 **ON-CHAIN SOLSCAN PROOF**\n[View Transaction on Solscan](${payoutResult.explorerUrl})\n\`${payoutResult.txSignature}\``;
                         } else if (payoutResult.error === 'NO_ATA_FOUND' || payoutResult.error === 'INSUFFICIENT_ATA_BALANCE') {
-                            proofText = `\n\n⚠️ **TOKEN ACCOUNT (ATA) REQUIRED**\nRecipient must hold at least 1 token & have an active Token Account (ATA) to receive on-chain payouts.`;
+                            proofText = `\n\n💡 **REWARD SAVED IN BALANCE (ATA Required)**\nYour **${frenzy.rewardAmount} ${frenzy.rewardToken}** is saved in your balance!\nOnce you hold 1+ tokens & active ATA, run \`/withdraw\` anytime to claim.`;
                         }
                     } catch (payoutErr) {
                         console.error('On-chain payout attempt error:', payoutErr);
