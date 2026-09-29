@@ -1,47 +1,26 @@
 
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
+const { getUserData } = require('../utils/chat2earn-handler');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('balance')
-        .setDescription('Check your $GECKURA token balance'),
-
-    // Get user data or create a new entry
-    getUserData(userId) {
-        const userDataPath = path.join(__dirname, '..', 'data', 'chat2earn-users.json');
-        let userData = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
-
-        if (!userData[userId]) {
-            userData[userId] = {
-                userId: userId,
-                tokens: 0,
-                level: 1,
-                experience: 0,
-                messagesCount: 0,
-                lastMessageTime: 0,
-                totalTokensEarned: 0,
-                achievements: []
-            };
-            fs.writeFileSync(userDataPath, JSON.stringify(userData, null, 2));
-        }
-
-        return userData[userId];
-    },
+        .setDescription('Check your $GAURA token balance'),
 
     async execute(interaction) {
         const userId = interaction.user.id;
-        const userData = this.getUserData(userId);
+        const userData = getUserData(userId);
+        const tokens = userData.tokens || 0;
+        const totalEarned = userData.totalTokensEarned || tokens;
 
         const embed = new EmbedBuilder()
-            .setTitle(`${interaction.user.username}'s $GECKURA Balance`)
+            .setTitle(`${interaction.user.username}'s $GAURA Balance`)
             .setColor('#00FF99')
-            .setDescription(`You currently have **${userData.tokens.toLocaleString()} $GECKURA** tokens!`)
+            .setDescription(`You currently have **${tokens.toLocaleString()} $GAURA** tokens!`)
             .addFields(
-                { name: 'Total Earned', value: `${userData.totalTokensEarned.toLocaleString()} $GECKURA`, inline: true },
-                { name: 'Current Level', value: `Level ${userData.level}`, inline: true },
-                { name: 'Messages Sent', value: `${userData.messagesCount}`, inline: true },
+                { name: 'Total Earned', value: `${totalEarned.toLocaleString()} $GAURA`, inline: true },
+                { name: 'Current Level', value: `Level ${userData.level || 1}`, inline: true },
+                { name: 'Messages Sent', value: `${userData.messagesCount || 0}`, inline: true },
                 { name: '📍 Solana Wallet', value: userData.solanaWallet ? `\`${userData.solanaWallet}\`` : '⚠️ *Not linked (Use `/wallet set`)*', inline: false }
             )
             .setTimestamp()

@@ -410,13 +410,11 @@ class FrenzyManager {
                 frenzy.winner = winner;
                 frenzy.status = 'COMPLETED';
 
-                // Credit token reward automatically if reward is $GECKURA
-                if (frenzy.rewardToken.toUpperCase().includes('GECKURA')) {
-                    const userData = getUserData(winner.discordId);
-                    userData.tokens = (userData.tokens || 0) + frenzy.rewardAmount;
-                    userData.totalTokensEarned = (userData.totalTokensEarned || 0) + frenzy.rewardAmount;
-                    saveUserData(winner.discordId, userData);
-                }
+                // Credit token reward automatically to winner's internal bot balance
+                const userData = getUserData(winner.discordId);
+                userData.tokens = (userData.tokens || 0) + frenzy.rewardAmount;
+                userData.totalTokensEarned = (userData.totalTokensEarned || 0) + frenzy.rewardAmount;
+                saveUserData(winner.discordId, userData);
 
                 // Attempt On-Chain Payout if Winner Has Linked Solana Wallet & Active ATA (1+ Tokens)
                 const winnerUserData = getUserData(winner.discordId);
