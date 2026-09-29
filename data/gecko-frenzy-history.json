@@ -60,6 +60,21 @@
         "wallet": "FsCS6c4eqmRbPMQf7sypSsABVUNXxTEfaTMYSyyUyVhx"
       },
       "status": "COMPLETED"
+    },
+    {
+      "frenzyId": "frenzy_1790708437855_396",
+      "creatorId": "1040680172472516729",
+      "startTime": 1790708437855,
+      "endTime": 1790708635556,
+      "playersCount": 2,
+      "rewardToken": "$GAURA",
+      "rewardAmount": 1000,
+      "winner": {
+        "discordId": "1308341450693541911",
+        "username": "username.88#0",
+        "geckoName": "🦎 Gecko #02 (<@1308341450693541911>)"
+      },
+      "status": "COMPLETED"
     }
   ]
 }

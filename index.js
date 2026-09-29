@@ -10,6 +10,10 @@ const { handleMessage } = require('./utils/chat2earn-handler');
 // Load link filter
 const { execute: handleLinkFilter } = require('./utils/link-filter');
 
+// Load welcome and role upgrade handlers
+const { sendWelcomeMessage } = require('./utils/welcome-handler');
+const { handleRoleUpgrade } = require('./utils/role-upgrade-handler');
+
 
 // Create a new client instance
 const client = new Client({
@@ -269,7 +273,7 @@ client.on('interactionCreate', async interaction => {
     }
     // Handle button interactions
     else if (interaction.isButton()) {
-        // Check if this is a Matrica verification button
+        // Check if this is a Geckura verification button
         if (interaction.customId.startsWith('verify_')) {
             try {
                 const { handleVerificationButton } = require('./utils/verification-handler');
@@ -490,7 +494,7 @@ client.on('interactionCreate', async interaction => {
     }
     // Handle modal submissions
     else if (interaction.isModalSubmit()) {
-        // Check if this is a Matrica verification modal submission
+        // Check if this is a Geckura verification modal submission
         if (interaction.customId === 'verify_wallet_modal_submit') {
             try {
                 const { handleVerificationModalSubmit } = require('./utils/verification-handler');

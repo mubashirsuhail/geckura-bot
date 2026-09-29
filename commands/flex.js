@@ -242,7 +242,7 @@ module.exports = {
                 .setTitle('⚠️ Wallet Not Connected')
                 .setDescription(
                     targetUser.id === interaction.user.id
-                        ? 'You haven\'t linked your Solana wallet yet!\n\nUse `/wallet set <address>` or use the **Matrica Holder Verification** panel to connect your wallet and flex your NFTs.'
+                        ? 'You haven\'t linked your Solana wallet yet!\n\nUse `/wallet set <address>` or use the **Holder Verification** panel to connect your wallet and flex your NFTs.'
                         : `**${targetUser.username}** has not connected their Solana wallet yet.`
                 )
                 .setColor('#FF9900')

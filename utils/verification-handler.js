@@ -135,7 +135,7 @@ async function handleVerificationModalSubmit(interaction, client) {
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                 `💡 *If you purchase more Geckura NFTs, click **🔄 Re-verify Roles** anytime to update your perks!*`
             )
-            .setFooter({ text: 'Matrica-Style Instant Holder Verification', iconURL: client.user?.displayAvatarURL() })
+            .setFooter({ text: 'Geckura Instant Holder Verification', iconURL: client.user?.displayAvatarURL() })
             .setTimestamp();
 
         return await interaction.editReply({ embeds: [successEmbed] });

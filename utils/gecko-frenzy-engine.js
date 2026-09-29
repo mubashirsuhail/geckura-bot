@@ -142,7 +142,7 @@ const GECKO_EVENTS = [
 
             let log = `🦎 **${singer.name}** grabs a cricket microphone and starts singing high-pitch chirp solos!\n`;
             if (victim) {
-                log += `🙉 The vocals were so terrible that **${victim.name}** covered its ears and jumped out of the ring!\n` +
+                log += `🎶 The vocals were so terrible that **${victim.name}** covered its ears and jumped out of the ring!\n` +
                     `💀 **${victim.name}** was eliminated!`;
                 return { log, eliminated: [victim] };
             }
@@ -284,15 +284,14 @@ class FrenzyManager {
             }
         }
 
-        const geckoIndex = frenzy.players.length + 1;
-        const geckoNumStr = String(geckoIndex).padStart(2, '0');
-        const geckoName = `🦎 Gecko #${geckoNumStr} (<@${user.id}>)`;
+        const playerName = user.globalName || user.username;
+        const geckoName = playerName;
 
         const playerObj = {
             discordId: user.id,
             username: user.tag || user.username,
             geckoNum: geckoIndex,
-            name: geckoName,
+            name: playerName,
             alive: true
         };
 

@@ -57,28 +57,23 @@ module.exports = {
         });
 
         // Journey Forward
-        embed.addFields({
-            name: '🧬 THE JOURNEY FORWARD',
-            value: 'Geckura is not just a drop — it\'s a living Solana ecosystem. Built with holders. Grown by community. Powered by real utility. 🚀',
-            inline: false
-        });
-
-        // Action Row with Mint Link Button
-        const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setLabel('🔥 Mint Live on TribeX')
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.links?.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'),
-            new ButtonBuilder()
-                .setLabel('🌐 Official Website')
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.links?.website || 'https://geckura.app/'),
-            new ButtonBuilder()
-                .setLabel('🎁 Mystery Boxes')
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.links?.mysteryBox || 'https://mysterybox.geckura.app/')
+        embed.addFields(
+            {
+                name: '🧬 THE JOURNEY FORWARD',
+                value: 'Geckura is not just a drop — it\'s a living Solana ecosystem. Built with holders. Grown by community. Powered by real utility. 🚀',
+                inline: false
+            },
+            {
+                name: '🔗 Official Links & Portals',
+                value: `• 🔥 [Mint Live on TribeX](${config.links?.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'})\n` +
+                       `• 🎁 [Mystery Box Portal](${config.links?.mysteryBox || 'https://mysterybox.geckura.app/'})\n` +
+                       `• 🌐 [Official Website](${config.links?.website || 'https://geckura.app/'})\n` +
+                       `• 🛒 [Magic Eden](${config.links?.elixirMarket || 'https://magiceden.io/marketplace/geckura_elixir'})\n` +
+                       `• 🐦 [Twitter / X](${config.links?.twitter || 'https://x.com/Geckura'})`,
+                inline: false
+            }
         );
 
-        await interaction.reply({ embeds: [embed], components: [row] });
+        await interaction.reply({ embeds: [embed], components: [] });
     }
 };

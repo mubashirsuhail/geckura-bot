@@ -97,6 +97,16 @@ function buildBenefitsEmbed(category, client, config) {
             );
     }
 
+    embed.addFields({
+        name: '🔗 Official Links & Portals',
+        value: `• 🔥 [Mint Live on TribeX](${config?.links?.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'})\n` +
+               `• 🎁 [Mystery Box Portal](${config?.links?.mysteryBox || 'https://mysterybox.geckura.app/'})\n` +
+               `• 🌐 [Official Website](${config?.links?.website || 'https://geckura.app/'})\n` +
+               `• 🛒 [Magic Eden](${config?.links?.elixirMarket || 'https://magiceden.io/marketplace/geckura_elixir'})\n` +
+               `• 🐦 [Twitter / X](${config?.links?.twitter || 'https://x.com/Geckura'})`,
+        inline: false
+    });
+
     return embed;
 }
 

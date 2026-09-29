@@ -28,11 +28,11 @@ function buildVerificationEmbed(config, client) {
                 inline: false
             }
         )
-        .setFooter({ text: 'Geckura Automated Matrica-Style Holder Verification', iconURL: client?.user?.displayAvatarURL() })
+        .setFooter({ text: 'Geckura Automated Solana Holder Verification', iconURL: client?.user?.displayAvatarURL() })
         .setTimestamp();
 }
 
-// Helper to construct Matrica-style verification action buttons
+// Helper to construct verification action buttons
 function buildVerificationButtons() {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -56,7 +56,7 @@ module.exports = {
 
     data: new SlashCommandBuilder()
         .setName('verification-panel')
-        .setDescription('Deploy the interactive Matrica-style Solana Holder Verification embed')
+        .setDescription('Deploy the interactive Solana Holder Verification embed')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction, client, config) {

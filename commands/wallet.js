@@ -64,11 +64,11 @@ module.exports = {
             let roleSummary = 'No holder roles assigned (No verified Geckura NFTs found in wallet).';
 
             if (interaction.member) {
-                const roleResult = await assignHolderRoles(interaction.member, verificationResult);
-                if (roleResult.assigned.length > 0) {
-                    roleSummary = `🎉 **Roles Granted:** ${roleResult.assigned.map(r => `\`${r}\``).join(', ')}`;
-                } else if (roleResult.targetRoleName) {
-                    roleSummary = `✅ **Current Role Maintained:** \`${roleResult.targetRoleName}\``;
+                const assignedRoles = await assignHolderRoles(interaction.member, verificationResult);
+                if (Array.isArray(assignedRoles) && assignedRoles.length > 0) {
+                    roleSummary = `🎉 **Roles Granted / Verified:** ${assignedRoles.map(r => `\`${r}\``).join(', ')}`;
+                } else if (verificationResult.isHolder) {
+                    roleSummary = `✅ **Holder Verified!** (Current roles active)`;
                 }
             }
 

@@ -42,13 +42,13 @@ module.exports = {
                     inline: false
                 },
                 {
-                    name: '🪙 $GEKURA Staking & Aura Levels',
-                    value: '• Stake $GEKURA & Elixirs to boost your Aura Level\n• Multiplier boosts for daily rewards & Chat2Earn\n• Unlock higher TraitShop tiers & DAO voting weight',
+                    name: '🪙 $GAURA Staking & Aura Levels',
+                    value: '• Stake $GAURA & Elixirs to boost your Aura Level\n• Multiplier boosts for daily rewards & Chat2Earn\n• Unlock higher TraitShop tiers & DAO voting weight',
                     inline: false
                 },
                 {
                     name: '🧬 TraitShop (Aura Mods)',
-                    value: '• Evolve & upgrade your NFT traits directly on-chain\n• Exclusive seasonal skins, cosmetic drops & rarity boosts\n• Powered by staking rewards & $GEKURA token utility',
+                    value: '• Evolve & upgrade your NFT traits directly on-chain\n• Exclusive seasonal skins, cosmetic drops & rarity boosts\n• Powered by staking rewards & $GAURA token utility',
                     inline: false
                 },
                 {
@@ -58,40 +58,21 @@ module.exports = {
                 },
                 {
                     name: '🎮 Chat2Earn & Interactive Rewards',
-                    value: '• Earn $GEKURA tokens simply by chatting and engaging in Discord\n• Weekly XP leaderboards, invite rewards & mini-games\n• Instant token redemption for raffles & mystery box keys',
+                    value: '• Earn $GAURA tokens simply by chatting and engaging in Discord\n• Weekly XP leaderboards, invite rewards & mini-games\n• Instant token redemption for raffles & mystery box keys',
+                    inline: false
+                },
+                {
+                    name: '🔗 Official Links & Portals',
+                    value: `• 🔥 [Mint Live on TribeX](${config.links?.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'})\n` +
+                           `• 🎁 [Mystery Box Portal](${config.links?.mysteryBox || 'https://mysterybox.geckura.app/'})\n` +
+                           `• 🌐 [Official Website](${config.links?.website || 'https://geckura.app/'})\n` +
+                           `• 🛒 [Magic Eden](${config.links?.elixirMarket || 'https://magiceden.io/marketplace/geckura_elixir'})\n` +
+                           `• 🐦 [Twitter / X](${config.links?.twitter || 'https://x.com/Geckura'})`,
                     inline: false
                 }
             )
             .setFooter({ text: config.footer || 'Geckura — Where Innovation Meets Utility!' })
             .setTimestamp();
-
-        // Action Buttons Row
-        const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setLabel('🔥 Mint Live on TribeX')
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.links?.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'),
-
-            new ButtonBuilder()
-                .setLabel('🌐 Official Website')
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.links?.website || 'https://geckura.app/'),
-
-            new ButtonBuilder()
-                .setLabel('🎁 Mystery Box Portal')
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.links?.mysteryBox || 'https://mysterybox.geckura.app/'),
-
-            new ButtonBuilder()
-                .setLabel('🛒 Magic Eden')
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.links?.elixirMarket || 'https://magiceden.io/marketplace/geckura_elixir'),
-
-            new ButtonBuilder()
-                .setLabel('🐦 Twitter / X')
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.links?.twitter || 'https://x.com/Geckura')
-        );
 
         let pingContent = '';
         if (pingRole && interaction.guild) {
@@ -109,7 +90,7 @@ module.exports = {
                 await targetChannel.send({
                     content: pingContent.length > 0 ? pingContent : undefined,
                     embeds: [embed],
-                    components: [row]
+                    components: []
                 });
                 await interaction.reply({
                     content: `✅ Geckura Ecosystem embed sent to ${targetChannel}!`,
@@ -125,7 +106,7 @@ module.exports = {
             await interaction.reply({
                 content: pingContent.length > 0 ? pingContent : undefined,
                 embeds: [embed],
-                components: [row]
+                components: []
             });
         }
     }

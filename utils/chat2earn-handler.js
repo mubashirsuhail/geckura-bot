@@ -41,6 +41,8 @@ function getUserData(userId) {
     return userData[userId];
 }
 
+const { syncUserToSupabase } = require('./supabase-client');
+
 // Save user data
 function saveUserData(userId, data) {
     const userDataPath = path.join(__dirname, '..', 'data', 'chat2earn-users.json');
@@ -54,6 +56,9 @@ function saveUserData(userId, data) {
 
     userData[userId] = data;
     fs.writeFileSync(userDataPath, JSON.stringify(userData, null, 2));
+
+    // Sync to Supabase DB asynchronously
+    syncUserToSupabase(userId, data).catch(err => console.warn('Supabase async sync error:', err.message));
 }
 
 // Calculate level based on total messages

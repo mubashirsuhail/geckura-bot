@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { getUserData, saveUserData } = require('../utils/chat2earn-handler');
 const { sendTokenReward } = require('../utils/solana-payout');
+const { syncWithdrawalToSupabase } = require('../utils/supabase-client');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -61,6 +62,15 @@ module.exports = {
             userData.totalWithdrawn = (userData.totalWithdrawn || 0) + amount;
             userData.lastWithdrawalAt = Date.now();
             saveUserData(userId, userData);
+
+            // Sync withdrawal record to Supabase
+            syncWithdrawalToSupabase({
+                userId,
+                walletAddress: recipientWallet,
+                amount,
+                txSignature: payoutResult.txSignature,
+                status: 'CONFIRMED'
+            }).catch(e => console.warn('Supabase withdrawal log warning:', e.message));
 
             const successEmbed = new EmbedBuilder()
                 .setTitle('💸 $GAURA Withdrawal Complete!')

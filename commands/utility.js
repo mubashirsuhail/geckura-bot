@@ -17,23 +17,18 @@ module.exports = {
         // Add utility information
         embed.addFields(
             {
-                name: '⚡ What GeckAura Delivers',
-                value: '',
-                inline: false
-            },
-            {
                 name: '🤖 AI Assistant Buddy',
                 value: 'Your own AI co-pilot. Predictive insights, market analysis, trade guidance — all in real-time.',
                 inline: false
             },
             {
                 name: '💰 40% Royalty Revenue Share',
-                value: 'Holders earn from the official GeckAura collection. A community-driven reward system like no other.',
+                value: 'Holders earn from the official Geckura collection. A community-driven reward system like no other.',
                 inline: false
             },
             {
-                name: '🪙 $GEKURA Staking',
-                value: 'Stake your $GEKURA to unlock:\n• Passive earnings\n• Daily reward boosts\n• Higher TraitShop tier access\n• DAO voting weight\n• Hidden perks for top stakers\n\nYour stake = your aura level.',
+                name: '🪙 $GAURA Staking',
+                value: 'Stake your $GAURA to unlock:\n• Passive earnings\n• Daily reward boosts\n• Higher TraitShop tier access\n• DAO voting weight\n• Hidden perks for top stakers\n\nYour stake = your aura level.',
                 inline: false
             },
             {
@@ -43,7 +38,7 @@ module.exports = {
             },
             {
                 name: '🧠 Alpha DAO Access',
-                value: 'Elite community for serious builders & traders:\n• Private alpha calls\n• Early project access\n• Market breakdowns\n• Tools, bots, and exclusive dashboards\n\nAccess is based on staked Gekura + Aura level.',
+                value: 'Elite community for serious builders & traders:\n• Private alpha calls\n• Early project access\n• Market breakdowns\n• Tools, bots, and exclusive dashboards\n\nAccess is based on staked Geckura + Aura level.',
                 inline: false
             },
             {
@@ -54,6 +49,15 @@ module.exports = {
             {
                 name: '🤝 Collabs, Raids & Community Events',
                 value: 'Partner raids, seasonal missions, cross-project utilities, whitelist rewards — always live, always rewarding.',
+                inline: false
+            },
+            {
+                name: '🔗 Official Links & Portals',
+                value: `• 🔥 [Mint Live on TribeX](${config.links?.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'})\n` +
+                       `• 🎁 [Mystery Box Portal](${config.links?.mysteryBox || 'https://mysterybox.geckura.app/'})\n` +
+                       `• 🌐 [Official Website](${config.links?.website || 'https://geckura.app/'})\n` +
+                       `• 🛒 [Magic Eden](${config.links?.elixirMarket || 'https://magiceden.io/marketplace/geckura_elixir'})\n` +
+                       `• 🐦 [Twitter / X](${config.links?.twitter || 'https://x.com/Geckura'})`,
                 inline: false
             }
         );
