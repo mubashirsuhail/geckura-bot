@@ -122,6 +122,54 @@ async function verifyWalletNFTs(walletAddress) {
                     }
                 }
             });
+
+            // Method 2.b: Query Metaplex Core NFTs owned by wallet Address for instant Collection verification
+            try {
+                const mplCoreAccounts = await connection.getProgramAccounts(
+                    new PublicKey('CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d'),
+                    {
+                        filters: [
+                            {
+                                memcmp: {
+                                    offset: 1, // Owner Pubkey offset in Metaplex Core Asset
+                                    bytes: walletAddress
+                                }
+                            }
+                        ]
+                    }
+                );
+
+                mplCoreAccounts.forEach(acc => {
+                    const mint = acc.pubkey.toBase58();
+                    const dataHex = acc.account.data.toString('hex');
+
+                    // Check if collection address is present in asset buffer
+                    let matchedCol = false;
+                    collectionSet.forEach(colAddr => {
+                        try {
+                            const colHex = Buffer.from(new PublicKey(colAddr).toBuffer()).toString('hex');
+                            if (dataHex.includes(colHex)) {
+                                matchedCol = true;
+                            }
+                        } catch (e) {}
+                    });
+
+                    const isMatch = matchedCol || hashlistSet.has(mint);
+                    const is1of1 = oneOfOneSet.has(mint);
+
+                    if (isMatch) {
+                        result.isHolder = true;
+                        result.holderCount++;
+                        if (!result.matchedMints.includes(mint)) result.matchedMints.push(mint);
+                    }
+                    if (is1of1) {
+                        result.is1of1Holder = true;
+                        result.oneOfOneCount++;
+                    }
+                });
+            } catch (mplErr) {
+                // If public gPA has filter limits, fallback gracefully
+            }
         }
 
         // Determine Quantity Tier
