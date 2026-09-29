@@ -169,9 +169,14 @@ async function fetchWalletNFTs(walletAddress) {
 
 // Build Embed for a specific NFT
 function buildFlexEmbed(user, walletAddress, nft, index, totalNFTs) {
+    let cleanCollection = nft.collection || 'Geckura Collection';
+    if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(cleanCollection)) {
+        cleanCollection = 'Geckura Collection';
+    }
+
     const embed = new EmbedBuilder()
         .setTitle(`🦎 ${user.username}'s NFT Flex`)
-        .setDescription(`**${nft.name}**\n\nFlexing directly from connected Solana wallet!`)
+        .setDescription(`**${nft.name}**`)
         .setColor('#00FF99')
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
         .setFooter({ 
@@ -185,26 +190,20 @@ function buildFlexEmbed(user, walletAddress, nft, index, totalNFTs) {
         embed.setImage(nft.image);
     }
 
-    // Add fields
+    // Clean fields: NFT Name, Collection, and NFT Item Number
     embed.addFields(
         { name: '🏷️ NFT Name', value: `\`${nft.name}\``, inline: true },
-        { name: '📦 Collection', value: `\`${nft.collection || 'Geckura / Solana'}\``, inline: true },
-        { name: '👛 Wallet Address', value: `\`${walletAddress.slice(0, 6)}...${walletAddress.slice(-6)}\``, inline: true }
+        { name: '📦 Collection', value: `\`${cleanCollection}\``, inline: true },
+        { name: '🔢 Item', value: `\`NFT ${index + 1} of ${totalNFTs}\``, inline: true }
     );
 
     if (nft.mint) {
         embed.addFields({
-            name: '🔑 Mint Address',
-            value: `[\`${nft.mint}\`](https://solscan.io/token/${nft.mint})`,
+            name: '🔗 Marketplace & Explorer Links',
+            value: `[Magic Eden](https://magiceden.io/item-details/${nft.mint}) • [Solscan](https://solscan.io/token/${nft.mint})`,
             inline: false
         });
     }
-
-    embed.addFields({
-        name: '🔗 Marketplace & Explorer Links',
-        value: `[Magic Eden](https://magiceden.io/item-details/${nft.mint || ''}) • [Solscan](https://solscan.io/token/${nft.mint || ''}) • [Geckura App](https://geckura.app/)`,
-        inline: false
-    });
 
     return embed;
 }
@@ -227,7 +226,7 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ ephemeral: false });
 
         const targetUser = interaction.options.getUser('user') || interaction.user;
         const customWallet = interaction.options.getString('wallet');
@@ -243,7 +242,7 @@ module.exports = {
                 .setTitle('⚠️ Wallet Not Connected')
                 .setDescription(
                     targetUser.id === interaction.user.id
-                        ? 'You haven\'t linked your Solana wallet yet!\n\nUse `/connect` or `/wallet submit` to connect your wallet address and flex your NFTs.'
+                        ? 'You haven\'t linked your Solana wallet yet!\n\nUse `/wallet set <address>` or use the **Matrica Holder Verification** panel to connect your wallet and flex your NFTs.'
                         : `**${targetUser.username}** has not connected their Solana wallet yet.`
                 )
                 .setColor('#FF9900')
