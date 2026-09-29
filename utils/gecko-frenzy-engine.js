@@ -462,7 +462,7 @@ class FrenzyManager {
                         `**${frenzy.rewardAmount.toLocaleString()} ${frenzy.rewardToken}**` +
                         `${proofText}\n\n` +
                         `━━━━━━━━━━━━━━━━━━━━\n` +
-                        `GG, Gecko!`
+                        `Congrats, Gecko!`
                     )
                     .setFooter({ text: 'Geckura Gecko Frenzy — Verified Solana On-Chain Payouts!', iconURL: client.user?.displayAvatarURL() })
                     .setTimestamp();
