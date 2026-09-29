@@ -471,7 +471,8 @@
   ],
   "oneOfOneHashlist": [],
   "roles": {
-    "tier1_3": "Geckura Holder",
+    "holder": "1451245425116840133",
+    "tier1_3": "1451245425116840133",
     "tier4_9": "Geckura Collector",
     "tier10_30": "Geckura Whale",
     "oneOfOne": "Geckura 1-of-1 Holder"
