@@ -350,12 +350,12 @@ class FrenzyManager {
         if (!channel) return;
 
         // Check player count
-        if (frenzy.players.length < 2) {
+        if (frenzy.players.length === 0) {
             frenzy.status = 'CANCELLED';
             const cancelEmbed = new EmbedBuilder()
                 .setTitle('🦎 GECKO FRENZY CANCELLED')
                 .setColor(0xFF0000)
-                .setDescription('⚠️ Not enough Geckos joined the Frenzy (Minimum 2 players required). The Frenzy has been cancelled.')
+                .setDescription('⚠️ No Geckos joined the Frenzy arena. The Frenzy has been cancelled.')
                 .setTimestamp();
 
             if (frenzy.messageId) {
@@ -364,6 +364,90 @@ class FrenzyManager {
                     await msg.edit({ embeds: [cancelEmbed], components: [] });
                 } catch (e) {}
             }
+            activeFrenzies.delete(frenzyId);
+            return;
+        }
+
+        // If only 1 player joined, declare them instant winner!
+        if (frenzy.players.length === 1) {
+            const winner = frenzy.players[0];
+            frenzy.winner = winner;
+            frenzy.status = 'COMPLETED';
+
+            // Credit token reward automatically to winner's internal bot balance
+            const userData = getUserData(winner.discordId);
+            userData.tokens = (userData.tokens || 0) + frenzy.rewardAmount;
+            userData.totalTokensEarned = (userData.totalTokensEarned || 0) + frenzy.rewardAmount;
+            saveUserData(winner.discordId, userData);
+
+            // Attempt On-Chain Payout if Winner Has Linked Solana Wallet & Active ATA (1+ Tokens)
+            const winnerUserData = getUserData(winner.discordId);
+            let proofText = '';
+
+            if (!winnerUserData || !winnerUserData.solanaWallet) {
+                proofText = `\n\n💡 **REWARD SAVED IN BALANCE**\nYour **${frenzy.rewardAmount} ${frenzy.rewardToken}** is saved in your bot balance!\nLink your wallet (\`/wallet set <address>\`) & run \`/withdraw\` anytime to claim on-chain.`;
+            } else {
+                try {
+                    const { sendTokenReward } = require('./solana-payout');
+                    const payoutResult = await sendTokenReward(
+                        winnerUserData.solanaWallet,
+                        frenzy.rewardAmount,
+                        process.env.GECKURA_TOKEN_MINT
+                    );
+
+                    if (payoutResult.success && payoutResult.explorerUrl) {
+                        const uData = getUserData(winner.discordId);
+                        uData.tokens = Math.max(0, (uData.tokens || 0) - frenzy.rewardAmount);
+                        uData.totalWithdrawn = (uData.totalWithdrawn || 0) + frenzy.rewardAmount;
+                        saveUserData(winner.discordId, uData);
+
+                        proofText = `\n\n🔗 **ON-CHAIN SOLSCAN PROOF**\n[View Transaction on Solscan](${payoutResult.explorerUrl})\n\`${payoutResult.txSignature}\``;
+                    } else if (payoutResult.error === 'NO_ATA_FOUND' || payoutResult.error === 'INSUFFICIENT_ATA_BALANCE') {
+                        proofText = `\n\n💡 **REWARD SAVED IN BALANCE (ATA Required)**\nYour **${frenzy.rewardAmount} ${frenzy.rewardToken}** is saved in your balance!\nOnce you hold 1+ tokens & active ATA, run \`/withdraw\` anytime to claim.`;
+                    }
+                } catch (payoutErr) {
+                    console.error('On-chain payout attempt error:', payoutErr);
+                }
+            }
+
+            // Final Winner Embed
+            const winnerEmbed = new EmbedBuilder()
+                .setTitle('👑 GECKO FRENZY COMPLETE')
+                .setColor(0xFFD700)
+                .setDescription(
+                    `━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `🏆 **WINNER**\n` +
+                    `🦎 **${winner.name}** (<@${winner.discordId}>)\n\n` +
+                    `🔥 **SOLE CONTENDER STANDING**\n\n` +
+                    `💰 **REWARD PAID**\n` +
+                    `**${frenzy.rewardAmount.toLocaleString()} ${frenzy.rewardToken}**` +
+                    `${proofText}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━\n` +
+                    `Congrats, Gecko!`
+                )
+                .setFooter({ text: 'Geckura Gecko Frenzy — Verified Solana On-Chain Payouts!', iconURL: client.user?.displayAvatarURL() })
+                .setTimestamp();
+
+            await channel.send({ embeds: [winnerEmbed] });
+
+            // Save game history record
+            saveHistoryRecord({
+                frenzyId: frenzy.id,
+                creatorId: frenzy.creatorId,
+                startTime: frenzy.startTime,
+                endTime: Date.now(),
+                playersCount: frenzy.players.length,
+                rewardToken: frenzy.rewardToken,
+                rewardAmount: frenzy.rewardAmount,
+                winner: {
+                    discordId: winner.discordId,
+                    username: winner.username,
+                    geckoName: winner.name,
+                    wallet: winnerUserData ? winnerUserData.solanaWallet : null
+                },
+                status: 'COMPLETED'
+            });
+
             activeFrenzies.delete(frenzyId);
             return;
         }
