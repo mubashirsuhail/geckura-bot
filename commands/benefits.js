@@ -101,18 +101,7 @@ function buildBenefitsEmbed(category, client, config) {
 }
 
 function buildBenefitsButtons(currentCategory, config) {
-    const linkRow = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setLabel('🔥 Mint Live on TribeX')
-            .setStyle(ButtonStyle.Link)
-            .setURL(config?.links?.mintSite || 'https://launchpad.tribexlabs.xyz/geckura'),
-        new ButtonBuilder()
-            .setLabel('🎁 Mystery Box Portal')
-            .setStyle(ButtonStyle.Link)
-            .setURL(config?.links?.mysteryBox || 'https://mysterybox.geckura.app/')
-    );
-
-    return [linkRow];
+    return [];
 }
 
 module.exports = {
