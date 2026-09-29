@@ -269,8 +269,18 @@ client.on('interactionCreate', async interaction => {
     }
     // Handle button interactions
     else if (interaction.isButton()) {
+        // Check if this is a Matrica verification button
+        if (interaction.customId.startsWith('verify_')) {
+            try {
+                const { handleVerificationButton } = require('./utils/verification-handler');
+                return await handleVerificationButton(interaction, client);
+            } catch (err) {
+                console.error('Error handling verification button:', err);
+                return await interaction.reply({ content: '⚠️ Error processing verification button.', ephemeral: true });
+            }
+        }
         // Check if this is a Gecko Frenzy Join button
-        if (interaction.customId.startsWith('gecko_frenzy_join_')) {
+        else if (interaction.customId.startsWith('gecko_frenzy_join_')) {
             try {
                 const frenzyId = interaction.customId.replace('gecko_frenzy_join_', '');
                 const { frenzyManager } = require('./utils/gecko-frenzy-engine');
@@ -480,8 +490,18 @@ client.on('interactionCreate', async interaction => {
     }
     // Handle modal submissions
     else if (interaction.isModalSubmit()) {
+        // Check if this is a Matrica verification modal submission
+        if (interaction.customId === 'verify_wallet_modal_submit') {
+            try {
+                const { handleVerificationModalSubmit } = require('./utils/verification-handler');
+                return await handleVerificationModalSubmit(interaction, client);
+            } catch (err) {
+                console.error('Error handling verification modal submit:', err);
+                return await interaction.reply({ content: '⚠️ Error processing wallet verification.', ephemeral: true });
+            }
+        }
         // Check if this is a raffle entry modal
-        if (interaction.customId.startsWith('raffle_modal_')) {
+        else if (interaction.customId.startsWith('raffle_modal_')) {
             try {
                 await interaction.deferReply({ ephemeral: true });
                 const raffleId = interaction.customId.replace('raffle_modal_', '');

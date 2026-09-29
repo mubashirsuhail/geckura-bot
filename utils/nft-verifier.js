@@ -210,34 +210,36 @@ async function assignHolderRoles(guildMember, verificationResult) {
     const removed = [];
     const guild = guildMember.guild;
 
-    const findRole = (nameOrId) => guild.roles.cache.find(r => r.name === nameOrId || r.id === nameOrId);
+    const findRole = (nameOrId) => {
+        if (!nameOrId) return null;
+        if (!guild || !guild.roles || !guild.roles.cache) return { id: nameOrId, name: nameOrId };
+        return guild.roles.cache.find(r => r.name === nameOrId || r.id === nameOrId) || { id: nameOrId, name: nameOrId };
+    };
 
-    const tier1Role = findRole(roleNames.tier1_3);
-    const tier2Role = findRole(roleNames.tier4_9);
-    const tier3Role = findRole(roleNames.tier10_30);
+    const primaryHolderRoleId = config.roleId || '1451245425116840133';
+    const primaryRole = findRole(primaryHolderRoleId);
+
+    const tier1Role = findRole(roleNames.tier1_3) || primaryRole;
+    const tier2Role = findRole(roleNames.tier4_9) || primaryRole;
+    const tier3Role = findRole(roleNames.tier10_30) || primaryRole;
     const oneOfOneRole = findRole(roleNames.oneOfOne);
 
-    const tierRoles = [tier1Role, tier2Role, tier3Role].filter(Boolean);
+    const tierRoles = [primaryRole, tier1Role, tier2Role, tier3Role].filter(Boolean);
 
     // Determine target role for quantity tier
     let targetRole = null;
-    if (verificationResult.assignedTier === 'tier10_30') targetRole = tier3Role;
-    else if (verificationResult.assignedTier === 'tier4_9') targetRole = tier2Role;
-    else if (verificationResult.assignedTier === 'tier1_3') targetRole = tier1Role;
+    if (verificationResult.isHolder) {
+        if (verificationResult.assignedTier === 'tier10_30') targetRole = tier3Role;
+        else if (verificationResult.assignedTier === 'tier4_9') targetRole = tier2Role;
+        else targetRole = tier1Role || primaryRole;
+    }
 
-    // Apply / Remove Tiered Quantity Roles
-    for (const role of tierRoles) {
-        if (targetRole && role.id === targetRole.id) {
-            if (!guildMember.roles.cache.has(role.id)) {
-                await guildMember.roles.add(role).catch(() => {});
-                assigned.push(role.name);
-            }
-        } else {
-            if (guildMember.roles.cache.has(role.id)) {
-                await guildMember.roles.remove(role).catch(() => {});
-                removed.push(role.name);
-            }
-        }
+    // Apply Primary & Tiered Quantity Roles
+    if (verificationResult.isHolder && targetRole) {
+        try {
+            await guildMember.roles.add(targetRole.id || targetRole).catch(() => {});
+            assigned.push(targetRole.id || primaryHolderRoleId);
+        } catch (e) {}
     }
 
     // Apply 1-of-1 Role if applicable
