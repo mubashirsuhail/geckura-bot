@@ -25,7 +25,6 @@ module.exports = {
             )
             .setColor(parseInt(config.colors?.primary?.replace('#', '') || '00FF99', 16))
             .setThumbnail(client.user.displayAvatarURL())
-            .setImage(config.links?.banner || 'https://i.imgur.com/GeckuraBanner.png')
             .addFields(
                 {
                     name: '🎁 Solana Mystery Box Platform',

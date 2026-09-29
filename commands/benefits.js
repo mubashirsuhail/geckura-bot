@@ -6,7 +6,6 @@ function buildBenefitsEmbed(category, client, config) {
 
     const embed = new EmbedBuilder()
         .setThumbnail(client.user?.displayAvatarURL())
-        .setImage(config?.links?.banner || 'https://i.imgur.com/GeckuraBanner.png')
         .setFooter({ text: config?.footer || 'Geckura — Where Innovation Meets Utility!', iconURL: client.user?.displayAvatarURL() })
         .setTimestamp();
 
@@ -125,11 +124,7 @@ function buildBenefitsButtons(currentCategory, config) {
         new ButtonBuilder()
             .setLabel('🎁 Mystery Box Portal')
             .setStyle(ButtonStyle.Link)
-            .setURL(config?.links?.mysteryBox || 'https://mysterybox.geckura.app/'),
-        new ButtonBuilder()
-            .setLabel('🌐 Official Website')
-            .setStyle(ButtonStyle.Link)
-            .setURL(config?.links?.website || 'https://geckura.app/')
+            .setURL(config?.links?.mysteryBox || 'https://mysterybox.geckura.app/')
     );
 
     return [row1, row2];
