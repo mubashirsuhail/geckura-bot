@@ -75,6 +75,21 @@
         "geckoName": "🦎 Gecko #02 (<@1308341450693541911>)"
       },
       "status": "COMPLETED"
+    },
+    {
+      "frenzyId": "frenzy_1790766074826_841",
+      "creatorId": "1040680172472516729",
+      "startTime": 1790766074826,
+      "endTime": 1790766282941,
+      "playersCount": 4,
+      "rewardToken": "$GAURA",
+      "rewardAmount": 1000,
+      "winner": {
+        "discordId": "958870485360345099",
+        "username": "marleyjr#0",
+        "geckoName": "marleyjr"
+      },
+      "status": "COMPLETED"
     }
   ]
 }

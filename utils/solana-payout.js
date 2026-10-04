@@ -26,7 +26,7 @@ function getTreasuryKeypair() {
 
 // Get RPC Connection
 function getSolanaConnection() {
-    const rpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
+    const rpcUrl = process.env.SOLANA_RPC || process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
     return new Connection(rpcUrl, 'confirmed');
 }
 

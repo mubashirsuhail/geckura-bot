@@ -4,7 +4,7 @@ const path = require('path');
 const { Connection, PublicKey } = require('@solana/web3.js');
 
 // Solana RPC Connection
-const SOLANA_RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
+const SOLANA_RPC = process.env.SOLANA_RPC || process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
 const connection = new Connection(SOLANA_RPC, 'confirmed');
 
 // Path to data files

@@ -264,17 +264,32 @@ client.on('interactionCreate', async interaction => {
         try {
             await command.execute(interaction, client, config);
         } catch (error) {
-            console.error(error);
-            await interaction.reply({
-                content: 'There was an error while executing this command!',
-                ephemeral: true
-            });
+            console.error('Error executing command:', error);
+            try {
+                if (interaction.deferred || interaction.replied) {
+                    await interaction.followUp({ content: '⚠️ There was an error executing this command!', ephemeral: true });
+                } else {
+                    await interaction.reply({ content: '⚠️ There was an error executing this command!', ephemeral: true });
+                }
+            } catch (replyErr) {
+                console.error('Failed to send command error response:', replyErr.message);
+            }
         }
     }
     // Handle button interactions
     else if (interaction.isButton()) {
+        // Check if this is a Mint Bounty button
+        if (interaction.customId.startsWith('bounty_')) {
+            try {
+                const { handleBountyButton } = require('./utils/bounty-handler');
+                return await handleBountyButton(interaction, client, config);
+            } catch (err) {
+                console.error('Error handling bounty button:', err);
+                return await interaction.reply({ content: '⚠️ Error processing bounty action.', ephemeral: true });
+            }
+        }
         // Check if this is a Geckura verification button
-        if (interaction.customId.startsWith('verify_')) {
+        else if (interaction.customId.startsWith('verify_')) {
             try {
                 const { handleVerificationButton } = require('./utils/verification-handler');
                 return await handleVerificationButton(interaction, client);
@@ -487,8 +502,22 @@ client.on('interactionCreate', async interaction => {
     }
     // Handle modal submissions
     else if (interaction.isModalSubmit()) {
+        // Check if this is a Mint Bounty modal submission
+        if (interaction.customId === 'bounty_claim_modal') {
+            try {
+                const { handleBountyModalSubmit } = require('./utils/bounty-handler');
+                return await handleBountyModalSubmit(interaction, client, config);
+            } catch (err) {
+                console.error('Error handling bounty claim modal submit:', err);
+                if (interaction.deferred || interaction.replied) {
+                    return await interaction.editReply({ content: '⚠️ Error processing mint bounty claim.' });
+                } else {
+                    return await interaction.reply({ content: '⚠️ Error processing mint bounty claim.', ephemeral: true });
+                }
+            }
+        }
         // Check if this is a Geckura verification modal submission
-        if (interaction.customId === 'verify_wallet_modal_submit') {
+        else if (interaction.customId === 'verify_wallet_modal_submit') {
             try {
                 const { handleVerificationModalSubmit } = require('./utils/verification-handler');
                 return await handleVerificationModalSubmit(interaction, client);
@@ -596,7 +625,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 // On-chain verification via RPC
-                const SOLANA_RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
+                const SOLANA_RPC = process.env.SOLANA_RPC || process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
                 const connection = new Connection(SOLANA_RPC, 'confirmed');
 
                 const tx = await connection.getParsedTransaction(submittedInput, { commitment: 'confirmed', maxSupportedTransactionVersion: 0 });
@@ -648,6 +677,15 @@ client.on('interactionCreate', async interaction => {
             }
         }
     }
+});
+
+// Client level error listeners to prevent silent drops
+client.on('error', (error) => {
+    console.error('Discord Client Network Error:', error);
+});
+
+client.on('shardError', (error, shardId) => {
+    console.error(`Discord Shard ${shardId} Connection Error:`, error);
 });
 
 // Global error handlers to prevent full process crash
