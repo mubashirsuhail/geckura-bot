@@ -90,6 +90,22 @@
         "geckoName": "marleyjr"
       },
       "status": "COMPLETED"
+    },
+    {
+      "frenzyId": "frenzy_1791139986840_637",
+      "creatorId": "1040680172472516729",
+      "startTime": 1791139986840,
+      "endTime": 1791140184591,
+      "playersCount": 2,
+      "rewardToken": "$GAURA",
+      "rewardAmount": 1000,
+      "winner": {
+        "discordId": "1040680172472516729",
+        "username": "mubi.sol#0",
+        "geckoName": "mubi.sol",
+        "wallet": "7u8Vw2enjSJo9W5NJSj4EqryJTuXxypUQYEgBjTdcSyu"
+      },
+      "status": "COMPLETED"
     }
   ]
 }

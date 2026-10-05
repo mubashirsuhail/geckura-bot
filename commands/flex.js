@@ -241,17 +241,32 @@ module.exports = {
         // Fetch NFTs
         const nfts = await fetchWalletNFTs(walletAddress);
 
-        if (!nfts || nfts.length === 0) {
+        // Filter: Exclude Elixir NFTs & keep only Geckura PFP collection
+        const pfpNfts = (nfts || []).filter(nft => {
+            const nameStr = (nft.name || '').toLowerCase();
+            const symbolStr = (nft.symbol || '').toLowerCase();
+            const collectionStr = (nft.collection || '').toLowerCase();
+
+            // Explicitly exclude Elixir
+            if (nameStr.includes('elixir') || symbolStr.includes('elixir') || collectionStr.includes('elixir')) {
+                return false;
+            }
+
+            // Only allow Geckura PFP collection NFTs
+            return nameStr.includes('geckura') || symbolStr.includes('geckura') || collectionStr.includes('geckura') || symbolStr === 'geck';
+        });
+
+        if (pfpNfts.length === 0) {
             const emptyEmbed = new EmbedBuilder()
-                .setTitle('🔍 No NFTs Found')
-                .setDescription(`No NFTs were found in wallet \`${walletAddress.slice(0, 6)}...${walletAddress.slice(-6)}\`.\n\nMake sure your wallet holds Geckura or Solana NFTs, or try again shortly!`)
+                .setTitle('🔍 No Geckura PFP NFTs Found')
+                .setDescription(`No Geckura PFP NFTs were found in wallet \`${walletAddress.slice(0, 6)}...${walletAddress.slice(-6)}\`.\n\n*(Note: Elixir collection NFTs are excluded from flex).*`)
                 .setColor('#FF5555')
                 .setFooter({ text: 'Geckura — Turning Chaos into Flow' });
 
             return await interaction.editReply({ embeds: [emptyEmbed] });
         }
 
-        const initialEmbed = buildFlexEmbed(targetUser, walletAddress, nfts[0]);
+        const initialEmbed = buildFlexEmbed(targetUser, walletAddress, pfpNfts[0]);
 
         // Send clean reply embed without pagination buttons
         return await interaction.editReply({
