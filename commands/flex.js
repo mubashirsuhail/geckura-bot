@@ -48,59 +48,56 @@ async function formatImageUri(item) {
     const links = content.links || {};
     const files = content.files || [];
 
-    // 1. Check for Helius CDN URI (fastest and guaranteed direct image rendering in Discord)
-    for (const f of files) {
-        if (f.cdn_uri && typeof f.cdn_uri === 'string' && f.cdn_uri.length > 0) {
-            return f.cdn_uri;
+    const cleanUrl = (urlStr) => {
+        if (!urlStr || typeof urlStr !== 'string') return '';
+        let url = urlStr.trim();
+        // Fix malformed Helius cdn-cgi double slashes if present
+        if (url.includes('cdn-cgi/image//http')) {
+            url = url.replace('cdn-cgi/image//', 'cdn-cgi/image/');
         }
-    }
-
-    // 2. Check direct links image (e.g., Irys / Arweave / TribeX gateway)
-    if (links.image && typeof links.image === 'string' && links.image.trim().length > 0) {
-        let img = links.image.trim();
-        if (img.startsWith('ipfs://')) {
-            const cidPath = img.replace(/^ipfs:\/\/(ipfs\/)?/, '');
+        if (url.startsWith('ipfs://')) {
+            const cidPath = url.replace(/^ipfs:\/\/(ipfs\/)?/, '');
             return `https://nftstorage.link/ipfs/${cidPath}`;
         }
-        if (img.includes('ipfs.io/ipfs/')) {
-            return img.replace('ipfs.io/ipfs/', 'nftstorage.link/ipfs/');
+        if (url.includes('ipfs.io/ipfs/')) {
+            return url.replace('ipfs.io/ipfs/', 'nftstorage.link/ipfs/');
         }
-        return img;
+        return url;
+    };
+
+    // 1. Direct links.image (Arweave / Irys / TribeX / HTTP) - PRIMARY AND MOST RELIABLE
+    if (links.image) {
+        const cleaned = cleanUrl(links.image);
+        if (cleaned.startsWith('http')) return cleaned;
     }
 
-    // 3. Check files URI array
+    // 2. Check files URI array
     for (const f of files) {
-        if (f.uri && typeof f.uri === 'string' && f.uri.trim().length > 0) {
-            let img = f.uri.trim();
-            if (img.startsWith('ipfs://')) {
-                const cidPath = img.replace(/^ipfs:\/\/(ipfs\/)?/, '');
-                return `https://nftstorage.link/ipfs/${cidPath}`;
-            }
-            if (img.includes('ipfs.io/ipfs/')) {
-                return img.replace('ipfs.io/ipfs/', 'nftstorage.link/ipfs/');
-            }
-            if (img.startsWith('http://') || img.startsWith('https://')) {
-                return img;
-            }
+        if (f.uri) {
+            const cleaned = cleanUrl(f.uri);
+            if (cleaned.startsWith('http')) return cleaned;
+        }
+    }
+
+    // 3. Check files CDN URI (cleaned)
+    for (const f of files) {
+        if (f.cdn_uri) {
+            const cleaned = cleanUrl(f.cdn_uri);
+            if (cleaned.startsWith('http')) return cleaned;
         }
     }
 
     // 4. Fallback: Fetch metadata JSON if image is not direct
-    if (content.json_uri && typeof content.json_uri === 'string') {
+    if (content.json_uri) {
         try {
-            let fetchUrl = content.json_uri.trim();
-            if (fetchUrl.startsWith('ipfs://')) {
-                fetchUrl = `https://nftstorage.link/ipfs/${fetchUrl.replace(/^ipfs:\/\/(ipfs\/)?/, '')}`;
-            }
+            let fetchUrl = cleanUrl(content.json_uri);
             if (fetchUrl.startsWith('http')) {
                 const res = await fetch(fetchUrl, { timeout: 3500 });
                 if (res.ok) {
                     const data = await res.json();
                     let metaImg = data.image || data.properties?.files?.[0]?.uri || (typeof data.properties?.files?.[0] === 'string' ? data.properties.files[0] : '');
-                    if (typeof metaImg === 'string' && metaImg.startsWith('ipfs://')) {
-                        metaImg = `https://nftstorage.link/ipfs/${metaImg.replace(/^ipfs:\/\/(ipfs\/)?/, '')}`;
-                    }
-                    if (typeof metaImg === 'string' && metaImg.length > 0) return metaImg;
+                    const cleanedMeta = cleanUrl(metaImg);
+                    if (cleanedMeta.startsWith('http')) return cleanedMeta;
                 }
             }
         } catch (e) {
