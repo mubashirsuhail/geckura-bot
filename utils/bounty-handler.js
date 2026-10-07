@@ -40,7 +40,7 @@ function buildBountyEmbed(client, config, customRemaining = null) {
         )
         .setColor(primaryColor)
         .setThumbnail(client.user?.displayAvatarURL())
-        .setImage(config?.links?.banner || 'https://i.imgur.com/GeckuraBanner.png')
+        .setImage(config?.links?.banner || 'https://geckura.app/logo.png')
         .addFields(
             {
                 name: '🎁 TIER 1: MINT 5 → GET 1 FREE 🎟️',

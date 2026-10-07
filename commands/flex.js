@@ -41,29 +41,28 @@ function getUserWallet(discordId) {
     }
 }
 
+function cleanUrl(urlStr) {
+    if (!urlStr || typeof urlStr !== 'string') return '';
+    let url = urlStr.trim();
+    if (url.includes('cdn-cgi/image//http')) {
+        url = url.replace('cdn-cgi/image//', 'cdn-cgi/image/');
+    }
+    if (url.startsWith('ipfs://')) {
+        const cidPath = url.replace(/^ipfs:\/\/(ipfs\/)?/, '');
+        return `https://gateway.pinata.cloud/ipfs/${cidPath}`;
+    }
+    if (url.includes('ipfs.io/ipfs/') || url.includes('nftstorage.link/ipfs/')) {
+        return url.replace(/(ipfs\.io|nftstorage\.link)\/ipfs\//, 'gateway.pinata.cloud/ipfs/');
+    }
+    return url;
+}
+
 // Helper to resolve and format image URIs for Discord embed compatibility
 async function formatImageUri(item) {
     if (!item) return '';
     const content = item.content || {};
     const links = content.links || {};
     const files = content.files || [];
-
-    const cleanUrl = (urlStr) => {
-        if (!urlStr || typeof urlStr !== 'string') return '';
-        let url = urlStr.trim();
-        // Fix malformed Helius cdn-cgi double slashes if present
-        if (url.includes('cdn-cgi/image//http')) {
-            url = url.replace('cdn-cgi/image//', 'cdn-cgi/image/');
-        }
-        if (url.startsWith('ipfs://')) {
-            const cidPath = url.replace(/^ipfs:\/\/(ipfs\/)?/, '');
-            return `https://nftstorage.link/ipfs/${cidPath}`;
-        }
-        if (url.includes('ipfs.io/ipfs/')) {
-            return url.replace('ipfs.io/ipfs/', 'nftstorage.link/ipfs/');
-        }
-        return url;
-    };
 
     // 1. Direct links.image (Arweave / Irys / TribeX / HTTP) - PRIMARY AND MOST RELIABLE
     if (links.image) {
@@ -166,9 +165,7 @@ async function fetchWalletNFTs(walletAddress) {
                 if (Array.isArray(meTokens) && meTokens.length > 0) {
                     for (const item of meTokens) {
                         let img = item.image || item.mediaUrl || '';
-                        if (typeof img === 'string' && img.startsWith('ipfs://')) {
-                            img = `https://nftstorage.link/ipfs/${img.replace(/^ipfs:\/\/(ipfs\/)?/, '')}`;
-                        }
+                        img = cleanUrl(img);
                         nfts.push({
                             mint: item.mintAddress || item.mint,
                             name: item.name || 'Unnamed Solana NFT',
@@ -204,6 +201,8 @@ function buildFlexEmbed(user, walletAddress, nft) {
     // Set NFT image as the LARGE main image below description & fields
     if (nft.image && typeof nft.image === 'string' && nft.image.trim().length > 0) {
         embed.setImage(nft.image.trim());
+    } else {
+        embed.setImage('https://geckura.app/logo.png');
     }
 
     // Clean field: NFT Name

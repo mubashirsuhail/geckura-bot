@@ -29,7 +29,7 @@ module.exports = {
             )
             .setColor(primaryColor)
             .setThumbnail(client.user?.displayAvatarURL())
-            .setImage(config?.links?.banner || 'https://i.imgur.com/GeckuraBanner.png')
+            .setImage(config?.links?.banner || 'https://geckura.app/logo.png')
             .addFields(
                 {
                     name: '🎁 Mystery Box as a Service (MaaS)',

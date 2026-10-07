@@ -38,8 +38,8 @@ module.exports = {
                 'Provide real utility to your holders, sink native tokens, drive marketplace volume, and automate reward distribution with zero code needed on your end.'
             )
             .setColor(parseInt(config.colors.primary.replace('#', ''), 16))
-            .setThumbnail('https://i.imgur.com/GeckuraBanner.png')
-            .setImage(config.links?.banner || 'https://i.imgur.com/GeckuraBanner.png')
+            .setThumbnail('https://geckura.app/logo.png')
+            .setImage(config.links?.banner || 'https://geckura.app/logo.png')
             .addFields(
                 {
                     name: '⚡ Custom Token & SOL Payments',
