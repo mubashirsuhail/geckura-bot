@@ -14,6 +14,20 @@ const { execute: handleLinkFilter } = require('./utils/link-filter');
 const { sendWelcomeMessage } = require('./utils/welcome-handler');
 const { handleRoleUpgrade } = require('./utils/role-upgrade-handler');
 
+// Helper for safely replying to interactions without throwing on expired/handled tokens
+async function safeReply(interaction, options) {
+    try {
+        if (!interaction) return;
+        const payload = typeof options === 'string' ? { content: options, ephemeral: true } : options;
+        if (interaction.deferred || interaction.replied) {
+            return await interaction.followUp(payload);
+        } else {
+            return await interaction.reply(payload);
+        }
+    } catch (err) {
+        console.error('Safe reply warning (interaction expired or double handled):', err.message);
+    }
+}
 
 // Create a new client instance
 const client = new Client({
@@ -265,15 +279,7 @@ client.on('interactionCreate', async interaction => {
             await command.execute(interaction, client, config);
         } catch (error) {
             console.error('Error executing command:', error);
-            try {
-                if (interaction.deferred || interaction.replied) {
-                    await interaction.followUp({ content: '⚠️ There was an error executing this command!', ephemeral: true });
-                } else {
-                    await interaction.reply({ content: '⚠️ There was an error executing this command!', ephemeral: true });
-                }
-            } catch (replyErr) {
-                console.error('Failed to send command error response:', replyErr.message);
-            }
+            await safeReply(interaction, { content: '⚠️ There was an error executing this command!', ephemeral: true });
         }
     }
     // Handle button interactions
@@ -285,7 +291,7 @@ client.on('interactionCreate', async interaction => {
                 return await handleBountyButton(interaction, client, config);
             } catch (err) {
                 console.error('Error handling bounty button:', err);
-                return await interaction.reply({ content: '⚠️ Error processing bounty action.', ephemeral: true });
+                return await safeReply(interaction, { content: '⚠️ Error processing bounty action.', ephemeral: true });
             }
         }
         // Check if this is a Geckura verification button
@@ -295,7 +301,7 @@ client.on('interactionCreate', async interaction => {
                 return await handleVerificationButton(interaction, client);
             } catch (err) {
                 console.error('Error handling verification button:', err);
-                return await interaction.reply({ content: '⚠️ Error processing verification button.', ephemeral: true });
+                return await safeReply(interaction, { content: '⚠️ Error processing verification button.', ephemeral: true });
             }
         }
         // Check if this is a Gecko Frenzy Join button
