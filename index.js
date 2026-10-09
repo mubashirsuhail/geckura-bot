@@ -704,6 +704,16 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
+// Lightweight HTTP server for Railway / Cloud deployment health checks
+const http = require('http');
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Geckura Discord Bot is online and healthy!\n');
+}).listen(PORT, () => {
+    console.log(`Health check HTTP server running on port ${PORT}`);
+});
+
 // Log in to Discord with your client's token
 if (!process.env.DISCORD_TOKEN || process.env.DISCORD_TOKEN === 'YOUR_NEW_TOKEN_HERE') {
     console.error('FATAL: No valid DISCORD_TOKEN found in .env. Please set your bot token.');
